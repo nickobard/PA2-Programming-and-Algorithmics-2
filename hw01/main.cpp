@@ -24,20 +24,22 @@ struct Land {
     Land() :
             m_id(0) {}
 
-    Land(string region, unsigned int id, string city, string addr) :
+    Land(string region, size_t id, string city, string addr, size_t order_id) :
             m_id(id),
             m_region(std::move(region)),
             m_city(std::move(city)),
-            m_addr(std::move(addr)) {}
+            m_addr(std::move(addr)),
+            m_order_id(order_id) {}
 
     friend bool operator==(const Land &lhs, const Land &rhs);
 
-    unsigned int m_id;
+    size_t m_id;
     string m_region;
     string m_city;
     string m_addr;
     string m_owner;
     string m_owner_lower_case;
+    size_t m_order_id;
 };
 
 bool operator==(const Land &lhs, const Land &rhs) {
@@ -96,7 +98,7 @@ public:
         if (landExists(city, addr, region, id)) {
             return false;
         }
-        m_lands.emplace_back(region, id, city, addr);
+        m_lands.emplace_back(region, id, city, addr, order_counter++);
         return true;
     }
 
@@ -147,10 +149,15 @@ public:
     bool newOwner(const string &city,
                   const string &addr,
                   const string &owner) {
-        Land to_find;
+        Land *to_find = nullptr;
         if (findByCityAndAddr(city, addr, to_find)) {
-            to_find.m_owner = owner;
-            to_find.m_owner_lower_case = to_lower(owner);
+            string owner_lower_case = to_lower(owner);
+            if (to_find->m_owner_lower_case == owner_lower_case) {
+                return false;
+            }
+            to_find->m_owner = owner;
+            to_find->m_owner_lower_case = owner_lower_case;
+            to_find->m_order_id = order_counter++;
             return true;
         }
         return false;
@@ -159,10 +166,15 @@ public:
     bool newOwner(const string &region,
                   unsigned int id,
                   const string &owner) {
-        Land to_find;
+        Land *to_find = nullptr;
         if (findByRegionAndID(region, id, to_find)) {
-            to_find.m_owner = owner;
-            to_find.m_owner_lower_case = to_lower(owner);
+            string owner_lower_case = to_lower(owner);
+            if (to_find->m_owner_lower_case == owner_lower_case) {
+                return false;
+            }
+            to_find->m_owner = owner;
+            to_find->m_owner_lower_case = owner_lower_case;
+            to_find->m_order_id = order_counter++;
             return true;
         }
         return false;
@@ -195,6 +207,9 @@ public:
                 by_owner.push_back(l);
             }
         }
+        sort(by_owner.begin(), by_owner.end(), [](const Land &lhs, const Land &rhs) {
+            return lhs.m_order_id < rhs.m_order_id;
+        });
         return by_owner;
     }
 
@@ -207,20 +222,20 @@ private:
         return str;
     }
 
-    bool findByRegionAndID(const string &region, unsigned int id, Land &land) {
-        for (const Land &l: m_lands) {
+    bool findByRegionAndID(const string &region, unsigned int id, Land *&land) {
+        for (Land &l: m_lands) {
             if (l.m_region == region && l.m_id == id) {
-                land = l;
+                land = &l;
                 return true;
             }
         }
         return false;
     }
 
-    bool findByCityAndAddr(const string &city, const string &addr, Land &land) {
-        for (const Land &l: m_lands) {
+    bool findByCityAndAddr(const string &city, const string &addr, Land *&land) {
+        for (Land &l: m_lands) {
             if (l.m_city == city && l.m_addr == addr) {
-                land = l;
+                land = &l;
                 return true;
             }
         }
@@ -252,7 +267,7 @@ private:
                     const string &region,
                     unsigned int id) {
         for (const Land &l: m_lands) {
-            if (l.m_city == city && l.m_addr == city) {
+            if (l.m_city == city && l.m_addr == addr) {
                 return true;
             }
             // or if
@@ -264,6 +279,7 @@ private:
     }
 
     list<Land> m_lands;
+    size_t order_counter = 0;
 };
 
 #ifndef __PROGTEST__
