@@ -47,14 +47,14 @@ bool operator==(const Land &lhs, const Land &rhs) {
 
 class CIterator {
 public:
-    using iterator_dt = vector<Land>;
+    using iterator_dt = vector<Land *>;
 
-    CIterator(iterator_dt &lands) : m_lands(lands) {
-        m_it = m_lands.begin();
+    explicit CIterator(const iterator_dt &lands) : m_lands(lands) {
+        m_it = m_lands.cbegin();
     }
 
     bool atEnd() const {
-        return m_it == m_lands.end();
+        return m_it == m_lands.cend();
     }
 
     void next() {
@@ -62,28 +62,28 @@ public:
     }
 
     string city() const {
-        return m_it->m_city_addr.first;
+        return (*m_it)->m_city_addr.first;
     }
 
     string addr() const {
-        return m_it->m_city_addr.second;
+        return (*m_it)->m_city_addr.second;
     }
 
     string region() const {
-        return m_it->m_region_id.first;
+        return (*m_it)->m_region_id.first;
     }
 
     unsigned id() const {
-        return m_it->m_region_id.second;
+        return (*m_it)->m_region_id.second;
     }
 
     string owner() const {
-        return m_it->m_owner;
+        return (*m_it)->m_owner;
     }
 
 private:
-    iterator_dt::iterator m_it;
-    iterator_dt m_lands;
+    iterator_dt::const_iterator m_it;
+    const iterator_dt &m_lands;
 };
 
 class CLandRegister {
@@ -215,25 +215,22 @@ public:
     }
 
     CIterator listByAddr() const {
-        vector<Land> by_address(m_lands.begin(), m_lands.end());
-        sort(by_address.begin(), by_address.end(), [](const Land &lhs, const Land &rhs) {
-            return lhs.m_city_addr < rhs.m_city_addr;
-        });
-        return {by_address};
+        return {m_lands_by_city_addr};
     }
 
     CIterator listByOwner(const string &owner) const {
-        const string owner_lower = to_lower(owner);
-        vector<Land> by_owner;
-        for (const Land &l: m_lands) {
-            if (l.m_owner_lower_case == owner_lower) {
-                by_owner.push_back(l);
-            }
-        }
-        sort(by_owner.begin(), by_owner.end(), [](const Land &lhs, const Land &rhs) {
-            return lhs.m_order_id < rhs.m_order_id;
-        });
-        return by_owner;
+//        const string owner_lower = to_lower(owner);
+//        vector<Land> by_owner;
+//        for (const Land &l: m_lands) {
+//            if (l.m_owner_lower_case == owner_lower) {
+//                by_owner.push_back(l);
+//            }
+//        }
+//        sort(by_owner.begin(), by_owner.end(), [](const Land &lhs, const Land &rhs) {
+//            return lhs.m_order_id < rhs.m_order_id;
+//        });
+//        return by_owner;
+        return {{}};
     }
 
 private:
