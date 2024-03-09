@@ -21,30 +21,28 @@
 using namespace std;
 
 struct Land {
-    Land() :
-            m_id(0) {}
+    Land() {
+        m_region_id.second = 0;
+        m_order_id = 0;
+    }
 
     Land(string region, size_t id, string city, string addr, size_t order_id) :
-            m_id(id),
-            m_region(std::move(region)),
-            m_city(std::move(city)),
-            m_addr(std::move(addr)),
+            m_region_id({std::move(region), id}),
+            m_city_addr({std::move(city), std::move(addr)}),
             m_order_id(order_id) {}
 
     friend bool operator==(const Land &lhs, const Land &rhs);
 
-    size_t m_id;
-    string m_region;
-    string m_city;
-    string m_addr;
+    pair<string, size_t> m_region_id;
+    pair<string, string> m_city_addr;
     string m_owner;
     string m_owner_lower_case;
     size_t m_order_id;
 };
 
 bool operator==(const Land &lhs, const Land &rhs) {
-    return (lhs.m_region == rhs.m_region && lhs.m_id == rhs.m_id) ||
-           (lhs.m_city == rhs.m_city && lhs.m_addr == rhs.m_addr);
+    return (lhs.m_region_id == rhs.m_region_id) ||
+           (lhs.m_city_addr == rhs.m_city_addr);
 }
 
 class CIterator {
@@ -64,19 +62,19 @@ public:
     }
 
     string city() const {
-        return m_it->m_city;
+        return m_it->m_city_addr.first;
     }
 
     string addr() const {
-        return m_it->m_addr;
+        return m_it->m_city_addr.second;
     }
 
     string region() const {
-        return m_it->m_region;
+        return m_it->m_region_id.first;
     }
 
     unsigned id() const {
-        return m_it->m_id;
+        return m_it->m_region_id.second;
     }
 
     string owner() const {
@@ -105,7 +103,7 @@ public:
     bool del(const string &city,
              const string &addr) {
         for (auto it = m_lands.begin(); it != m_lands.end(); it++) {
-            if (it->m_city == city && it->m_addr == addr) {
+            if (it->m_city_addr == pair<string, string>(city, addr)) {
                 m_lands.erase(it);
                 return true;
             }
@@ -116,7 +114,7 @@ public:
     bool del(const string &region,
              unsigned int id) {
         for (auto it = m_lands.begin(); it != m_lands.end(); it++) {
-            if (it->m_region == region && it->m_id == id) {
+            if (it->m_region_id == pair<string, size_t>(region, id)) {
                 m_lands.erase(it);
                 return true;
             }
@@ -194,7 +192,7 @@ public:
     CIterator listByAddr() const {
         vector<Land> by_address(m_lands.begin(), m_lands.end());
         sort(by_address.begin(), by_address.end(), [](const Land &lhs, const Land &rhs) {
-            return tie(lhs.m_city, lhs.m_addr) < tie(rhs.m_city, rhs.m_addr);
+            return lhs.m_city_addr < rhs.m_city_addr;
         });
         return {by_address};
     }
@@ -224,7 +222,7 @@ private:
 
     bool findByRegionAndID(const string &region, unsigned int id, Land *&land) {
         for (Land &l: m_lands) {
-            if (l.m_region == region && l.m_id == id) {
+            if (l.m_region_id == pair<string, size_t>(region, id)) {
                 land = &l;
                 return true;
             }
@@ -234,7 +232,7 @@ private:
 
     bool findByCityAndAddr(const string &city, const string &addr, Land *&land) {
         for (Land &l: m_lands) {
-            if (l.m_city == city && l.m_addr == addr) {
+            if (l.m_city_addr == pair<string, string>(city, addr)) {
                 land = &l;
                 return true;
             }
@@ -244,7 +242,7 @@ private:
 
     bool findByRegionAndID(const string &region, unsigned int id, Land &land) const {
         for (const Land &l: m_lands) {
-            if (l.m_region == region && l.m_id == id) {
+            if (l.m_region_id == pair<string, size_t>(region, id)) {
                 land = l;
                 return true;
             }
@@ -254,7 +252,7 @@ private:
 
     bool findByCityAndAddr(const string &city, const string &addr, Land &land) const {
         for (const Land &l: m_lands) {
-            if (l.m_city == city && l.m_addr == addr) {
+            if (l.m_city_addr == pair<string, string>(city, addr)) {
                 land = l;
                 return true;
             }
@@ -267,11 +265,11 @@ private:
                     const string &region,
                     unsigned int id) {
         for (const Land &l: m_lands) {
-            if (l.m_city == city && l.m_addr == addr) {
+            if (l.m_city_addr == pair<string, string>(city, addr)) {
                 return true;
             }
             // or if
-            if (l.m_region == region && l.m_id == id) {
+            if (l.m_region_id == pair<string, size_t>(region, id)) {
                 return true;
             }
         }
