@@ -123,16 +123,8 @@ public:
         m_lands_by_region_id.insert(it_reg_id, land);
         m_lands_by_city_addr.insert(it_city_addr, land);
 
-        string owner;
-        auto it_owner = lower_bound(m_owners.begin(), m_owners.end(), owner,
-                                    [](const pair<string, vector<Land *>> &el, const string &key) {
-                                        return el.first < key;
-                                    });
-        if (it_owner == m_owners.end() || it_owner->first != owner) {
-            m_owners.insert(it_owner, {owner, {land}});
-        } else {
-            it_owner->second.push_back(land);
-        }
+        add_land_to_owner("", land);
+
         return true;
     }
 
@@ -142,14 +134,15 @@ public:
         if (it_city_addr == m_lands_by_city_addr.end()) {
             return false;
         }
-        auto land_ptr = *it_city_addr;
+        auto land = *it_city_addr;
 
-        auto [region, id] = land_ptr->m_region_id;
+        auto [region, id] = land->m_region_id;
         auto it_region_id = findByRegionAndID(region, id);
 
+        remove_land_from_owner(land->m_owner_lower_case, land);
         m_lands_by_city_addr.erase(it_city_addr);
         m_lands_by_region_id.erase(it_region_id);
-        delete land_ptr;
+        delete land;
         return true;
     }
 
@@ -159,15 +152,16 @@ public:
         if (it_region_id == m_lands_by_region_id.end()) {
             return false;
         }
-        auto land_ptr = *it_region_id;
+        auto land = *it_region_id;
 
-        auto [city, addr] = land_ptr->m_city_addr;
+        auto [city, addr] = land->m_city_addr;
         auto it_city_addr = findByCityAndAddr(city, addr);
 
+        remove_land_from_owner(land->m_owner_lower_case, land);
         m_lands_by_region_id.erase(it_region_id);
         m_lands_by_city_addr.erase(it_city_addr);
 
-        delete land_ptr;
+        delete land;
         return true;
     }
 
@@ -198,13 +192,18 @@ public:
                   const string &owner) {
         auto it = findByCityAndAddr(city, addr);
         if (it != m_lands_by_city_addr.end()) {
-            string owner_lower_case = to_lower(owner);
-            if ((*it)->m_owner_lower_case == owner_lower_case) {
+            string new_owner_lower_case = to_lower(owner);
+            if ((*it)->m_owner_lower_case == new_owner_lower_case) {
                 return false;
             }
-            (*it)->m_owner = owner;
-            (*it)->m_owner_lower_case = owner_lower_case;
-            (*it)->m_order_id = m_order_counter++;
+            auto old_owner_lower_case = (*it)->m_owner_lower_case;
+            auto land = *it;
+
+            remove_land_from_owner(old_owner_lower_case, land);
+            land->m_owner = owner;
+            land->m_owner_lower_case = new_owner_lower_case;
+            land->m_order_id = m_order_counter++;
+            add_land_to_owner(new_owner_lower_case, land);
             return true;
         }
         return false;
@@ -215,13 +214,17 @@ public:
                   const string &owner) {
         auto it = findByRegionAndID(region, id);
         if (it != m_lands_by_region_id.end()) {
-            string owner_lower_case = to_lower(owner);
-            if ((*it)->m_owner_lower_case == owner_lower_case) {
+            string new_owner_lower_case = to_lower(owner);
+            if ((*it)->m_owner_lower_case == new_owner_lower_case) {
                 return false;
             }
-            (*it)->m_owner = owner;
-            (*it)->m_owner_lower_case = owner_lower_case;
-            (*it)->m_order_id = m_order_counter++;
+            auto old_owner_lower_case = (*it)->m_owner_lower_case;
+            auto land = *it;
+            remove_land_from_owner(old_owner_lower_case, land);
+            land->m_owner = owner;
+            land->m_owner_lower_case = new_owner_lower_case;
+            land->m_order_id = m_order_counter++;
+            add_land_to_owner(new_owner_lower_case, land);
             return true;
         }
         return false;
@@ -257,6 +260,31 @@ public:
     }
 
 private:
+
+    void add_land_to_owner(const string &owner, Land *land) {
+        auto it_owner = lower_bound(m_owners.begin(), m_owners.end(), owner,
+                                    [](const pair<string, vector<Land *>> &el, const string &key) {
+                                        return el.first < key;
+                                    });
+        if (it_owner == m_owners.end() || it_owner->first != owner) {
+            m_owners.insert(it_owner, {owner, {land}});
+        } else {
+            it_owner->second.push_back(land);
+        }
+    }
+
+    void remove_land_from_owner(const string &owner, Land *land) {
+        auto it_owner = lower_bound(m_owners.begin(), m_owners.end(), owner,
+                                    [](const pair<string, vector<Land *>> &el, const string &key) {
+                                        return el.first < key;
+                                    });
+        auto &owner_lands = it_owner->second;
+        auto it_land = lower_bound(owner_lands.begin(), owner_lands.end(), land->m_order_id,
+                                   [](const Land *l, size_t key) {
+                                       return l->m_order_id < key;
+                                   });
+        owner_lands.erase(it_land);
+    }
 
     static string to_lower(string str) {
         for (char &c: str) {
