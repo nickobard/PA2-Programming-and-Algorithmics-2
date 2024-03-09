@@ -232,13 +232,14 @@ public:
 
     size_t count(const string &owner) const {
         string lower_cased_owner = to_lower(owner);
-        size_t count = 0;
-        for (const Land *l: m_lands_by_region_id) {
-            if (l->m_owner_lower_case == lower_cased_owner) {
-                count++;
-            }
+        auto it_owner = lower_bound(m_owners.begin(), m_owners.end(), lower_cased_owner,
+                                    [](const pair<string, vector<Land *>> &el, const string &key) {
+                                        return el.first < key;
+                                    });
+        if (it_owner == m_owners.end() || it_owner->first != lower_cased_owner) {
+            return 0;
         }
-        return count;
+        return it_owner->second.size();
     }
 
     CIterator listByAddr() const {
@@ -246,17 +247,15 @@ public:
     }
 
     CIterator listByOwner(const string &owner) const {
-        const string owner_lower = to_lower(owner);
-        vector<Land *> by_owner;
-        for (Land *l: m_lands_by_region_id) {
-            if (l->m_owner_lower_case == owner_lower) {
-                by_owner.push_back(l);
-            }
+        string lower_cased_owner = to_lower(owner);
+        auto it_owner = lower_bound(m_owners.begin(), m_owners.end(), lower_cased_owner,
+                                    [](const pair<string, vector<Land *>> &el, const string &key) {
+                                        return el.first < key;
+                                    });
+        if (it_owner == m_owners.end() || it_owner->first != lower_cased_owner) {
+            return CIterator({});
         }
-        sort(by_owner.begin(), by_owner.end(), [](const Land *lhs, const Land *rhs) {
-            return lhs->m_order_id < rhs->m_order_id;
-        });
-        return CIterator(by_owner);
+        return CIterator(it_owner->second);
     }
 
 private:
@@ -284,6 +283,9 @@ private:
                                        return l->m_order_id < key;
                                    });
         owner_lands.erase(it_land);
+        if (owner_lands.empty()) {
+            m_owners.erase(it_owner);
+        }
     }
 
     static string to_lower(string str) {
