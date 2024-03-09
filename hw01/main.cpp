@@ -49,10 +49,9 @@ class CIterator {
 public:
     using iterator_dt = vector<Land *>;
 
-    explicit CIterator(const iterator_dt &lands) : m_lands(lands) {
+    explicit CIterator(iterator_dt lands) : m_lands(std::move(lands)) {
         m_it = m_lands.cbegin();
     }
-
     bool atEnd() const {
         return m_it == m_lands.cend();
     }
@@ -83,7 +82,7 @@ public:
 
 private:
     iterator_dt::const_iterator m_it;
-    const iterator_dt &m_lands;
+    const iterator_dt m_lands;
 };
 
 class CLandRegister {
@@ -206,8 +205,8 @@ public:
     size_t count(const string &owner) const {
         string lower_cased_owner = to_lower(owner);
         size_t count = 0;
-        for (const Land &l: m_lands) {
-            if (l.m_owner_lower_case == lower_cased_owner) {
+        for (const Land *l: m_lands_by_region_id) {
+            if (l->m_owner_lower_case == lower_cased_owner) {
                 count++;
             }
         }
@@ -215,22 +214,21 @@ public:
     }
 
     CIterator listByAddr() const {
-        return {m_lands_by_city_addr};
+        return CIterator(m_lands_by_city_addr);
     }
 
     CIterator listByOwner(const string &owner) const {
-//        const string owner_lower = to_lower(owner);
-//        vector<Land> by_owner;
-//        for (const Land &l: m_lands) {
-//            if (l.m_owner_lower_case == owner_lower) {
-//                by_owner.push_back(l);
-//            }
-//        }
-//        sort(by_owner.begin(), by_owner.end(), [](const Land &lhs, const Land &rhs) {
-//            return lhs.m_order_id < rhs.m_order_id;
-//        });
-//        return by_owner;
-        return {{}};
+        const string owner_lower = to_lower(owner);
+        vector<Land *> by_owner;
+        for (Land *l: m_lands_by_region_id) {
+            if (l->m_owner_lower_case == owner_lower) {
+                by_owner.push_back(l);
+            }
+        }
+        sort(by_owner.begin(), by_owner.end(), [](const Land *lhs, const Land *rhs) {
+            return lhs->m_order_id < rhs->m_order_id;
+        });
+        return CIterator(by_owner);
     }
 
 private:
