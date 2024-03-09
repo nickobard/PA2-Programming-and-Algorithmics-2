@@ -122,6 +122,17 @@ public:
         Land *land = new Land(region, id, city, addr, m_order_counter++);
         m_lands_by_region_id.insert(it_reg_id, land);
         m_lands_by_city_addr.insert(it_city_addr, land);
+
+        string owner;
+        auto it_owner = lower_bound(m_owners.begin(), m_owners.end(), owner,
+                                    [](const pair<string, vector<Land *>> &el, const string &key) {
+                                        return el.first < key;
+                                    });
+        if (it_owner == m_owners.end() || it_owner->first != owner) {
+            m_owners.insert(it_owner, {owner, {land}});
+        } else {
+            it_owner->second.push_back(land);
+        }
         return true;
     }
 
@@ -138,7 +149,6 @@ public:
 
         m_lands_by_city_addr.erase(it_city_addr);
         m_lands_by_region_id.erase(it_region_id);
-
         delete land_ptr;
         return true;
     }
@@ -309,7 +319,7 @@ private:
 
     vector<Land *> m_lands_by_region_id;
     vector<Land *> m_lands_by_city_addr;
-    list<Land> m_lands;
+    vector<pair<string, vector<Land *>>> m_owners;
     size_t m_order_counter = 0;
 };
 
