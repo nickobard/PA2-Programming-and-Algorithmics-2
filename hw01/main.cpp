@@ -127,24 +127,38 @@ public:
 
     bool del(const string &city,
              const string &addr) {
-        for (auto it = m_lands.begin(); it != m_lands.end(); it++) {
-            if (it->m_city_addr == pair<string, string>(city, addr)) {
-                m_lands.erase(it);
-                return true;
-            }
+        auto it_city_addr = findByCityAndAddr(city, addr);
+        if (it_city_addr == m_lands_by_city_addr.end()) {
+            return false;
         }
-        return false;
+        auto land_ptr = *it_city_addr;
+
+        auto [region, id] = land_ptr->m_region_id;
+        auto it_region_id = findByRegionAndID(region, id);
+
+        m_lands_by_city_addr.erase(it_city_addr);
+        m_lands_by_region_id.erase(it_region_id);
+
+        delete land_ptr;
+        return true;
     }
 
     bool del(const string &region,
              unsigned int id) {
-        for (auto it = m_lands.begin(); it != m_lands.end(); it++) {
-            if (it->m_region_id == pair<string, size_t>(region, id)) {
-                m_lands.erase(it);
-                return true;
-            }
+        auto it_region_id = findByRegionAndID(region, id);
+        if (it_region_id == m_lands_by_region_id.end()) {
+            return false;
         }
-        return false;
+        auto land_ptr = *it_region_id;
+
+        auto [city, addr] = land_ptr->m_city_addr;
+        auto it_city_addr = findByCityAndAddr(city, addr);
+
+        m_lands_by_region_id.erase(it_region_id);
+        m_lands_by_city_addr.erase(it_city_addr);
+
+        delete land_ptr;
+        return true;
     }
 
     bool getOwner(const string &city,
