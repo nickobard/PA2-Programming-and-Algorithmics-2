@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <utility>
 #include <vector>
 #include <list>
 #include <algorithm>
@@ -19,24 +20,70 @@
 
 using namespace std;
 
+struct Land {
+    Land() :
+            m_id(0) {}
+
+    Land(string region, unsigned int id, string city, string addr) :
+            m_id(id),
+            m_region(std::move(region)),
+            m_city(std::move(city)),
+            m_addr(std::move(addr)) {}
+
+    friend bool operator==(const Land &lhs, const Land &rhs);
+
+    unsigned int m_id;
+    string m_region;
+    string m_city;
+    string m_addr;
+    string m_owner;
+    string m_owner_lower_case;
+};
+
+bool operator==(const Land &lhs, const Land &rhs) {
+    return (lhs.m_region == rhs.m_region && lhs.m_id == rhs.m_id) ||
+           (lhs.m_city == rhs.m_city && lhs.m_addr == rhs.m_addr);
+}
+
 class CIterator {
 public:
-    bool atEnd() const;
+    using iterator_dt = vector<Land>;
 
-    void next();
+    CIterator(iterator_dt &lands) : m_lands(lands) {
+        m_it = m_lands.begin();
+    }
 
-    string city() const;
+    bool atEnd() const {
+        return m_it == m_lands.end();
+    }
 
-    string addr() const;
+    void next() {
+        m_it++;
+    }
 
-    string region() const;
+    string city() const {
+        return m_it->m_city;
+    }
 
-    unsigned id() const;
+    string addr() const {
+        return m_it->m_addr;
+    }
 
-    string owner() const;
+    string region() const {
+        return m_it->m_region;
+    }
+
+    unsigned id() const {
+        return m_it->m_id;
+    }
+
+    string owner() const {
+        return m_it->m_owner;
+    }
 
 private:
-    // todo
+    iterator_dt::iterator m_it;
+    iterator_dt m_lands;
 };
 
 class CLandRegister {
@@ -44,38 +91,179 @@ public:
     bool add(const string &city,
              const string &addr,
              const string &region,
-             unsigned int id);
+             unsigned int id) {
+
+        if (landExists(city, addr, region, id)) {
+            return false;
+        }
+        m_lands.emplace_back(region, id, city, addr);
+        return true;
+    }
 
     bool del(const string &city,
-             const string &addr);
+             const string &addr) {
+        for (auto it = m_lands.begin(); it != m_lands.end(); it++) {
+            if (it->m_city == city && it->m_addr == addr) {
+                m_lands.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
 
     bool del(const string &region,
-             unsigned int id);
+             unsigned int id) {
+        for (auto it = m_lands.begin(); it != m_lands.end(); it++) {
+            if (it->m_region == region && it->m_id == id) {
+                m_lands.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
 
     bool getOwner(const string &city,
                   const string &addr,
-                  string &owner) const;
+                  string &owner) const {
+        Land to_find;
+        if (findByCityAndAddr(city, addr, to_find)) {
+            owner = to_find.m_owner;
+            return true;
+        }
+        return false;
+    }
 
     bool getOwner(const string &region,
                   unsigned int id,
-                  string &owner) const;
+                  string &owner) const {
+        Land to_find;
+        if (findByRegionAndID(region, id, to_find)) {
+            owner = to_find.m_owner;
+            return true;
+        }
+        return false;
+    }
 
     bool newOwner(const string &city,
                   const string &addr,
-                  const string &owner);
+                  const string &owner) {
+        Land to_find;
+        if (findByCityAndAddr(city, addr, to_find)) {
+            to_find.m_owner = owner;
+            to_find.m_owner_lower_case = to_lower(owner);
+            return true;
+        }
+        return false;
+    }
 
     bool newOwner(const string &region,
                   unsigned int id,
-                  const string &owner);
+                  const string &owner) {
+        Land to_find;
+        if (findByRegionAndID(region, id, to_find)) {
+            to_find.m_owner = owner;
+            to_find.m_owner_lower_case = to_lower(owner);
+            return true;
+        }
+        return false;
+    }
 
-    size_t count(const string &owner) const;
+    size_t count(const string &owner) const {
+        string lower_cased_owner = to_lower(owner);
+        size_t count = 0;
+        for (const Land &l: m_lands) {
+            if (l.m_owner_lower_case == lower_cased_owner) {
+                count++;
+            }
+        }
+        return count;
+    }
 
-    CIterator listByAddr() const;
+    CIterator listByAddr() const {
+        vector<Land> by_address(m_lands.begin(), m_lands.end());
+        sort(by_address.begin(), by_address.end(), [](const Land &lhs, const Land &rhs) {
+            return tie(lhs.m_city, lhs.m_addr) < tie(rhs.m_city, rhs.m_addr);
+        });
+        return {by_address};
+    }
 
-    CIterator listByOwner(const string &owner) const;
+    CIterator listByOwner(const string &owner) const {
+        const string owner_lower = to_lower(owner);
+        vector<Land> by_owner;
+        for (const Land &l: m_lands) {
+            if (l.m_owner_lower_case == owner_lower) {
+                by_owner.push_back(l);
+            }
+        }
+        return by_owner;
+    }
 
 private:
-    // todo
+
+    static string to_lower(string str) {
+        for (char &c: str) {
+            c = (char) tolower(c);
+        }
+        return str;
+    }
+
+    bool findByRegionAndID(const string &region, unsigned int id, Land &land) {
+        for (const Land &l: m_lands) {
+            if (l.m_region == region && l.m_id == id) {
+                land = l;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool findByCityAndAddr(const string &city, const string &addr, Land &land) {
+        for (const Land &l: m_lands) {
+            if (l.m_city == city && l.m_addr == addr) {
+                land = l;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool findByRegionAndID(const string &region, unsigned int id, Land &land) const {
+        for (const Land &l: m_lands) {
+            if (l.m_region == region && l.m_id == id) {
+                land = l;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool findByCityAndAddr(const string &city, const string &addr, Land &land) const {
+        for (const Land &l: m_lands) {
+            if (l.m_city == city && l.m_addr == addr) {
+                land = l;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool landExists(const string &city,
+                    const string &addr,
+                    const string &region,
+                    unsigned int id) {
+        for (const Land &l: m_lands) {
+            if (l.m_city == city && l.m_addr == city) {
+                return true;
+            }
+            // or if
+            if (l.m_region == region && l.m_id == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    list<Land> m_lands;
 };
 
 #ifndef __PROGTEST__
