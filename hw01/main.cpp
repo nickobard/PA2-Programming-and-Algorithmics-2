@@ -88,6 +88,12 @@ private:
 
 class CLandRegister {
 public:
+    ~CLandRegister() {
+        for (const Land *l: m_lands_by_region_id) {
+            delete l;
+        }
+    }
+
     bool add(const string &city,
              const string &addr,
              const string &region,
@@ -96,25 +102,26 @@ public:
         auto key_reg_id = pair<string, size_t>(region, id);
         auto it_reg_id = lower_bound(m_lands_by_region_id.begin(), m_lands_by_region_id.end(),
                                      key_reg_id,
-                                     [](const Land &land, const pair<string, size_t> &key) {
-                                         return land.m_region_id < key;
+                                     [](const Land *land, const pair<string, size_t> &key) {
+                                         return land->m_region_id < key;
                                      });
-        if (it_reg_id != m_lands_by_region_id.end() && it_reg_id->m_region_id == key_reg_id) {
+        if (it_reg_id != m_lands_by_region_id.end() && (*it_reg_id)->m_region_id == key_reg_id) {
             return false;
         }
 
         auto key_city_addr = pair<string, string>(city, addr);
         auto it_city_addr = lower_bound(m_lands_by_city_addr.begin(), m_lands_by_city_addr.end(),
                                         key_city_addr,
-                                        [](const Land &land, const pair<string, string> &key) {
-                                            return land.m_city_addr < key;
+                                        [](const Land *land, const pair<string, string> &key) {
+                                            return land->m_city_addr < key;
                                         });
-        if (it_city_addr != m_lands_by_city_addr.end() && it_city_addr->m_city_addr == key_city_addr) {
+        if (it_city_addr != m_lands_by_city_addr.end() && (*it_city_addr)->m_city_addr == key_city_addr) {
             return false;
         }
 
-        m_lands_by_region_id.insert(it_reg_id, Land(region, id, city, addr, m_order_counter++));
-        m_lands_by_city_addr.insert(it_city_addr, Land(region, id, city, addr, m_order_counter++));
+        Land *land = new Land(region, id, city, addr, m_order_counter++);
+        m_lands_by_region_id.insert(it_reg_id, land);
+        m_lands_by_city_addr.insert(it_city_addr, land);
         return true;
     }
 
@@ -294,8 +301,8 @@ private:
         return false;
     }
 
-    vector<Land> m_lands_by_region_id;
-    list<Land> m_lands_by_city_addr;
+    vector<Land *> m_lands_by_region_id;
+    vector<Land *> m_lands_by_city_addr;
     list<Land> m_lands;
     size_t m_order_counter = 0;
 };
