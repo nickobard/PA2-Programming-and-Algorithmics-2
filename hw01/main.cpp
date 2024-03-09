@@ -93,10 +93,28 @@ public:
              const string &region,
              unsigned int id) {
 
-        if (landExists(city, addr, region, id)) {
+        auto key_reg_id = pair<string, size_t>(region, id);
+        auto it_reg_id = lower_bound(m_lands_by_region_id.begin(), m_lands_by_region_id.end(),
+                                     key_reg_id,
+                                     [](const Land &land, const pair<string, size_t> &key) {
+                                         return land.m_region_id < key;
+                                     });
+        if (it_reg_id != m_lands_by_region_id.end() && it_reg_id->m_region_id == key_reg_id) {
             return false;
         }
-        m_lands.emplace_back(region, id, city, addr, order_counter++);
+
+        auto key_city_addr = pair<string, string>(city, addr);
+        auto it_city_addr = lower_bound(m_lands_by_city_addr.begin(), m_lands_by_city_addr.end(),
+                                        key_city_addr,
+                                        [](const Land &land, const pair<string, string> &key) {
+                                            return land.m_city_addr < key;
+                                        });
+        if (it_city_addr != m_lands_by_city_addr.end() && it_city_addr->m_city_addr == key_city_addr) {
+            return false;
+        }
+
+        m_lands_by_region_id.insert(it_reg_id, Land(region, id, city, addr, m_order_counter++));
+        m_lands_by_city_addr.insert(it_city_addr, Land(region, id, city, addr, m_order_counter++));
         return true;
     }
 
@@ -155,7 +173,7 @@ public:
             }
             to_find->m_owner = owner;
             to_find->m_owner_lower_case = owner_lower_case;
-            to_find->m_order_id = order_counter++;
+            to_find->m_order_id = m_order_counter++;
             return true;
         }
         return false;
@@ -172,7 +190,7 @@ public:
             }
             to_find->m_owner = owner;
             to_find->m_owner_lower_case = owner_lower_case;
-            to_find->m_order_id = order_counter++;
+            to_find->m_order_id = m_order_counter++;
             return true;
         }
         return false;
@@ -276,8 +294,10 @@ private:
         return false;
     }
 
+    vector<Land> m_lands_by_region_id;
+    list<Land> m_lands_by_city_addr;
     list<Land> m_lands;
-    size_t order_counter = 0;
+    size_t m_order_counter = 0;
 };
 
 #ifndef __PROGTEST__
