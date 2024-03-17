@@ -86,6 +86,18 @@ public:
     }
 
     // operator *, any combination {CBigInt/int/string} * {CBigInt/int/string}
+    CBigInt operator*(const CBigInt &that) {
+        if (positive() && that.positive()) {
+            return {multiply(m_num, that.m_num), false};
+        }
+        return {};
+    }
+
+    CBigInt &operator*=(const CBigInt &that) {
+        *this = *this + that;
+        return *this;
+    }
+
     // operator +=, any of {CBigInt/int/string}
     CBigInt &operator+=(const CBigInt &that) {
         *this = *this + that;
@@ -107,6 +119,29 @@ public:
     // input operator >>
 
 //private:
+    static string multiply(const string &multiplied, const string &multiplier) {
+        string result;
+        for (size_t i = 0; i < multiplier.size(); i++) {
+            int carry = 0;
+            string to_add = string(i, '0');
+            for (size_t j = 0; j < multiplied.size(); j++) {
+                for (size_t pad = 0; pad < j; pad++) {
+                    to_add.push_back('0');
+                }
+                int product = carry;
+                product += ((multiplier[i] - '0') * (multiplied[j] - '0'));
+                carry = product / 10;
+                to_add.push_back((char) (product % 10 + '0'));
+            }
+            if (result.size() > to_add.size()) {
+                result = add(result, to_add);
+            } else {
+                result = add(to_add, result);
+            }
+        }
+        return result;
+    }
+
     static string add(const string &bigger, const string &lesser) {
         string result;
         int carry = 0;
@@ -151,7 +186,7 @@ int main() {
     a = 10;
     a += 20;
     assert (equal(a, "30"));
-//  a *= 5;
+    a *= 5;
 //  assert ( equal ( a, "150" ) );
 //  b = a + 3;
 //  assert ( equal ( b, "153" ) );
