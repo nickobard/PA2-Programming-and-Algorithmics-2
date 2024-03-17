@@ -94,7 +94,7 @@ public:
     }
 
     CBigInt &operator*=(const CBigInt &that) {
-        *this = *this + that;
+        *this = *this * that;
         return *this;
     }
 
@@ -120,18 +120,19 @@ public:
 
 //private:
     static string multiply(const string &multiplied, const string &multiplier) {
-        string result;
+        string result = "0";
         for (size_t i = 0; i < multiplier.size(); i++) {
             int carry = 0;
             string to_add = string(i, '0');
             for (size_t j = 0; j < multiplied.size(); j++) {
-                for (size_t pad = 0; pad < j; pad++) {
-                    to_add.push_back('0');
-                }
                 int product = carry;
                 product += ((multiplier[i] - '0') * (multiplied[j] - '0'));
                 carry = product / 10;
                 to_add.push_back((char) (product % 10 + '0'));
+            }
+            while (carry) {
+                to_add.push_back((char) (carry % 10 + '0'));
+                carry = carry / 10;
             }
             if (result.size() > to_add.size()) {
                 result = add(result, to_add);
@@ -146,9 +147,13 @@ public:
         string result;
         int carry = 0;
         size_t i;
-        for (i = 0; i < lesser.size(); i++) {
+        for (i = 0; i < bigger.size(); i++) {
             int sum = carry;
-            sum += (bigger[i] - '0') + (lesser[i] - '0');
+            if (i < lesser.size()) {
+                sum += (bigger[i] - '0') + (lesser[i] - '0');
+            } else {
+                sum += (bigger[i] - '0');
+            }
             carry = sum / 10;
             result.push_back((char) (sum % 10 + '0'));
         }
@@ -187,7 +192,7 @@ int main() {
     a += 20;
     assert (equal(a, "30"));
     a *= 5;
-//  assert ( equal ( a, "150" ) );
+    assert (equal(a, "150"));
 //  b = a + 3;
 //  assert ( equal ( b, "153" ) );
 //  b = a * 7;
