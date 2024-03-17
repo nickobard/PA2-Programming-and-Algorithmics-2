@@ -146,7 +146,7 @@ public:
         string result;
         int carry = 0;
         size_t i;
-        for (i = 0; i < bigger.size(); i++) {
+        for (i = 0; i < lesser.size(); i++) {
             int sum = carry;
             sum += (bigger[i] - '0') + (lesser[i] - '0');
             carry = sum / 10;
