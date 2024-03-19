@@ -27,9 +27,11 @@ using namespace std;
 class CBigInt {
 public:
     // default constructor
+    CBigInt() : m_num("0"), m_is_negative(false) {}
+
     // copying/assignment/destruction
     // int constructor
-    CBigInt(int number = 0) {
+    CBigInt(int number) {
         if (number < 0) {
             m_is_negative = true;
             number = -number;
@@ -128,49 +130,49 @@ public:
 
     // operator *=, any of {CBigInt/int/string}
     // comparison operators, any combination {CBigInt/int/string} {<,<=,>,>=,==,!=} {CBigInt/int/string}
-    bool operator==(const CBigInt &that) const {
-        return m_num == that.m_num && m_is_negative == that.m_is_negative;
+    friend bool operator==(const CBigInt &lhs, const CBigInt &rhs) {
+        return lhs.m_num == rhs.m_num && lhs.m_is_negative == rhs.m_is_negative;
     }
 
-    bool operator<(const CBigInt &that) const {
-        if (positive() && that.positive()) {
-            if (m_num.size() == that.m_num.size()) {
-                string this_str = this->m_num;
-                string that_str = that.m_num;
+    friend bool operator<(const CBigInt &lhs, const CBigInt &rhs) {
+        if (lhs.positive() && rhs.positive()) {
+            if (lhs.m_num.size() == rhs.m_num.size()) {
+                string this_str = lhs.m_num;
+                string that_str = rhs.m_num;
                 reverse(this_str.begin(), this_str.end());
                 reverse(that_str.begin(), that_str.end());
                 return this_str < that_str;
             }
-            return m_num.size() < that.m_num.size();
-        } else if (negative() && that.negative()) {
-            if (m_num.size() == that.m_num.size()) {
-                string this_str = this->m_num;
-                string that_str = that.m_num;
+            return lhs.m_num.size() < rhs.m_num.size();
+        } else if (lhs.negative() && rhs.negative()) {
+            if (lhs.m_num.size() == rhs.m_num.size()) {
+                string this_str = lhs.m_num;
+                string that_str = rhs.m_num;
                 reverse(this_str.begin(), this_str.end());
                 reverse(that_str.begin(), that_str.end());
                 return this_str > that_str;
             }
-            return m_num.size() > that.m_num.size();
-        } else if (negative() && that.positive())
+            return lhs.m_num.size() > rhs.m_num.size();
+        } else if (lhs.negative() && rhs.positive())
             return true;
         else
             return false;
     }
 
-    bool operator<=(const CBigInt &that) const {
-        return *this == that || *this < that;
+    friend bool operator<=(const CBigInt &lhs, const CBigInt &rhs) {
+        return lhs == rhs || lhs < rhs;
     }
 
-    bool operator!=(const CBigInt &that) const {
-        return !(*this == that);
+    friend bool operator!=(const CBigInt &lhs, const CBigInt &rhs) {
+        return !(lhs == rhs);
     }
 
-    bool operator>(const CBigInt &that) const {
-        return !(*this <= that);
+    friend bool operator>(const CBigInt &lhs, const CBigInt &rhs) {
+        return !(lhs <= rhs);
     }
 
-    bool operator>=(const CBigInt &that) const {
-        return !(*this < that);
+    friend bool operator>=(const CBigInt &lhs, const CBigInt &rhs) {
+        return !(lhs < rhs);
     }
 
     // output operator <<
@@ -479,6 +481,43 @@ int main() {
 
     assert(10 + b1 == "20");
     assert("10" + b1 == "20");
+
+    assert(b1 * b2 == "100");
+    assert(b1 * 10 == "100");
+    assert(b1 * "10" == "100");
+    assert(b1 * b2 == "100");
+    b3 = 10 * b1;
+    assert(b3 == "100");
+    b3 = "10" * b1;
+    assert(b3 == "100");
+
+    assert(10 * b1 == "100");
+    assert("10" * b1 == "100");
+
+    b1 += 10;
+    assert(b1 == "20");
+    b1 += "10";
+    assert(b1 == "30");
+    b1 += b2;
+    assert(b1 == "40");
+
+    b1 = 10;
+
+    b1 *= 1;
+    assert(b1 == "10");
+    b1 *= "1";
+    assert(b1 == "10");
+    b1 *= b2;
+    assert(b1 == "100");
+
+    b1 = 10;
+    b2 = 10;
+    assert(b1 == b2);
+    assert(b1 == 10);
+    assert(b1 == "10");
+    assert(10 == b1);
+    assert(10 == b1);
+
 
     return EXIT_SUCCESS;
 }
