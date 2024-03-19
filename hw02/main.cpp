@@ -76,27 +76,29 @@ public:
     // operator +, any combination {CBigInt/int/string} + {CBigInt/int/string}
     CBigInt operator+(const CBigInt &that) {
         if (positive() && that.positive()) {
-            if (that.m_num.size() == m_num.size()) {
-                if (that.m_num)
-            } else if (that.m_num.size() > m_num.size()) { // that is bigger
+            if (*this < that) { // that is bigger
                 return {add(that.m_num, m_num), false};
             } else { // this is bigger
                 return {add(m_num, that.m_num), false};
             }
         } else if (negative() && that.negative()) {
-            if (that.m_num.size() > m_num.size()) { // that is bigger
+            if (abs(*this) < abs(that)) { // that is bigger in absolutes
                 return {add(that.m_num, m_num), true};
             } else { // this is bigger
                 return {add(m_num, that.m_num), true};
             }
         } else if (negative() && that.positive()) {
-            if (that.m_num.size() > m_num.size()) { // that is bigger
+            if (abs(*this) == that) {
+                return {"0", false};
+            } else if (abs(*this) < that) { // that is bigger in absolutes
                 return {subtract(that.m_num, m_num), false};
             } else { // this is bigger
                 return {subtract(m_num, that.m_num), true};
             }
         } else { // this positive and that negative
-            if (that.m_num.size() > m_num.size()) { // that is bigger
+            if (*this == abs(that)) {
+                return {"0", false};
+            } else if (*this < abs(that)) { // that is bigger in absolutes
                 return {subtract(that.m_num, m_num), true};
             } else { // this is bigger
                 return {subtract(m_num, that.m_num), false};
@@ -179,6 +181,10 @@ public:
     // input operator >>
 
 //private:
+    static CBigInt abs(const CBigInt &bigint) {
+        return {bigint.m_num, false};
+    }
+
     static string subtract(const string &bigger, const string &lesser) {
         string result;
         int carry = 0;
@@ -286,7 +292,7 @@ int main() {
     a = 10;
     a += -20;
     assert (equal(a, "-10"));
-//  a *= 5;
+    a *= 5;
 //  assert ( equal ( a, "-50" ) );
 //  b = a + 73;
 //  assert ( equal ( b, "23" ) );
