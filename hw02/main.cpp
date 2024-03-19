@@ -116,6 +116,10 @@ public:
         if ((positive() && that.positive()) || (negative() && that.negative())) {
             return {multiply(m_num, that.m_num), false};
         }
+        string result = multiply(m_num, that.m_num);
+        if (result == "0") {
+            return {result, false};
+        }
         return {multiply(m_num, that.m_num), true};
     }
 
@@ -216,6 +220,8 @@ public:
     static string multiply(const string &multiplied, const string &multiplier) {
         string result = "0";
         for (size_t i = 0; i < multiplier.size(); i++) {
+            if (multiplier[i] == '0')
+                continue;
             int carry = 0;
             string to_add = string(i, '0');
             for (size_t j = 0; j < multiplied.size(); j++) {
@@ -310,7 +316,14 @@ int main() {
     a += "-99999999999999999999";
     assert (equal(a, "-87654321098765432109"));
 
-    a *= "54321987654321987654";
+    // own tests
+    CBigInt c = a;
+    CBigInt tmp = c * 0;
+    assert(equal(tmp, "0"));
+    assert(equal(c * 1, "-87654321098765432109"));
+
+
+//    a *= "54321987654321987654";
 //  assert ( equal ( a, "-4761556948575111126880627366067073182286" ) );
 //  a *= 0;
 //  assert ( equal ( a, "0" ) );
