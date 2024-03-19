@@ -65,7 +65,9 @@ public:
                 throw invalid_argument("");
             }
         }
-
+        if (result.empty()) {
+            result = "0";
+        }
         m_num = result;
         reverse(m_num.begin(), m_num.end());
     }
@@ -517,6 +519,13 @@ int main() {
     assert(b1 == "10");
     assert(10 == b1);
     assert(10 == b1);
+
+    b1 = 1;
+    b2 = "-1";
+    assert(b2 == "-1");
+    tmp = b1 + "-1";
+    assert(tmp == "0");
+    assert(b1 + "-1" == "0");
 
 
     return EXIT_SUCCESS;
