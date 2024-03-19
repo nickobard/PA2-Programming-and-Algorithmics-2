@@ -187,7 +187,60 @@ public:
         os << to_print;
         return os;
     }
+
     // input operator >>
+    friend istream &operator>>(istream &is, CBigInt &num) {
+        string input;
+        bool whitespace_sequence = true;
+
+        while (is) {
+            char peeked = (char) is.peek();
+            if (whitespace_sequence) {
+                if (isspace(peeked)) {
+                    is.get();
+                } else if (peeked == '-') {
+                    is.get();
+                    if (!is) {
+                        is.setstate(ios::failbit);
+                        return is;
+                    }
+                    input.push_back(peeked);
+
+                    char next = (char) is.peek();
+                    if (!isdigit(next)) {
+                        is.setstate(ios::failbit);
+                        return is;
+                    }
+                    input.push_back(peeked);
+                    input.push_back(next);
+                    is.get();
+                    whitespace_sequence = false;
+                } else if (isdigit(peeked)) {
+                    whitespace_sequence = false;
+                    input.push_back(peeked);
+                    is.get();
+                } else {
+                    is.setstate(ios::failbit);
+                    return is;
+                }
+            } else {
+                if (!isdigit(peeked)) {
+                    num = CBigInt(input.data());
+                    return is;
+                }
+                input.push_back(peeked);
+                is.get();
+            }
+
+        }
+        if (is.eof() && !input.empty()) {
+            num = CBigInt(input.data());
+            return is;
+        } else {
+            is.setstate(ios::failbit);
+            return is;
+        }
+    }
 
 //private:
     static CBigInt abs(const CBigInt &bigint) {
@@ -347,9 +400,9 @@ int main() {
 
     is.clear();
     is.str(" 1234");
-//  assert ( is >> b );
-//  assert ( equal ( b, "1234" ) );
-//  is . clear ();
+    assert (is >> b);
+    assert (equal(b, "1234"));
+//    is.clear();
 //  is . str ( " 12 34" );
 //  assert ( is >> b );
 //  assert ( equal ( b, "12" ) );
