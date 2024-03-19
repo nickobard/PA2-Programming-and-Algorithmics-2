@@ -81,8 +81,25 @@ public:
             } else { // this is bigger
                 return {add(m_num, that.m_num), false};
             }
+        } else if (negative() && that.negative()) {
+            if (that.m_num.size() > m_num.size()) { // that is bigger
+                return {add(that.m_num, m_num), true};
+            } else { // this is bigger
+                return {add(m_num, that.m_num), true};
+            }
+        } else if (negative() && that.positive()) {
+            if (that.m_num.size() > m_num.size()) { // that is bigger
+                return {subtract(that.m_num, m_num), false};
+            } else { // this is bigger
+                return {subtract(m_num, that.m_num), true};
+            }
+        } else { // this positive and that negative
+            if (that.m_num.size() > m_num.size()) { // that is bigger
+                return {subtract(that.m_num, m_num), true};
+            } else { // this is bigger
+                return {subtract(m_num, that.m_num), false};
+            }
         }
-        return {};
     }
 
     // operator *, any combination {CBigInt/int/string} * {CBigInt/int/string}
@@ -119,6 +136,29 @@ public:
     // input operator >>
 
 //private:
+    static string subtract(const string &bigger, const string &lesser) {
+        string result;
+        int carry = 0;
+        size_t i;
+        for (i = 0; i < bigger.size(); i++) {
+            int sum = carry;
+            if (i < lesser.size()) {
+                sum += (bigger[i] - '0') - (lesser[i] - '0');
+            } else {
+                sum += (bigger[i] - '0');
+            }
+            carry = sum / 10;
+            result.push_back((char) (sum % 10 + '0'));
+        }
+        while (carry != 0) {
+            int sum = carry;
+            sum += (bigger[i] - '0');
+            carry = sum / 10;
+            result.push_back((char) (sum % 10 + '0'));
+        }
+        return result;
+    }
+
     static string multiply(const string &multiplied, const string &multiplier) {
         string result = "0";
         for (size_t i = 0; i < multiplier.size(); i++) {
@@ -157,7 +197,7 @@ public:
             carry = sum / 10;
             result.push_back((char) (sum % 10 + '0'));
         }
-        while (carry) {
+        while (carry != 0) {
             int sum = carry;
             sum += (bigger[i] - '0');
             carry = sum / 10;
@@ -178,12 +218,12 @@ static bool equal(const CBigInt &x, const char val[]) {
     return oss.str() == val;
 }
 
-//static bool equalHex(const CBigInt &x, const char val[]) {
-//    return true; // hex output is needed for bonus tests only
-//    // std::ostringstream oss;
-//    // oss << std::hex << x;
-//    // return oss . str () == val;
-//}
+static bool equalHex(const CBigInt &x, const char val[]) {
+    return true; // hex output is needed for bonus tests only
+    // std::ostringstream oss;
+    // oss << std::hex << x;
+    // return oss . str () == val;
+}
 
 int main() {
     CBigInt a, b;
@@ -193,16 +233,16 @@ int main() {
     assert (equal(a, "30"));
     a *= 5;
     assert (equal(a, "150"));
-//  b = a + 3;
-//  assert ( equal ( b, "153" ) );
-//  b = a * 7;
-//  assert ( equal ( b, "1050" ) );
-//  assert ( equal ( a, "150" ) );
-//  assert ( equalHex ( a, "96" ) );
-//
-//  a = 10;
-//  a += -20;
-//  assert ( equal ( a, "-10" ) );
+    b = a + 3;
+    assert (equal(b, "153"));
+    b = a * 7;
+    assert (equal(b, "1050"));
+    assert (equal(a, "150"));
+    assert (equalHex(a, "96"));
+
+    a = 10;
+    a += -20;
+    assert (equal(a, "-10"));
 //  a *= 5;
 //  assert ( equal ( a, "-50" ) );
 //  b = a + 73;
