@@ -26,14 +26,6 @@ using namespace std;
 
 class CBigInt {
 public:
-    bool positive() const {
-        return !m_is_negative;
-    }
-
-    bool negative() const {
-        return m_is_negative;
-    }
-
     // default constructor
     // copying/assignment/destruction
     // int constructor
@@ -60,7 +52,7 @@ public:
             m_is_negative = false;
         }
         bool leading_zeros = true;
-        for (i; i < strlen(str); i++) {
+        for (; i < strlen(str); i++) {
             if (leading_zeros && str[i] == '0') {
                 continue;
             }
@@ -136,11 +128,11 @@ public:
 
     // operator *=, any of {CBigInt/int/string}
     // comparison operators, any combination {CBigInt/int/string} {<,<=,>,>=,==,!=} {CBigInt/int/string}
-    bool operator==(const CBigInt &that) const {
+    bool operator==(const CBigInt &that) {
         return m_num == that.m_num && m_is_negative == that.m_is_negative;
     }
 
-    bool operator<(const CBigInt &that) const {
+    bool operator<(const CBigInt &that) {
         if (positive() && that.positive()) {
             if (m_num.size() == that.m_num.size()) {
                 string this_str = this->m_num;
@@ -150,8 +142,7 @@ public:
                 return this_str < that_str;
             }
             return m_num.size() < that.m_num.size();
-        }
-        if (negative() && that.negative()) {
+        } else if (negative() && that.negative()) {
             if (m_num.size() == that.m_num.size()) {
                 string this_str = this->m_num;
                 string that_str = that.m_num;
@@ -160,26 +151,25 @@ public:
                 return this_str > that_str;
             }
             return m_num.size() > that.m_num.size();
-        }
-        if (negative() && that.positive())
+        } else if (negative() && that.positive())
             return true;
-        if (positive() && that.negative())
+        else
             return false;
     }
 
-    bool operator<=(const CBigInt &that) const {
+    bool operator<=(const CBigInt &that) {
         return *this == that || *this < that;
     }
 
-    bool operator!=(const CBigInt &that) const {
+    bool operator!=(const CBigInt &that) {
         return !(*this == that);
     }
 
-    bool operator>(const CBigInt &that) const {
+    bool operator>(const CBigInt &that) {
         return !(*this <= that);
     }
 
-    bool operator>=(const CBigInt &that) const {
+    bool operator>=(const CBigInt &that) {
         return !(*this < that);
     }
 
@@ -248,7 +238,16 @@ public:
         }
     }
 
-//private:
+private:
+
+    bool positive() const {
+        return !m_is_negative;
+    }
+
+    bool negative() const {
+        return m_is_negative;
+    }
+
     static CBigInt abs(const CBigInt &bigint) {
         return {bigint.m_num, false};
     }
