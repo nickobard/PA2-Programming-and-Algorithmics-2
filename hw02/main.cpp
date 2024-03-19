@@ -259,7 +259,6 @@ public:
         }
         while (carry != 0) {
             int sum = carry;
-            sum += (bigger[i] - '0');
             carry = sum / 10;
             result.push_back((char) (sum % 10 + '0'));
         }
@@ -321,22 +320,33 @@ int main() {
     CBigInt tmp = c * 0;
     assert(equal(tmp, "0"));
     assert(equal(c * 1, "-87654321098765432109"));
+    assert(equal(c * 2, "-175308642197530864218"));
+    assert(equal(c * 4, "-350617284395061728436"));
+    assert(equal(c * 54, "-4733333339333333333886"));
+    assert(equal(c * 654, "-57325925998592592599286"));
+    assert(equal(c * 7654, "-670906173689950617362286"));
+    assert(equal(c * 87654, "-7683251861591185186082286"));
+    assert(equal(c * 987654, "-86572140850480074084182286"));
+    tmp = c * 14;
+    assert(equal(tmp, "-1227160495382716049526"));
+    assert(equal(c * 21987654, "-1927312883924554148373182286"));
+    assert(equal(c * 321987654, "-28223609213554183781073182286"));
 
 
-//    a *= "54321987654321987654";
-//  assert ( equal ( a, "-4761556948575111126880627366067073182286" ) );
-//  a *= 0;
-//  assert ( equal ( a, "0" ) );
-//  a = 10;
-//  b = a + "400";
-//  assert ( equal ( b, "410" ) );
-//  b = a * "15";
-//  assert ( equal ( b, "150" ) );
-//  assert ( equal ( a, "10" ) );
-//  assert ( equalHex ( a, "a" ) );
-//
-//  is . clear ();
-//  is . str ( " 1234" );
+    a *= "54321987654321987654";
+    assert (equal(a, "-4761556948575111126880627366067073182286"));
+    a *= 0;
+    assert (equal(a, "0"));
+    a = 10;
+    b = a + "400";
+    assert (equal(b, "410"));
+    b = a * "15";
+    assert (equal(b, "150"));
+    assert (equal(a, "10"));
+    assert (equalHex(a, "a"));
+
+    is.clear();
+    is.str(" 1234");
 //  assert ( is >> b );
 //  assert ( equal ( b, "1234" ) );
 //  is . clear ();
