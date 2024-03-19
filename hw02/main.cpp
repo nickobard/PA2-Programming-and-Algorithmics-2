@@ -71,48 +71,48 @@ public:
     CBigInt(string num, const bool is_negative) : m_num(std::move(num)), m_is_negative(is_negative) {}
 
     // operator +, any combination {CBigInt/int/string} + {CBigInt/int/string}
-    CBigInt operator+(const CBigInt &that) {
-        if (positive() && that.positive()) {
-            if (*this < that) { // that is bigger
-                return {add(that.m_num, m_num), false};
+    friend CBigInt operator+(const CBigInt &lhs, const CBigInt &rhs) {
+        if (lhs.positive() && rhs.positive()) {
+            if (lhs < rhs) { // that is bigger
+                return {add(rhs.m_num, lhs.m_num), false};
             } else { // this is bigger
-                return {add(m_num, that.m_num), false};
+                return {add(lhs.m_num, rhs.m_num), false};
             }
-        } else if (negative() && that.negative()) {
-            if (abs(*this) < abs(that)) { // that is bigger in absolutes
-                return {add(that.m_num, m_num), true};
+        } else if (lhs.negative() && rhs.negative()) {
+            if (abs(lhs) < abs(rhs)) { // that is bigger in absolutes
+                return {add(rhs.m_num, lhs.m_num), true};
             } else { // this is bigger
-                return {add(m_num, that.m_num), true};
+                return {add(lhs.m_num, rhs.m_num), true};
             }
-        } else if (negative() && that.positive()) {
-            if (abs(*this) == that) {
+        } else if (lhs.negative() && rhs.positive()) {
+            if (abs(lhs) == rhs) {
                 return {"0", false};
-            } else if (abs(*this) < that) { // that is bigger in absolutes
-                return {subtract(that.m_num, m_num), false};
+            } else if (abs(lhs) < rhs) { // that is bigger in absolutes
+                return {subtract(rhs.m_num, lhs.m_num), false};
             } else { // this is bigger
-                return {subtract(m_num, that.m_num), true};
+                return {subtract(lhs.m_num, rhs.m_num), true};
             }
         } else { // this positive and that negative
-            if (*this == abs(that)) {
+            if (lhs == abs(rhs)) {
                 return {"0", false};
-            } else if (*this < abs(that)) { // that is bigger in absolutes
-                return {subtract(that.m_num, m_num), true};
+            } else if (lhs < abs(rhs)) { // that is bigger in absolutes
+                return {subtract(rhs.m_num, lhs.m_num), true};
             } else { // this is bigger
-                return {subtract(m_num, that.m_num), false};
+                return {subtract(lhs.m_num, rhs.m_num), false};
             }
         }
     }
 
     // operator *, any combination {CBigInt/int/string} * {CBigInt/int/string}
-    CBigInt operator*(const CBigInt &that) {
-        if ((positive() && that.positive()) || (negative() && that.negative())) {
-            return {multiply(m_num, that.m_num), false};
+    friend CBigInt operator*(const CBigInt &lhs, const CBigInt &rhs) {
+        if ((lhs.positive() && rhs.positive()) || (lhs.negative() && rhs.negative())) {
+            return {multiply(lhs.m_num, rhs.m_num), false};
         }
-        string result = multiply(m_num, that.m_num);
+        string result = multiply(lhs.m_num, rhs.m_num);
         if (result == "0") {
             return {result, false};
         }
-        return {multiply(m_num, that.m_num), true};
+        return {multiply(lhs.m_num, rhs.m_num), true};
     }
 
     CBigInt &operator*=(const CBigInt &that) {
@@ -128,11 +128,11 @@ public:
 
     // operator *=, any of {CBigInt/int/string}
     // comparison operators, any combination {CBigInt/int/string} {<,<=,>,>=,==,!=} {CBigInt/int/string}
-    bool operator==(const CBigInt &that) {
+    bool operator==(const CBigInt &that) const {
         return m_num == that.m_num && m_is_negative == that.m_is_negative;
     }
 
-    bool operator<(const CBigInt &that) {
+    bool operator<(const CBigInt &that) const {
         if (positive() && that.positive()) {
             if (m_num.size() == that.m_num.size()) {
                 string this_str = this->m_num;
@@ -157,24 +157,24 @@ public:
             return false;
     }
 
-    bool operator<=(const CBigInt &that) {
+    bool operator<=(const CBigInt &that) const {
         return *this == that || *this < that;
     }
 
-    bool operator!=(const CBigInt &that) {
+    bool operator!=(const CBigInt &that) const {
         return !(*this == that);
     }
 
-    bool operator>(const CBigInt &that) {
+    bool operator>(const CBigInt &that) const {
         return !(*this <= that);
     }
 
-    bool operator>=(const CBigInt &that) {
+    bool operator>=(const CBigInt &that) const {
         return !(*this < that);
     }
 
     // output operator <<
-    friend ostream &operator<<(ostream &os, CBigInt num) {
+    friend ostream &operator<<(ostream &os, const CBigInt &num) {
         string to_print = num.m_num;
         reverse(to_print.begin(), to_print.end());
         if (num.negative()) {
@@ -465,6 +465,20 @@ int main() {
     assert (a >= -87654321);
     assert (!(a == -87654321));
     assert (a != -87654321);
+
+    CBigInt b1 = 10;
+    CBigInt b2 = "10";
+    assert(b1 + b2 == "20");
+    assert(b1 + 10 == "20");
+    assert(b1 + "10" == "20");
+    assert(b1 + b2 == "20");
+    CBigInt b3 = 10 + b1;
+    assert(b3 == "20");
+    b3 = "10" + b1;
+    assert(b3 == "20");
+
+    assert(10 + b1 == "20");
+    assert("10" + b1 == "20");
 
     return EXIT_SUCCESS;
 }
