@@ -66,10 +66,12 @@ public:
             }
         }
         if (result.empty()) {
-            result = "0";
+            m_num = string("0");
+        } else {
+            m_num = result;
+            reverse(m_num.begin(), m_num.end());
         }
-        m_num = result;
-        reverse(m_num.begin(), m_num.end());
+
     }
 
     CBigInt(string num, const bool is_negative) : m_num(std::move(num)), m_is_negative(is_negative) {}
@@ -280,6 +282,8 @@ private:
     }
 
     static string multiply(const string &multiplied, const string &multiplier) {
+        if (multiplied == "0")
+            return "0";
         string result = "0";
         for (size_t i = 0; i < multiplier.size(); i++) {
             if (multiplier[i] == '0')
@@ -526,6 +530,20 @@ int main() {
     tmp = b1 + "-1";
     assert(tmp == "0");
     assert(b1 + "-1" == "0");
+
+    b1 = -0;
+    assert(b1 == "0");
+    b1 = "0";
+    assert(b1 == "0");
+    b1 = "0";
+    assert(b1 == "0");
+    b1 = "1010";
+    assert(b1 * 0 == "0");
+    CBigInt res = 0 * b1;
+    assert(res == "0");
+    assert("0000000" * b1 == "0");
+    assert("10" * b1 == "10100");
+    assert(b1 * 0 == "0");
 
 
     return EXIT_SUCCESS;
