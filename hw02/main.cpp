@@ -76,7 +76,9 @@ public:
     // operator +, any combination {CBigInt/int/string} + {CBigInt/int/string}
     CBigInt operator+(const CBigInt &that) {
         if (positive() && that.positive()) {
-            if (that.m_num.size() > m_num.size()) { // that is bigger
+            if (that.m_num.size() == m_num.size()) {
+                if (that.m_num)
+            } else if (that.m_num.size() > m_num.size()) { // that is bigger
                 return {add(that.m_num, m_num), false};
             } else { // this is bigger
                 return {add(m_num, that.m_num), false};
@@ -123,6 +125,47 @@ public:
 
     // operator *=, any of {CBigInt/int/string}
     // comparison operators, any combination {CBigInt/int/string} {<,<=,>,>=,==,!=} {CBigInt/int/string}
+    bool operator==(const CBigInt &that) const {
+        return m_num == that.m_num && m_is_negative == that.m_is_negative;
+    }
+
+    bool operator<(const CBigInt &that) const {
+        if (positive() && that.positive()) {
+            if (m_num.size() == that.m_num.size()) {
+                auto last_idx = m_num.size() - 1;
+                return m_num[last_idx] < that.m_num[last_idx];
+            }
+            return m_num.size() < that.m_num.size();
+        }
+        if (negative() && that.negative()) {
+            if (m_num.size() == that.m_num.size()) {
+                auto last_idx = m_num.size() - 1;
+                return m_num[last_idx] > that.m_num[last_idx];
+            }
+            return m_num.size() > that.m_num.size();
+        }
+        if (negative() && that.positive())
+            return true;
+        if (positive() && that.negative())
+            return false;
+    }
+
+    bool operator<=(const CBigInt &that) const {
+        return *this == that || *this < that;
+    }
+
+    bool operator!=(const CBigInt &that) const {
+        return !(*this == that);
+    }
+
+    bool operator>(const CBigInt &that) const {
+        return !(*this <= that);
+    }
+
+    bool operator>=(const CBigInt &that) const {
+        return !(*this < that);
+    }
+
     // output operator <<
     friend ostream &operator<<(ostream &os, CBigInt num) {
         string to_print = num.m_num;
