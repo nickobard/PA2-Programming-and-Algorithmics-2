@@ -49,9 +49,8 @@ public:
 
     }
 
-
     // string constructor
-    CBigInt(const string &str) {
+    CBigInt(const char *str) {
         string result;
         size_t i = 0;
         if (str[i] == '-') {
@@ -60,15 +59,21 @@ public:
         } else {
             m_is_negative = false;
         }
-        for (i; i < str.size(); i++) {
-            if (str[i] == '0')
+        bool leading_zeros = true;
+        for (i; i < strlen(str); i++) {
+            if (leading_zeros && str[i] == '0') {
                 continue;
-            if (isdigit(str[i]))
+            }
+            if (isdigit(str[i])) {
+                leading_zeros = false;
                 result.push_back(str[i]);
-            throw invalid_argument("");
+            } else {
+                throw invalid_argument("");
+            }
         }
 
         m_num = result;
+        reverse(m_num.begin(), m_num.end());
     }
 
     CBigInt(string num, const bool is_negative) : m_num(std::move(num)), m_is_negative(is_negative) {}
@@ -108,10 +113,10 @@ public:
 
     // operator *, any combination {CBigInt/int/string} * {CBigInt/int/string}
     CBigInt operator*(const CBigInt &that) {
-        if (positive() && that.positive()) {
+        if ((positive() && that.positive()) || (negative() && that.negative())) {
             return {multiply(m_num, that.m_num), false};
         }
-        return {};
+        return {multiply(m_num, that.m_num), true};
     }
 
     CBigInt &operator*=(const CBigInt &that) {
@@ -293,18 +298,19 @@ int main() {
     a += -20;
     assert (equal(a, "-10"));
     a *= 5;
-//  assert ( equal ( a, "-50" ) );
-//  b = a + 73;
-//  assert ( equal ( b, "23" ) );
-//  b = a * -7;
-//  assert ( equal ( b, "350" ) );
-//  assert ( equal ( a, "-50" ) );
-//  assert ( equalHex ( a, "-32" ) );
-//
-//  a = "12345678901234567890";
-//  a += "-99999999999999999999";
-//  assert ( equal ( a, "-87654321098765432109" ) );
-//  a *= "54321987654321987654";
+    assert (equal(a, "-50"));
+    b = a + 73;
+    assert (equal(b, "23"));
+    b = a * -7;
+    assert (equal(b, "350"));
+    assert (equal(a, "-50"));
+    assert (equalHex(a, "-32"));
+
+    a = "12345678901234567890";
+    a += "-99999999999999999999";
+    assert (equal(a, "-87654321098765432109"));
+
+    a *= "54321987654321987654";
 //  assert ( equal ( a, "-4761556948575111126880627366067073182286" ) );
 //  a *= 0;
 //  assert ( equal ( a, "0" ) );
