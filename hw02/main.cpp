@@ -143,15 +143,21 @@ public:
     bool operator<(const CBigInt &that) const {
         if (positive() && that.positive()) {
             if (m_num.size() == that.m_num.size()) {
-                auto last_idx = m_num.size() - 1;
-                return m_num[last_idx] < that.m_num[last_idx];
+                string this_str = this->m_num;
+                string that_str = that.m_num;
+                reverse(this_str.begin(), this_str.end());
+                reverse(that_str.begin(), that_str.end());
+                return this_str < that_str;
             }
             return m_num.size() < that.m_num.size();
         }
         if (negative() && that.negative()) {
             if (m_num.size() == that.m_num.size()) {
-                auto last_idx = m_num.size() - 1;
-                return m_num[last_idx] > that.m_num[last_idx];
+                string this_str = this->m_num;
+                string that_str = that.m_num;
+                reverse(this_str.begin(), this_str.end());
+                reverse(that_str.begin(), that_str.end());
+                return this_str > that_str;
             }
             return m_num.size() > that.m_num.size();
         }
@@ -402,66 +408,64 @@ int main() {
     is.str(" 1234");
     assert (is >> b);
     assert (equal(b, "1234"));
-//    is.clear();
-//  is . str ( " 12 34" );
-//  assert ( is >> b );
-//  assert ( equal ( b, "12" ) );
-//  is . clear ();
-//  is . str ( "999z" );
-//  assert ( is >> b );
-//  assert ( equal ( b, "999" ) );
-//  is . clear ();
-//  is . str ( "abcd" );
-//  assert ( ! ( is >> b ) );
-//  is . clear ();
-//  is . str ( "- 758" );
-//  assert ( ! ( is >> b ) );
-//  a = 42;
-//  try
-//  {
-//    a = "-xyz";
-//    assert ( "missing an exception" == nullptr );
-//  }
-//  catch ( const std::invalid_argument & e )
-//  {
-//    assert ( equal ( a, "42" ) );
-//  }
-//
-//  a = "73786976294838206464";
-//  assert ( equal ( a, "73786976294838206464" ) );
-//  assert ( equalHex ( a, "40000000000000000" ) );
-//  assert ( a < "1361129467683753853853498429727072845824" );
-//  assert ( a <= "1361129467683753853853498429727072845824" );
-//  assert ( ! ( a > "1361129467683753853853498429727072845824" ) );
-//  assert ( ! ( a >= "1361129467683753853853498429727072845824" ) );
-//  assert ( ! ( a == "1361129467683753853853498429727072845824" ) );
-//  assert ( a != "1361129467683753853853498429727072845824" );
-//  assert ( ! ( a < "73786976294838206464" ) );
-//  assert ( a <= "73786976294838206464" );
-//  assert ( ! ( a > "73786976294838206464" ) );
-//  assert ( a >= "73786976294838206464" );
-//  assert ( a == "73786976294838206464" );
-//  assert ( ! ( a != "73786976294838206464" ) );
-//  assert ( a < "73786976294838206465" );
-//  assert ( a <= "73786976294838206465" );
-//  assert ( ! ( a > "73786976294838206465" ) );
-//  assert ( ! ( a >= "73786976294838206465" ) );
-//  assert ( ! ( a == "73786976294838206465" ) );
-//  assert ( a != "73786976294838206465" );
-//  a = "2147483648";
-//  assert ( ! ( a < -2147483648 ) );
-//  assert ( ! ( a <= -2147483648 ) );
-//  assert ( a > -2147483648 );
-//  assert ( a >= -2147483648 );
-//  assert ( ! ( a == -2147483648 ) );
-//  assert ( a != -2147483648 );
-//  a = "-12345678";
-//  assert ( ! ( a < -87654321 ) );
-//  assert ( ! ( a <= -87654321 ) );
-//  assert ( a > -87654321 );
-//  assert ( a >= -87654321 );
-//  assert ( ! ( a == -87654321 ) );
-//  assert ( a != -87654321 );
+    is.clear();
+    is.str(" 12 34");
+    assert (is >> b);
+    assert (equal(b, "12"));
+    is.clear();
+    is.str("999z");
+    assert (is >> b);
+    assert (equal(b, "999"));
+    is.clear();
+    is.str("abcd");
+    assert (!(is >> b));
+    is.clear();
+    is.str("- 758");
+    assert (!(is >> b));
+    a = 42;
+    try {
+        a = "-xyz";
+        assert ("missing an exception" == nullptr);
+    }
+    catch (const std::invalid_argument &e) {
+        assert (equal(a, "42"));
+    }
+
+    a = "73786976294838206464";
+    assert (equal(a, "73786976294838206464"));
+    assert (equalHex(a, "40000000000000000"));
+    assert (a < "1361129467683753853853498429727072845824");
+    assert (a <= "1361129467683753853853498429727072845824");
+    assert (!(a > "1361129467683753853853498429727072845824"));
+    assert (!(a >= "1361129467683753853853498429727072845824"));
+    assert (!(a == "1361129467683753853853498429727072845824"));
+    assert (a != "1361129467683753853853498429727072845824");
+    assert (!(a < "73786976294838206464"));
+    assert (a <= "73786976294838206464");
+    assert (!(a > "73786976294838206464"));
+    assert (a >= "73786976294838206464");
+    assert (a == "73786976294838206464");
+    assert (!(a != "73786976294838206464"));
+    assert (a < "73786976294838206465");
+    assert (a <= "73786976294838206465");
+    assert (!(a > "73786976294838206465"));
+    assert (!(a >= "73786976294838206465"));
+    assert (!(a == "73786976294838206465"));
+    assert (a != "73786976294838206465");
+    a = "2147483648";
+    assert (!(a < -2147483648));
+    assert (!(a <= -2147483648));
+    assert (a > -2147483648);
+    assert (a >= -2147483648);
+    assert (!(a == -2147483648));
+    assert (a != -2147483648);
+    a = "-12345678";
+    assert (!(a < -87654321));
+    assert (!(a <= -87654321));
+    assert (a > -87654321);
+    assert (a >= -87654321);
+    assert (!(a == -87654321));
+    assert (a != -87654321);
 
     return EXIT_SUCCESS;
 }
