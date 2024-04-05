@@ -190,8 +190,14 @@ public:
         if (src.empty()) {
             return *this;
         }
-        m_tail->next() = new CPatch(src.m_patch);
-        m_tail = m_tail->next();
+        if (empty()) {
+            m_head = new CPatch(src.m_patch);
+            m_size = m_head->size();
+            m_tail = m_head;
+        } else {
+            m_tail->next() = new CPatch(src.m_patch);
+            m_tail = m_tail->next();
+        }
         return *this;
     }
 
@@ -259,7 +265,7 @@ int main() {
     assert (stringMatch(b.toStr(), "foo text"));
     CPatchStr c(a);
     assert (stringMatch(c.toStr(), "test data"));
-//    CPatchStr d(a.subStr(3, 5));
+    CPatchStr d(a.subStr(3, 5));
 //    assert (stringMatch(d.toStr(), "t dat"));
 //    d.append(b);
 //    assert (stringMatch(d.toStr(), "t datfoo text"));
