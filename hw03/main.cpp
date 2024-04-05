@@ -68,12 +68,29 @@ public:
         m_size = m_head->size();
     }
 
+    CPatchStr(const CPatchStr &p) {
+        m_size = p.m_size;
+        CPatch **current_dst = &m_head;
+        CPatch *current_src = p.m_head;
+        while (current_src != nullptr) {
+            (*current_dst) = new CPatch(current_src->m_patch.get());
+            m_tail = (*current_dst);
+            current_src = current_src->next();
+            current_dst = &((*current_dst)->next());
+        }
+    }
+
     ~CPatchStr() {
         delete m_head;
     }
 
-    // copy constructor
-    // destructor 
+    CPatchStr &operator=(const CPatchStr &src) {
+        if (this == &src) {
+            return *this;
+        }
+        return *this;
+    }
+
     // operator =
     CPatchStr subStr(size_t from,
                      size_t len) const {
@@ -170,8 +187,8 @@ int main() {
     std::strncpy(tmpStr, "foo text", sizeof(tmpStr) - 1);
     CPatchStr b(tmpStr);
     assert (stringMatch(b.toStr(), "foo text"));
-//    CPatchStr c(a);
-//    assert (stringMatch(c.toStr(), "test data"));
+    CPatchStr c(a);
+    assert (stringMatch(c.toStr(), "test data"));
 //    CPatchStr d(a.subStr(3, 5));
 //    assert (stringMatch(d.toStr(), "t dat"));
 //    d.append(b);
