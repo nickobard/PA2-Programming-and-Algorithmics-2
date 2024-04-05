@@ -68,6 +68,12 @@ public:
         m_size = m_head->size();
     }
 
+    CPatchStr(shared_ptr<char[]> str) {
+        m_head = new CPatch(str);
+        m_tail = m_head;
+        m_size = m_head->size();
+    }
+
     CPatchStr(const CPatchStr &p) {
         m_size = p.m_size;
         CPatch **current_dst = &m_head;
@@ -84,17 +90,71 @@ public:
         delete m_head;
     }
 
-    CPatchStr &operator=(const CPatchStr &src) {
-        if (this == &src) {
-            return *this;
-        }
+    CPatchStr &operator=(CPatchStr src) {
+        swap(m_size, src.m_size);
+        swap(m_head, src.m_head);
+        swap(m_tail, src.m_tail);
         return *this;
     }
 
     // operator =
     CPatchStr subStr(size_t from,
                      size_t len) const {
-        return CPatchStr("");
+        if (from > m_size || from + len > m_size) {
+            throw out_of_range("Cannot create substring - out of range limits.");
+        }
+        if (len == 0) {
+            return {""};
+        }
+        // find first
+        auto *current = m_head;
+        size_t current_offset = 0;
+        while (current_offset + current->size() < from) {
+            current_offset += current->size();
+            current = current->next();
+        }
+
+        CPatchStr patch_str("");
+        if (from != current_offset || (from + len < current_offset + current->size())) {
+            // in this case just make first patch a substring
+            auto substr = substring(from - current_offset, min(current->size() - (from - current_offset), len),
+                                    current->m_patch.get());
+            auto to_append = CPatch(substr);
+            patch_str.append(to_append);
+        } else {
+            // this whole chunk should be copied
+            auto to_append = CPatch(current->m_patch);
+            patch_str.append(to_append);
+        }
+        // iterate until it is the last chunk
+
+        while (from + len > current_offset + current->size()) {
+            // get the next patch
+            current_offset += current->size();
+            current = current->next();
+            // check if we have last patch to work with
+            if (from + len < current_offset + current->size()) {
+                // copy substring
+                auto substr = substring(0, len, current->m_patch.get());
+                auto to_append = CPatch(substr);
+                patch_str.append(to_append);
+            } else {
+                // just copy the whole chunk
+                auto to_append = CPatch(current->m_patch);
+                patch_str.append(to_append);
+            }
+        }
+
+        return patch_str;
+    }
+
+    static shared_ptr<char[]> substring(size_t offset, size_t len, const char *src) {
+        char *buffer = new char[len + 1];
+        for (size_t i = 0; i <= len; i++) {
+            buffer[i] = src[i + offset];
+        }
+        buffer[len] = '\0';
+        return shared_ptr<char[]>(buffer);
     }
 
     CPatchStr &append(const CPatchStr &src) {
@@ -125,6 +185,16 @@ public:
         }
         return *this;
     }
+
+    CPatchStr &append(CPatch &src) {
+        if (src.empty()) {
+            return *this;
+        }
+        m_tail->next() = new CPatch(src.m_patch);
+        m_tail = m_tail->next();
+        return *this;
+    }
+
 
     CPatchStr &insert(size_t pos,
                       const CPatchStr &src) {
