@@ -109,6 +109,7 @@ public:
         // find first
         auto *current = m_head;
         size_t current_offset = 0;
+        size_t remaining_len = len;
         while (current_offset + current->size() < from) {
             current_offset += current->size();
             current = current->next();
@@ -117,13 +118,16 @@ public:
         CPatchStr patch_str("");
         if (from != current_offset || (from + len < current_offset + current->size())) {
             // in this case just make first patch a substring
-            auto substr = substring(from - current_offset, min(current->size() - (from - current_offset), len),
+            auto substr = substring(from - current_offset,
+                                    min(current->size() - (from - current_offset), remaining_len),
                                     current->m_patch.get());
             auto to_append = CPatch(substr);
+            remaining_len -= to_append.size();
             patch_str.append(to_append);
         } else {
             // this whole chunk should be copied
             auto to_append = CPatch(current->m_patch);
+            remaining_len -= to_append.size();
             patch_str.append(to_append);
         }
         // iterate until it is the last chunk
@@ -135,12 +139,14 @@ public:
             // check if we have last patch to work with
             if (from + len < current_offset + current->size()) {
                 // copy substring
-                auto substr = substring(0, len, current->m_patch.get());
+                auto substr = substring(0, remaining_len, current->m_patch.get());
                 auto to_append = CPatch(substr);
+                remaining_len -= to_append.size();
                 patch_str.append(to_append);
             } else {
                 // just copy the whole chunk
                 auto to_append = CPatch(current->m_patch);
+                remaining_len -= to_append.size();
                 patch_str.append(to_append);
             }
         }
@@ -266,7 +272,7 @@ int main() {
     CPatchStr c(a);
     assert (stringMatch(c.toStr(), "test data"));
     CPatchStr d(a.subStr(3, 5));
-//    assert (stringMatch(d.toStr(), "t dat"));
+    assert (stringMatch(d.toStr(), "t dat"));
 //    d.append(b);
 //    assert (stringMatch(d.toStr(), "t datfoo text"));
 //    d.append(b.subStr(3, 4));
