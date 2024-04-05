@@ -164,6 +164,10 @@ public:
     }
 
     CPatchStr &append(const CPatchStr &src) {
+        if (this == &src){
+            auto copy = src;
+            return append(copy);
+        }
         // current CPatchStr is empty string
         CPatch **dst_next;
         if (empty()) {
@@ -273,14 +277,14 @@ int main() {
     assert (stringMatch(c.toStr(), "test data"));
     CPatchStr d(a.subStr(3, 5));
     assert (stringMatch(d.toStr(), "t dat"));
-//    d.append(b);
-//    assert (stringMatch(d.toStr(), "t datfoo text"));
-//    d.append(b.subStr(3, 4));
-//    assert (stringMatch(d.toStr(), "t datfoo text tex"));
-//    c.append(d);
-//    assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
-//    c.append(c);
-//    assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
+    d.append(b);
+    assert (stringMatch(d.toStr(), "t datfoo text"));
+    d.append(b.subStr(3, 4));
+    assert (stringMatch(d.toStr(), "t datfoo text tex"));
+    c.append(d);
+    assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
+    c.append(c);
+    assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
 //    d.insert(2, c.subStr(6, 9));
 //    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
 //    b = "abcdefgh";
