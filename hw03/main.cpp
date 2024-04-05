@@ -76,7 +76,7 @@ public:
     // destructor 
     // operator =
     CPatchStr subStr(size_t from,
-                     size_t len) const{
+                     size_t len) const {
         return CPatchStr("");
     }
 
@@ -100,12 +100,12 @@ public:
             auto *to_append = new CPatch((*src_current)->m_patch);
 
             *dst_next = to_append;
+            m_tail = to_append;
             dst_next = &(to_append->next());
             m_size += (*src_current)->size();
             src_current = &((*src_current)->next());
 
         }
-        m_tail = (*src_current);
         return *this;
     }
 
@@ -161,15 +161,15 @@ int main() {
 
     CPatchStr a("test");
     assert (stringMatch(a.toStr(), "test"));
-//    std::strncpy(tmpStr, " da", sizeof(tmpStr) - 1);
-//    a.append(tmpStr);
-//    assert (stringMatch(a.toStr(), "test da"));
-//    std::strncpy(tmpStr, "ta", sizeof(tmpStr) - 1);
-//    a.append(tmpStr);
-//    assert (stringMatch(a.toStr(), "test data"));
-//    std::strncpy(tmpStr, "foo text", sizeof(tmpStr) - 1);
-//    CPatchStr b(tmpStr);
-//    assert (stringMatch(b.toStr(), "foo text"));
+    std::strncpy(tmpStr, " da", sizeof(tmpStr) - 1);
+    a.append(tmpStr);
+    assert (stringMatch(a.toStr(), "test da"));
+    std::strncpy(tmpStr, "ta", sizeof(tmpStr) - 1);
+    a.append(tmpStr);
+    assert (stringMatch(a.toStr(), "test data"));
+    std::strncpy(tmpStr, "foo text", sizeof(tmpStr) - 1);
+    CPatchStr b(tmpStr);
+    assert (stringMatch(b.toStr(), "foo text"));
 //    CPatchStr c(a);
 //    assert (stringMatch(c.toStr(), "test data"));
 //    CPatchStr d(a.subStr(3, 5));
