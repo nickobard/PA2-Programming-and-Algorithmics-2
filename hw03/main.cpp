@@ -375,6 +375,22 @@ public:
             current = next;
         }
 
+        if (current_offset + current->size() == from + len) {
+            left_end->next() = current->next();
+            current->next() = nullptr;
+            m_size -= current->size();
+            delete current;
+        } else {
+            auto substr = substring(from + len - current_offset, current->size() + current_offset - from - len,
+                                    current->m_patch.get());
+            m_size -= current->size();
+            auto *p = new CPatch(substr);
+            m_size += p->size();
+            left_end->next() = p;
+            current->next() = nullptr;
+            delete current;
+        }
+
 
         return *this;
     }
