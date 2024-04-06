@@ -164,7 +164,7 @@ public:
     }
 
     CPatchStr &append(const CPatchStr &src) {
-        if (this == &src){
+        if (this == &src) {
             auto copy = src;
             return append(copy);
         }
@@ -211,9 +211,95 @@ public:
         return *this;
     }
 
+    CPatchStr &prepend(const CPatchStr &src) {
+        auto *head_tmp = m_head;
+        auto *tail_tmp = m_tail;
+        size_t size_tmp = m_size;
+
+        m_head = new CPatch("");
+        m_tail = m_head;
+        m_size = 0;
+        append(src);
+
+        m_tail->next() = head_tmp;
+        m_tail = tail_tmp;
+        m_size += size_tmp;
+        return *this;
+    }
+
+    static pair<shared_ptr<char[]>, shared_ptr<char[]>> split(const char *src, size_t offset) {
+        char *left_part = new char[offset + 1];
+        char *right_part = new char[strlen(src) - offset + 1];
+        for (size_t i = 0; i < offset; i++) {
+            left_part[i] = src[i];
+        }
+        left_part[offset] = '\0';
+        for (size_t i = 0; i < strlen(src) - offset; i++) {
+            right_part[i] = src[i + offset];
+        }
+        right_part[strlen(src) - offset] = '\0';
+
+        return {shared_ptr<char[]>(left_part), shared_ptr<char[]>(right_part)};
+    }
 
     CPatchStr &insert(size_t pos,
                       const CPatchStr &src) {
+        if (pos < 0 || pos > m_size) {
+            throw out_of_range("Insert position is out of bounds.");
+        }
+
+        if (pos == 0) {
+            // just prepend
+            prepend(src);
+        } else if (pos == m_size) {
+            // just append
+            append(src);
+        }
+
+
+        CPatch *pred = nullptr;
+        CPatch *current = m_head;
+        size_t current_offset = 0;
+        while (current_offset + current->size() < pos) {
+            current_offset += current->size();
+            pred = current;
+            current = current->next();
+        }
+
+        if (pos == current_offset) {
+            // use predecessor to append
+            auto *tail_tmp = m_tail;
+            pred->next() = nullptr;
+            m_tail = pred;
+            append(src);
+            m_tail->next() = current;
+            m_tail = tail_tmp;
+        } else if (pos == current_offset + current->size()) {
+            // append after current
+            auto *next = current->next();
+            current->next() = nullptr;
+            auto *tail_tmp = m_tail;
+            m_tail = current;
+            append(src);
+            current->next() = next;
+            m_tail = tail_tmp;
+        } else {
+            // split into two parts and insert between them using split
+            auto [left, right] = split(current->m_patch.get(), pos - current_offset);
+            auto *next = current->next();
+            current->next() = nullptr;
+            delete current;
+
+            auto *tail_tmp = m_tail;
+
+            pred->next() = new CPatch(left);
+            m_tail = pred->next();
+            append(src);
+            m_tail->next() = new CPatch(right);
+            m_tail->next()->next() = next;
+            m_tail = tail_tmp;
+        }
+
         return *this;
     }
 
@@ -285,8 +371,8 @@ int main() {
     assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
     c.append(c);
     assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
-//    d.insert(2, c.subStr(6, 9));
-//    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
+    d.insert(2, c.subStr(6, 9));
+    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
 //    b = "abcdefgh";
 //    assert (stringMatch(b.toStr(), "abcdefgh"));
 //    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
