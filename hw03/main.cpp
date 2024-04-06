@@ -210,6 +210,7 @@ public:
         } else {
             m_tail->next() = new CPatch(src.m_patch);
             m_tail = m_tail->next();
+            m_size += src.size();
         }
         return *this;
     }
@@ -365,16 +366,16 @@ int main() {
     CPatchStr c(a);
     assert (stringMatch(c.toStr(), "test data"));
     auto substring = a.subStr(3, 5);
-//    CPatchStr d(a.subStr(3, 5));
-//    assert (stringMatch(d.toStr(), "t dat"));
-//    d.append(b);
-//    assert (stringMatch(d.toStr(), "t datfoo text"));
-//    d.append(b.subStr(3, 4));
-//    assert (stringMatch(d.toStr(), "t datfoo text tex"));
-//    c.append(d);
-//    assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
-//    c.append(c);
-//    assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
+    CPatchStr d(a.subStr(3, 5));
+    assert (stringMatch(d.toStr(), "t dat"));
+    d.append(b);
+    assert (stringMatch(d.toStr(), "t datfoo text"));
+    d.append(b.subStr(3, 4));
+    assert (stringMatch(d.toStr(), "t datfoo text tex"));
+    c.append(d);
+    assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
+    c.append(c);
+    assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
 //    d.insert(2, c.subStr(6, 9));
 //    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
 //    b = "abcdefgh";
