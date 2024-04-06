@@ -309,6 +309,73 @@ public:
 
     CPatchStr &remove(size_t from,
                       size_t len) {
+        if (from > m_size || from + len > m_size) {
+            throw out_of_range("Cannot remove - out of range.");
+        }
+        if (len == 0) {
+            return *this;
+        }
+
+        // find first
+        CPatch *previous = nullptr;
+        auto *current = m_head;
+        size_t current_offset = 0;
+        size_t remaining_len = len;
+        while (current_offset + current->size() < from) {
+            current_offset += current->size();
+            previous = current;
+            current = current->next();
+        }
+
+        CPatch *left_end = nullptr;
+
+        if (from != current_offset || (from + len < current_offset + current->size())) {
+            // in this case we have to delete part of this chunk and that is all
+            // deal with both sides then
+            if (from == current_offset) {
+                // current should be disconnected
+                // TODO - fix when prev is nullptr - m_head should be used!!
+                previous->next() = nullptr;
+                left_end = previous;
+            } else {
+                // get substring, connect it and leave the left end
+                auto substr = substring(0, from - current_offset, current->m_patch.get());
+                previous->next() = new CPatch(substr);
+                left_end = previous->next();
+                m_size += left_end->size();
+            }
+
+            if (from + len < current_offset + current->size()) {
+                auto substr = substring(from + len - current_offset, current->size() - (from + len - current_offset),
+                                        current->m_patch.get());
+                auto *to_add = new CPatch(substr);
+                left_end->next() = to_add;
+                m_size += to_add->size();
+                to_add->next() = current->next();
+                current->next() = nullptr;
+                m_size -= current->size();
+                delete current;
+                return *this;
+
+            } else if (from + len == current_offset + current->size()) {
+                left_end->next() = current->next();
+                current->next() = nullptr;
+                m_size -= current->size();
+                delete current;
+                return *this;
+            }
+        }
+
+        while (current_offset + current->size() < from + len) {
+            current_offset += current->size();
+            auto *next = current->next();
+            m_size -= current->size();
+            current->next() = nullptr;
+            delete current;
+            current = next;
+        }
+
+
         return *this;
     }
 
