@@ -340,8 +340,13 @@ public:
             } else {
                 // get substring, connect it and leave the left end
                 auto substr = substring(0, from - current_offset, current->m_patch.get());
-                previous->next() = new CPatch(substr);
-                left_end = previous->next();
+                if (previous == nullptr) {
+                    m_head = new CPatch(substr);
+                    left_end = m_head;
+                } else {
+                    previous->next() = new CPatch(substr);
+                    left_end = previous->next();
+                }
                 m_size += left_end->size();
             }
 
@@ -388,10 +393,11 @@ public:
             m_size += p->size();
             left_end->next() = p;
             current->next() = nullptr;
+            if (current == m_tail){
+                m_tail = p;
+            }
             delete current;
         }
-
-
         return *this;
     }
 
@@ -475,8 +481,8 @@ int main() {
     catch (...) {
         assert ("Invalid exception thrown" == nullptr);
     }
-//    a.remove(3, 5);
-//    assert (stringMatch(a.toStr(), "tesa"));
+    a.remove(3, 5);
+    assert (stringMatch(a.toStr(), "tesa"));
     return EXIT_SUCCESS;
 }
 
