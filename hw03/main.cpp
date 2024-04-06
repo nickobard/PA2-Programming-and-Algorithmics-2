@@ -320,7 +320,6 @@ public:
         CPatch *previous = nullptr;
         auto *current = m_head;
         size_t current_offset = 0;
-        size_t remaining_len = len;
         while (current_offset + current->size() < from) {
             current_offset += current->size();
             previous = current;
@@ -393,7 +392,7 @@ public:
             m_size += p->size();
             left_end->next() = p;
             current->next() = nullptr;
-            if (current == m_tail){
+            if (current == m_tail) {
                 m_tail = p;
             }
             delete current;
