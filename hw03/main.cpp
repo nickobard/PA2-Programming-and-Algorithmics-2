@@ -376,22 +376,22 @@ int main() {
     assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
     c.append(c);
     assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
-//    d.insert(2, c.subStr(6, 9));
-//    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
-//    b = "abcdefgh";
-//    assert (stringMatch(b.toStr(), "abcdefgh"));
-//    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
-//    assert (stringMatch(d.subStr(4, 8).toStr(), "at datfd"));
-//    assert (stringMatch(b.subStr(2, 6).toStr(), "cdefgh"));
-//    try {
-//        b.subStr(2, 7).toStr();
-//        assert ("Exception not thrown" == nullptr);
-//    }
-//    catch (const std::out_of_range &e) {
-//    }
-//    catch (...) {
-//        assert ("Invalid exception thrown" == nullptr);
-//    }
+    d.insert(2, c.subStr(6, 9));
+    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
+    b = "abcdefgh";
+    assert (stringMatch(b.toStr(), "abcdefgh"));
+    assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
+    assert (stringMatch(d.subStr(4, 8).toStr(), "at datfd"));
+    assert (stringMatch(b.subStr(2, 6).toStr(), "cdefgh"));
+    try {
+        b.subStr(2, 7).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
 //    a.remove(3, 5);
 //    assert (stringMatch(a.toStr(), "tesa"));
     return EXIT_SUCCESS;
