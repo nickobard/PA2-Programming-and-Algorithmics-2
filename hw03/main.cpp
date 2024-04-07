@@ -247,6 +247,10 @@ public:
 
     CPatchStr &insert(size_t pos,
                       const CPatchStr &src) {
+        if (this == &src) {
+            auto copy = CPatchStr(src);
+            return insert(pos, copy);
+        }
         if (pos > m_size) {
             throw out_of_range("Insert position is out of bounds.");
         }
@@ -790,6 +794,91 @@ int main() {
     assert(stringMatch(s3.toStr(), "o there world"));
     assert(s3.size() == strlen("o there world"));
 
+    try {
+        s3.subStr(20, 0).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+    try {
+        s3.subStr(20, 20).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+    try {
+        s3.subStr(0, 20).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+    try {
+        s3.insert(20, CPatchStr("INJ")).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+
+    try {
+        s3.remove(20, 0).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+    try {
+        s3.remove(20, 20).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+    try {
+        s3.remove(0, 20).toStr();
+        assert ("Exception not thrown" == nullptr);
+    }
+    catch (const std::out_of_range &e) {
+    }
+    catch (...) {
+        assert ("Invalid exception thrown" == nullptr);
+    }
+
+    s3 = s5;
+    s3.insert(0, s3);
+    assert(stringMatch(s3.toStr(), "Hello there worldHello there world"));
+    assert(s3.size() == strlen("Hello there worldHello there world"));
+
+    s3 = s5;
+    s3.insert(16, s3);
+    assert(stringMatch(s3.toStr(), "Hello there worldHello there world"));
+    assert(s3.size() == strlen("Hello there worldHello there world"));
+
+    s3 = s5;
+    s3.insert(3, s3);
+    assert(stringMatch(s3.toStr(), "HelHello there worldlo there world"));
+    assert(s3.size() == strlen("HelHello there worldlo there world"));
 
     return EXIT_SUCCESS;
 }
