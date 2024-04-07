@@ -241,6 +241,10 @@ public:
         return {shared_ptr<char[]>(left_part), shared_ptr<char[]>(right_part)};
     }
 
+    size_t size() const {
+        return m_size;
+    }
+
     CPatchStr &insert(size_t pos,
                       const CPatchStr &src) {
         if (pos > m_size) {
@@ -517,21 +521,32 @@ int main() {
     CPatchStr s1 = CPatchStr();
     auto s2 = s1;
     assert(stringMatch(s1.toStr(), ""));
+    assert(s1.size() == strlen(""));
     assert(stringMatch(s2.toStr(), ""));
+    assert(s2.size() == strlen(""));
     s1.append(s2);
     assert(stringMatch(s1.toStr(), ""));
+    assert(s1.size() == strlen(""));
+
 
     CPatchStr s3 = CPatchStr("Hello");
     s3.append(s1);
     assert(stringMatch(s3.toStr(), "Hello"));
+    assert(s3.size() == strlen("Hello"));
+
     s1.append(s3);
     assert(stringMatch(s1.toStr(), "Hello"));
+    assert(s1.size() == strlen("Hello"));
 
     assert(stringMatch(s1.subStr(0, 4).toStr(), "Hell"));
+    assert(s1.subStr(0, 4).size() == strlen("Hell"));
     assert(stringMatch(s1.subStr(0, 5).toStr(), "Hello"));
+    assert(s1.subStr(0, 5).size() == strlen("Hello"));
 
     assert(stringMatch(s1.subStr(1, 4).toStr(), "ello"));
+    assert(s1.subStr(1, 4).size() == strlen("ello"));
     assert(stringMatch(s1.subStr(1, 3).toStr(), "ell"));
+    assert(s1.subStr(1, 3).size() == strlen("ell"));
 
     CPatchStr s4 = CPatchStr(" there");
     CPatchStr s5 = CPatchStr(" world");
@@ -541,101 +556,140 @@ int main() {
     auto s6 = CPatchStr(s3);
 
     assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(s3.size() == strlen("Hello there world"));
     assert(stringMatch(s5.toStr(), "Hello there world"));
+    assert(s5.size() == strlen("Hello there world"));
     assert(stringMatch(s6.toStr(), "Hello there world"));
+    assert(s6.size() == strlen("Hello there world"));
 
     assert(stringMatch(s3.subStr(0, 17).toStr(), "Hello there world"));
+    assert(s3.subStr(0, 17).size() == strlen("Hello there world"));
     assert(stringMatch(s3.subStr(5, 6).toStr(), " there"));
+    assert(s3.subStr(5, 6).size() == strlen(" there"));
     assert(stringMatch(s3.subStr(6, 5).toStr(), "there"));
+    assert(s3.subStr(6, 5).size() == strlen("there"));
     assert(stringMatch(s3.subStr(6, 4).toStr(), "ther"));
+    assert(s3.subStr(6, 4).size() == strlen("ther"));
     assert(stringMatch(s3.subStr(5, 5).toStr(), " ther"));
+    assert(s3.subStr(5, 5).size() == strlen(" ther"));
     assert(stringMatch(s3.subStr(0, 0).toStr(), ""));
+    assert(s3.subStr(0, 0).size() == strlen(""));
     assert(stringMatch(s3.subStr(0, 16).toStr(), "Hello there worl"));
+    assert(s3.subStr(0, 16).size() == strlen("Hello there worl"));
     assert(stringMatch(s3.subStr(1, 15).toStr(), "ello there worl"));
+    assert(s3.subStr(1, 15).size() == strlen("ello there worl"));
     assert(stringMatch(s3.subStr(0, 11).toStr(), "Hello there"));
+    assert(s3.subStr(0, 11).size() == strlen("Hello there"));
     assert(stringMatch(s3.subStr(1, 10).toStr(), "ello there"));
+    assert(s3.subStr(1, 10).size() == strlen("ello there"));
     assert(stringMatch(s3.subStr(4, 7).toStr(), "o there"));
+    assert(s3.subStr(4, 7).size() == strlen("o there"));
 
     // testing insert
     s6 = CPatchStr("INJ");
     s3.insert(0, s6);
     assert(stringMatch(s3.toStr(), "INJHello there world"));
+    assert(s3.size() == strlen("INJHello there world"));
     s3 = s5;
     s3.insert(16, s6);
     assert(stringMatch(s3.toStr(), "Hello there worldINJ"));
+    assert(s3.size() == strlen("Hello there worldINJ"));
     s3 = s5;
     s3.insert(5, s6);
     assert(stringMatch(s3.toStr(), "HelloINJ there world"));
+    assert(s3.size() == strlen("HelloINJ there world"));
     s3 = s5;
     s3.insert(11, s6);
     assert(stringMatch(s3.toStr(), "Hello thereINJ world"));
+    assert(s3.size() == strlen("Hello thereINJ world"));
     s3 = s5;
     s3.insert(4, s6);
     assert(stringMatch(s3.toStr(), "HellINJo there world"));
+    assert(s3.size() == strlen("HellINJo there world"));
     s3 = s5;
     s3.insert(10, s6);
     assert(stringMatch(s3.toStr(), "Hello therINJe world"));
+    assert(s3.size() == strlen("Hello therINJe world"));
     s3 = s5;
     s3.insert(1, s6);
     assert(stringMatch(s3.toStr(), "HINJello there world"));
+    assert(s3.size() == strlen("HINJello there world"));
     s3 = s5;
     s3.insert(7, s6);
     assert(stringMatch(s3.toStr(), "Hello tINJhere world"));
+    assert(s3.size() == strlen("Hello tINJhere world"));
 
     s6.append(s6).append(s6);
     assert(stringMatch(s6.toStr(), "INJINJINJINJ"));
+    assert(s6.size() == strlen("INJINJINJINJ"));
 
     s3 = s5;
     s3.insert(0, s6);
     assert(stringMatch(s3.toStr(), "INJINJINJINJHello there world"));
+    assert(s3.size() == strlen("INJINJINJINJHello there world"));
     s3 = s5;
     s3.insert(16, s6);
     assert(stringMatch(s3.toStr(), "Hello there worldINJINJINJINJ"));
+    assert(s3.size() == strlen("Hello there worldINJINJINJINJ"));
     s3 = s5;
     s3.insert(5, s6);
     assert(stringMatch(s3.toStr(), "HelloINJINJINJINJ there world"));
+    assert(s3.size() == strlen("HelloINJINJINJINJ there world"));
     s3 = s5;
     s3.insert(11, s6);
     assert(stringMatch(s3.toStr(), "Hello thereINJINJINJINJ world"));
+    assert(s3.size() == strlen("Hello thereINJINJINJINJ world"));
     s3 = s5;
     s3.insert(4, s6);
     assert(stringMatch(s3.toStr(), "HellINJINJINJINJo there world"));
+    assert(s3.size() == strlen("HellINJINJINJINJo there world"));
     s3 = s5;
     s3.insert(10, s6);
     assert(stringMatch(s3.toStr(), "Hello therINJINJINJINJe world"));
+    assert(s3.size() == strlen("Hello therINJINJINJINJe world"));
     s3 = s5;
     s3.insert(1, s6);
     assert(stringMatch(s3.toStr(), "HINJINJINJINJello there world"));
+    assert(s3.size() == strlen("HINJINJINJINJello there world"));
     s3 = s5;
     s3.insert(7, s6);
     assert(stringMatch(s3.toStr(), "Hello tINJINJINJINJhere world"));
+    assert(s3.size() == strlen("Hello tINJINJINJINJhere world"));
 
     s3 = s5;
     s3.remove(0, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(s3.size() == strlen("Hello there world"));
     s3 = s5;
     s3.remove(4, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(s3.size() == strlen("Hello there world"));
     s3 = s5;
     s3.remove(11, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(s3.size() == strlen("Hello there world"));
     s3 = s5;
     s3.remove(7, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(s3.size() == strlen("Hello there world"));
 
     s3 = s5;
     s3.remove(0, 2);
     assert(stringMatch(s3.toStr(), "llo there world"));
+    assert(s3.size() == strlen("llo there world"));
     s3 = s5;
     s3.remove(1, 2);
     assert(stringMatch(s3.toStr(), "Hlo there world"));
+    assert(s3.size() == strlen("Hlo there world"));
 
     s3 = s5;
     s3.remove(0, 5);
     assert(stringMatch(s3.toStr(), " there world"));
+    assert(s3.size() == strlen(" there world"));
     s3 = s5;
     s3.remove(0, 4);
     assert(stringMatch(s3.toStr(), "o there world"));
+    assert(s3.size() == strlen("o there world"));
 
 
     return EXIT_SUCCESS;
