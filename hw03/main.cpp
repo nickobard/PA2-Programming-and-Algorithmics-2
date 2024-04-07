@@ -82,6 +82,8 @@ public:
 
     CPatchStr(const CPatchStr &p) {
         m_size = p.m_size;
+        m_tail = nullptr;
+        m_head = nullptr;
         CPatch **current_dst = &m_head;
         CPatch *current_src = p.m_head;
         while (current_src != nullptr) {
@@ -103,6 +105,8 @@ public:
         return *this;
     }
 
+#ifndef __PROGTEST__
+
     void assert_healthy_structure() const {
         size_t total_size = 0;
         if (empty()) {
@@ -121,7 +125,8 @@ public:
         assert(m_size == total_size);
     }
 
-    // operator =
+#endif /* __PROGTEST__ */
+
     CPatchStr subStr(size_t from,
                      size_t len) const {
         if (from > m_size || from + len > m_size) {
