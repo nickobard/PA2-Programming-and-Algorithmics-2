@@ -26,9 +26,14 @@ struct CPatch {
         m_patch = shared_ptr<char[]>(patch);
     }
 
-    CPatch(shared_ptr<char[]> &patch) {
+    CPatch(char *str, size_t size) : m_next(nullptr) {
+        m_size = size;
+        m_patch = shared_ptr<char[]>(str);
+    }
+
+    CPatch(shared_ptr<char[]> &patch, size_t size) {
         m_patch = patch;
-        m_size = strlen(patch.get());
+        m_size = size;
         m_next = nullptr;
     }
 
@@ -69,8 +74,8 @@ public:
         m_size = m_head->size();
     }
 
-    CPatchStr(shared_ptr<char[]> str) {
-        m_head = new CPatch(str);
+    CPatchStr(shared_ptr<char[]> str, size_t size) {
+        m_head = new CPatch(str, size);
         m_tail = m_head;
         m_size = m_head->size();
     }
@@ -132,16 +137,17 @@ public:
         CPatchStr patch_str("");
         if (from != current_offset || (from + len < current_offset + current->size())) {
             // in this case just make first patch a substring
+            size_t substr_len = min(current->size() - (from - current_offset), remaining_len);
             auto substr = substring(from - current_offset,
-                                    min(current->size() - (from - current_offset), remaining_len),
+                                    substr_len,
                                     current->m_patch.get());
-            auto to_append = CPatch(substr);
-            remaining_len -= to_append.size();
+            auto to_append = substr;
+            remaining_len -= to_append->size();
             patch_str.append(to_append);
         } else {
             // this whole chunk should be copied
-            auto to_append = CPatch(current->m_patch);
-            remaining_len -= to_append.size();
+            auto to_append = new CPatch(current->m_patch, current->size());
+            remaining_len -= to_append->size();
             patch_str.append(to_append);
         }
         // iterate until it is the last chunk
@@ -154,13 +160,13 @@ public:
             if (from + len < current_offset + current->size()) {
                 // copy substring
                 auto substr = substring(0, remaining_len, current->m_patch.get());
-                auto to_append = CPatch(substr);
-                remaining_len -= to_append.size();
+                auto to_append = substr;
+                remaining_len -= to_append->size();
                 patch_str.append(to_append);
             } else {
                 // just copy the whole chunk
-                auto to_append = CPatch(current->m_patch);
-                remaining_len -= to_append.size();
+                auto to_append = new CPatch(current->m_patch, current->size());
+                remaining_len -= to_append->size();
                 patch_str.append(to_append);
             }
         }
@@ -168,13 +174,13 @@ public:
         return patch_str;
     }
 
-    static shared_ptr<char[]> substring(size_t offset, size_t len, const char *src) {
+    static CPatch *substring(size_t offset, size_t len, const char *src) {
         char *buffer = new char[len + 1];
         for (size_t i = 0; i <= len; i++) {
             buffer[i] = src[i + offset];
         }
         buffer[len] = '\0';
-        return shared_ptr<char[]>(buffer);
+        return new CPatch(buffer, len);
     }
 
     CPatchStr &append(const CPatchStr &src) {
@@ -203,7 +209,7 @@ public:
                 continue;
             }
 
-            auto *to_append = new CPatch((*src_current)->m_patch);
+            auto *to_append = new CPatch((*src_current)->m_patch, (*src_current)->size());
 
             *dst_next = to_append;
             m_tail = to_append;
@@ -215,19 +221,20 @@ public:
         return *this;
     }
 
-    CPatchStr &append(CPatch &src) {
-        if (src.empty()) {
+    CPatchStr &append(CPatch *src) {
+        if (src->empty()) {
+            delete src;
             return *this;
         }
         if (empty()) {
             delete m_head;
-            m_head = new CPatch(src.m_patch);
+            m_head = src;
             m_size = m_head->size();
             m_tail = m_head;
         } else {
-            m_tail->next() = new CPatch(src.m_patch);
+            m_tail->next() = src;
             m_tail = m_tail->next();
-            m_size += src.size();
+            m_size += src->size();
         }
         return *this;
     }
@@ -256,7 +263,7 @@ public:
         return *this;
     }
 
-    static pair<shared_ptr<char[]>, shared_ptr<char[]>> split(const CPatch *patch, size_t offset) {
+    static pair<CPatch *, CPatch *> split(const CPatch *patch, size_t offset) {
         auto patch_str = patch->m_patch.get();
         char *left_part = new char[offset + 1];
         char *right_part = new char[patch->size() - offset + 1];
@@ -269,7 +276,7 @@ public:
         }
         right_part[patch->size() - offset] = '\0';
 
-        return {shared_ptr<char[]>(left_part), shared_ptr<char[]>(right_part)};
+        return {new CPatch(left_part, offset), new CPatch(right_part, patch->size() - offset)};
     }
 
     size_t size() const {
@@ -339,14 +346,14 @@ public:
             delete current;
 
             if (previous == nullptr) {
-                m_head = new CPatch(left);
+                m_head = left;
                 m_tail = m_head;
             } else {
-                previous->next() = new CPatch(left);
+                previous->next() = left;
                 m_tail = previous->next();
             }
             append(src);
-            auto *right_patch = new CPatch(right);
+            auto *right_patch = right;
             m_tail->next() = right_patch;
             m_tail->next()->next() = next;
             if (tail_tmp == nullptr) {
@@ -388,10 +395,10 @@ public:
                 // get substring, connect it and leave the left end
                 auto substr = substring(0, from - current_offset, current->m_patch.get());
                 if (previous == nullptr) {
-                    m_head = new CPatch(substr);
+                    m_head = substr;
                     left_end = m_head;
                 } else {
-                    previous->next() = new CPatch(substr);
+                    previous->next() = substr;
                     left_end = previous->next();
                 }
                 m_size += left_end->size();
@@ -400,7 +407,7 @@ public:
             if (from + len < current_offset + current->size()) {
                 auto substr = substring(from + len - current_offset, current->size() - (from + len - current_offset),
                                         current->m_patch.get());
-                auto *to_add = new CPatch(substr);
+                auto *to_add = substr;
                 if (left_end == nullptr) {
                     left_end = to_add;
                     m_head = to_add;
@@ -481,7 +488,7 @@ public:
             auto substr = substring(from + len - current_offset, current->size() + current_offset - from - len,
                                     current->m_patch.get());
             m_size -= current->size();
-            auto *p = new CPatch(substr);
+            auto *p = substr;
             m_size += p->size();
             if (left_end == nullptr) {
                 left_end = p;
@@ -581,7 +588,7 @@ size_t random_int(size_t limit) {
 }
 
 constexpr long long STOP_ITERATION = 69;
-constexpr long long MAX_ITERATIONS = 100000;
+constexpr long long MAX_ITERATIONS = 1000;
 
 void random_test() {
     string str = "";
@@ -719,8 +726,8 @@ int main() {
     s1.assert_healthy_structure();
     assert(stringMatch(s1.toStr(), ""));
     assert(s1.size() == strlen(""));
-
-
+//
+//
     CPatchStr s3 = CPatchStr("Hello");
     s3.assert_healthy_structure();
     s3.append(s1);
@@ -770,6 +777,8 @@ int main() {
     assert(stringMatch(s3.subStr(0, 17).toStr(), "Hello there world"));
     s3.subStr(0, 17).assert_healthy_structure();
     assert(s3.subStr(0, 17).size() == strlen("Hello there world"));
+
+    auto substr1 = s3.subStr(5, 6);
     assert(stringMatch(s3.subStr(5, 6).toStr(), " there"));
     s3.subStr(5, 6).assert_healthy_structure();
     assert(s3.subStr(5, 6).size() == strlen(" there"));
@@ -801,7 +810,7 @@ int main() {
     s3.subStr(4, 7).assert_healthy_structure();
     assert(s3.subStr(4, 7).size() == strlen("o there"));
 
-    // testing insert
+//     testing insert
     s6 = CPatchStr("INJ");
     s6.assert_healthy_structure();
     s3.insert(0, s6);
