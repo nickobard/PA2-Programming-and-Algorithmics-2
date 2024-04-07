@@ -211,6 +211,14 @@ public:
     }
 
     CPatchStr &prepend(const CPatchStr &src) {
+        if (src.empty()) {
+            return *this;
+        }
+
+        if (empty()) {
+            return append(src);
+        }
+
         auto *head_tmp = m_head;
         auto *tail_tmp = m_tail;
         size_t size_tmp = m_size;
@@ -257,6 +265,7 @@ public:
         }
 
         if (src.empty()) {
+            // TODO consider checking for empty patches
             return *this;
         }
 
@@ -465,8 +474,6 @@ public:
         str[current_pos] = 0;
         return str;
     }
-
-private:
 
     bool empty() const {
         return m_size == 0;
@@ -889,6 +896,19 @@ int main() {
     s3.insert(0, CPatchStr(""));
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
+
+    s3 = s5;
+    s3.append(CPatchStr("")).remove(1, 3).insert(1, CPatchStr("ell"));
+    assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(s3.size() == strlen("Hello there world"));
+
+    CPatchStr s8 = CPatchStr("");
+    s8.insert(0, CPatchStr(""));
+    assert(s8.m_head == s8.m_tail && s8.empty() && strcmp(s8.m_head->m_patch.get(), "") == 0);
+
+    s8 = CPatchStr("");
+    s8.insert(0, CPatchStr("test"));
+    assert(s8.m_head == s8.m_tail && s8.size() == 4 && strcmp(s8.m_head->m_patch.get(), "test") == 0);
 
     return EXIT_SUCCESS;
 }
