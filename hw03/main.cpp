@@ -277,7 +277,7 @@ public:
             auto *tail_tmp = m_tail;
             m_tail = current;
             append(src);
-            current->next() = next;
+            current->next()->next() = next;
             m_tail = tail_tmp;
         } else {
             // split into two parts and insert between them using split
@@ -288,8 +288,13 @@ public:
 
             auto *tail_tmp = m_tail;
 
-            previous->next() = new CPatch(left);
-            m_tail = previous->next();
+            if (previous == nullptr) {
+                m_head = new CPatch(left);
+                m_tail = m_head;
+            } else {
+                previous->next() = new CPatch(left);
+                m_tail = previous->next();
+            }
             append(src);
             m_tail->next() = new CPatch(right);
             m_tail->next()->next() = next;
@@ -540,23 +545,23 @@ int main() {
     s3.insert(16, s6);
     assert(stringMatch(s3.toStr(), "Hello there worldINJ"));
     s3 = s5;
-//    s3.insert(5, s6);
-//    assert(stringMatch(s3.toStr(), "HelloINJ there world"));
-//    s3 = s5;
-//    s3.insert(11, s6);
-//    assert(stringMatch(s3.toStr(), "Hello thereINJ world"));
-//    s3 = s5;
-//    s3.insert(4, s6);
-//    assert(stringMatch(s3.toStr(), "HellINJo there world"));
-//    s3 = s5;
-//    s3.insert(10, s6);
-//    assert(stringMatch(s3.toStr(), "Hello therINJe world"));
-//    s3 = s5;
-//    s3.insert(1, s6);
-//    assert(stringMatch(s3.toStr(), "HINJello there world"));
-//    s3 = s5;
-//    s3.insert(7, s6);
-//    assert(stringMatch(s3.toStr(), "Hello tINJhere world"));
+    s3.insert(5, s6);
+    assert(stringMatch(s3.toStr(), "HelloINJ there world"));
+    s3 = s5;
+    s3.insert(11, s6);
+    assert(stringMatch(s3.toStr(), "Hello thereINJ world"));
+    s3 = s5;
+    s3.insert(4, s6);
+    assert(stringMatch(s3.toStr(), "HellINJo there world"));
+    s3 = s5;
+    s3.insert(10, s6);
+    assert(stringMatch(s3.toStr(), "Hello therINJe world"));
+    s3 = s5;
+    s3.insert(1, s6);
+    assert(stringMatch(s3.toStr(), "HINJello there world"));
+    s3 = s5;
+    s3.insert(7, s6);
+    assert(stringMatch(s3.toStr(), "Hello tINJhere world"));
 
 
     return EXIT_SUCCESS;
