@@ -550,16 +550,21 @@ size_t random_int(size_t limit) {
 void random_test() {
     string str = "";
     CPatchStr patch_str("");
+    long long iteration = 0;
     while (true) {
-        size_t operation = random_int(3);
+
+        if (iteration == 35) {
+            cout << "break point here please" << endl;
+        }
+
+        size_t str_size = str.size();
+        auto patched_str = patch_str.toStr();
+
+        size_t operation = random_int(2);
         if (operation == 0 && str.size() < MAX_TOTAL_STRING_LENGTH) { // append
             string random_string = get_random_string(random_int(MAX_STRING_LENGTH));
             str.append(random_string);
             patch_str.append(random_string.data());
-
-            patch_str.assert_healthy_structure();
-            assert(stringMatch(patch_str.toStr(), str.data()));
-            assert(patch_str.size() == str.size());
 
         } else if (operation == 1 && str.size() < MAX_TOTAL_STRING_LENGTH) { // insert
             string random_string = get_random_string(random_int(MAX_STRING_LENGTH));
@@ -567,21 +572,30 @@ void random_test() {
             str.insert(random_pos, random_string);
             patch_str.insert(random_pos, random_string.data());
 
-            patch_str.assert_healthy_structure();
-            assert(stringMatch(patch_str.toStr(), str.data()));
-            assert(patch_str.size() == str.size());
-
         } else if (operation == 2 && str.size() > 0) { // remove
             size_t random_pos = random_int(str.size() - 1);
             size_t random_len = random_int(str.size() - random_pos);
             str.erase(random_pos, random_len);
             patch_str.remove(random_pos, random_len);
 
-            patch_str.assert_healthy_structure();
-            assert(stringMatch(patch_str.toStr(), str.data()));
-            assert(patch_str.size() == str.size());
-
+        } else {
+            iteration++;
+            continue;
         }
+
+        if (iteration == 35) {
+            cout << "break point here please" << endl;
+        }
+
+        patch_str.assert_healthy_structure();
+        str_size = str.size();
+        delete[] patched_str;
+        patched_str = patch_str.toStr();
+
+        assert(stringMatch(patched_str, str.data()));
+        assert(patch_str.size() == str_size);
+
+        iteration++;
     }
 }
 
