@@ -547,13 +547,15 @@ size_t random_int(size_t limit) {
     return distribution(engine);
 }
 
+constexpr long long STOP_ITERATION = 4;
+
 void random_test() {
     string str = "";
     CPatchStr patch_str("");
     long long iteration = 0;
     while (true) {
 
-        if (iteration == 35) {
+        if (iteration == STOP_ITERATION) {
             cout << "break point here please" << endl;
         }
 
@@ -583,7 +585,7 @@ void random_test() {
             continue;
         }
 
-        if (iteration == 35) {
+        if (iteration == STOP_ITERATION) {
             cout << "break point here please" << endl;
         }
 
