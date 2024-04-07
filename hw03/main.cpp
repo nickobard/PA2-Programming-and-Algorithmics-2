@@ -296,7 +296,7 @@ public:
             // just prepend
             prepend(src);
             return *this;
-        } else if (pos == m_size - 1) {
+        } else if (pos == m_size) {
             // just append
             append(src);
             return *this;
@@ -573,7 +573,7 @@ size_t random_int(size_t limit) {
     return distribution(engine);
 }
 
-constexpr long long STOP_ITERATION = 58;
+constexpr long long STOP_ITERATION = 91;
 
 void random_test() {
     string str = "";
@@ -789,7 +789,7 @@ int main() {
     s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(16, s6);
-    assert(stringMatch(s3.toStr(), "Hello there worldINJ"));
+    assert(stringMatch(s3.toStr(), "Hello there worlINJd"));
     assert(s3.size() == strlen("Hello there worldINJ"));
     s3.assert_healthy_structure();
     s3 = s5;
@@ -837,7 +837,7 @@ int main() {
 
     s3 = s5;
     s3.insert(16, s6);
-    assert(stringMatch(s3.toStr(), "Hello there worldINJINJINJINJ"));
+    assert(stringMatch(s3.toStr(), "Hello there worlINJINJINJINJd"));
     assert(s3.size() == strlen("Hello there worldINJINJINJINJ"));
     s3.assert_healthy_structure();
     s3 = s5;
@@ -1106,7 +1106,7 @@ int main() {
 
     s3 = s5;
     s3.insert(16, s3);
-    assert(stringMatch(s3.toStr(), "Hello there worldHello there world"));
+    assert(stringMatch(s3.toStr(), "Hello there worlHello there worldd"));
     assert(s3.size() == strlen("Hello there worldHello there world"));
     s3.assert_healthy_structure();
 
