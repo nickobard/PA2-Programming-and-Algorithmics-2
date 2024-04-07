@@ -85,7 +85,7 @@ public:
         CPatch **current_dst = &m_head;
         CPatch *current_src = p.m_head;
         while (current_src != nullptr) {
-            (*current_dst) = new CPatch(current_src->m_patch.get());
+            (*current_dst) = new CPatch(current_src->m_patch, current_src->size());
             m_tail = (*current_dst);
             current_src = current_src->next();
             current_dst = &((*current_dst)->next());
