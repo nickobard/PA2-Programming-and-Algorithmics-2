@@ -580,8 +580,8 @@ size_t random_int(size_t limit) {
     return res;
 }
 
-constexpr long long STOP_ITERATION = 18;
-constexpr long long MAX_ITERATIONS = 100;
+constexpr long long STOP_ITERATION = 69;
+constexpr long long MAX_ITERATIONS = 100000;
 
 void random_test() {
     string str = "";
@@ -596,7 +596,7 @@ void random_test() {
         size_t str_size = str.size();
         auto patched_str = patch_str.toStr();
 
-        size_t operation = random_int(2);
+        size_t operation = random_int(4);
         if (operation == 0 && str.size() < MAX_TOTAL_STRING_LENGTH) { // append
             string random_string = get_random_string(random_int(MAX_STRING_LENGTH));
             str.append(random_string);
@@ -614,6 +614,14 @@ void random_test() {
             str.erase(random_pos, random_len);
             patch_str.remove(random_pos, random_len);
 
+
+        } else if (operation == 3 && str.size() < MAX_TOTAL_STRING_LENGTH) { // self append
+            str.append(str);
+            patch_str.append(patch_str);
+        } else if (operation == 4 && str.size() < MAX_TOTAL_STRING_LENGTH) { // self insert
+            size_t random_pos = random_int(str.size());
+            str.insert(random_pos, str);
+            patch_str.insert(random_pos, patch_str);
         } else {
             delete[] patched_str;
             iteration++;
@@ -623,6 +631,9 @@ void random_test() {
         if (iteration == STOP_ITERATION) {
             cout << "break point here please" << endl;
         }
+
+        cout << "working iteration: " << iteration << endl;
+
 
         str_size = str.size();
         delete[] patched_str;
