@@ -248,7 +248,7 @@ public:
 
     CPatchStr &insert(size_t pos,
                       const CPatchStr &src) {
-        if (pos < 0 || pos > m_size) {
+        if (pos > m_size) {
             throw out_of_range("Insert position is out of bounds.");
         }
 
@@ -482,6 +482,25 @@ int main() {
     }
     a.remove(3, 5);
     assert (stringMatch(a.toStr(), "tesa"));
+
+    // own tests
+    CPatchStr s1 = CPatchStr();
+    auto s2 = s1;
+    assert(stringMatch(s1.toStr(), ""));
+    assert(stringMatch(s2.toStr(), ""));
+    s1.append(s2);
+    assert(stringMatch(s1.toStr(), ""));
+
+    CPatchStr s3 = CPatchStr("Hello");
+    s3.append(s1);
+    assert(stringMatch(s3.toStr(), "Hello"));
+    s1.append(s3);
+    assert(stringMatch(s1.toStr(), "Hello"));
+
+    assert(stringMatch(s1.subStr(0, 4).toStr(), "Hell"));
+    assert(stringMatch(s1.subStr(0, 5).toStr(), "Hello"));
+
+
     return EXIT_SUCCESS;
 }
 
