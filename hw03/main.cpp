@@ -184,10 +184,6 @@ public:
     }
 
     CPatchStr &append(const CPatchStr &src) {
-        if (this == &src) {
-            auto copy = src;
-            return append(copy);
-        }
         if (src.empty()) {
             return *this;
         }
@@ -203,6 +199,8 @@ public:
 
         CPatch *const *src_current = &(src.m_head);
 
+        auto old_tail = m_tail;
+
         while (*src_current != nullptr) {
             if ((*src_current)->empty()) { // it is pointless to copy empty string patch
                 src_current = &((*src_current)->next());
@@ -215,6 +213,9 @@ public:
             m_tail = to_append;
             dst_next = &(to_append->next());
             m_size += (*src_current)->size();
+            if (*src_current == old_tail) {
+                break;
+            }
             src_current = &((*src_current)->next());
 
         }
