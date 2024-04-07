@@ -580,12 +580,13 @@ size_t random_int(size_t limit) {
 }
 
 constexpr long long STOP_ITERATION = 258;
+constexpr long long MAX_ITERATIONS = 10000;
 
 void random_test() {
     string str = "";
     CPatchStr patch_str("");
     long long iteration = 0;
-    while (true) {
+    while (iteration < MAX_ITERATIONS) {
 
         if (iteration == STOP_ITERATION) {
             cout << "break point here please" << endl;
