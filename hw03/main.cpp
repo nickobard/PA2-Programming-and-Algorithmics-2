@@ -9,6 +9,9 @@
 #include <iomanip>
 #include <memory>
 #include <stdexcept>
+#include <random>
+#include <string>
+
 
 #endif /* __PROGTEST__ */
 
@@ -16,7 +19,6 @@ using namespace std;
 
 struct CPatch {
     CPatch() : m_next(nullptr) {
-
     }
 
 
@@ -521,6 +523,68 @@ bool stringMatch(char *str,
     delete[] str;
     return res;
 }
+
+
+string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+size_t seed = 42;
+mt19937 engine(seed);
+
+constexpr size_t MAX_STRING_LENGTH = 5;
+constexpr size_t MAX_TOTAL_STRING_LENGTH = 20;
+
+string get_random_string(size_t length) {
+    uniform_int_distribution<> dist(0, (int) chars.size() - 1);
+    string res;
+    res.reserve(length);
+    for (size_t i = 0; i < length; i++) {
+        res += chars[dist(engine)];
+    }
+    return res;
+}
+
+size_t random_int(size_t limit) {
+    uniform_int_distribution<int> distribution(0, (int) limit);
+    return distribution(engine);
+}
+
+void random_test() {
+    string str = "";
+    CPatchStr patch_str("");
+    while (true) {
+        size_t operation = random_int(3);
+        if (operation == 0 && str.size() < MAX_TOTAL_STRING_LENGTH) { // append
+            string random_string = get_random_string(random_int(MAX_STRING_LENGTH));
+            str.append(random_string);
+            patch_str.append(random_string.data());
+
+            patch_str.assert_healthy_structure();
+            assert(stringMatch(patch_str.toStr(), str.data()));
+            assert(patch_str.size() == str.size());
+
+        } else if (operation == 1 && str.size() < MAX_TOTAL_STRING_LENGTH) { // insert
+            string random_string = get_random_string(random_int(MAX_STRING_LENGTH));
+            size_t random_pos = random_int(str.size() - 1);
+            str.insert(random_pos, random_string);
+            patch_str.insert(random_pos, random_string.data());
+
+            patch_str.assert_healthy_structure();
+            assert(stringMatch(patch_str.toStr(), str.data()));
+            assert(patch_str.size() == str.size());
+
+        } else if (operation == 2 && str.size() > 0) { // remove
+            size_t random_pos = random_int(str.size() - 1);
+            size_t random_len = random_int(str.size() - random_pos);
+            str.erase(random_pos, random_len);
+            patch_str.remove(random_pos, random_len);
+
+            patch_str.assert_healthy_structure();
+            assert(stringMatch(patch_str.toStr(), str.data()));
+            assert(patch_str.size() == str.size());
+
+        }
+    }
+}
+
 
 int main() {
     char tmpStr[100];
@@ -1030,6 +1094,9 @@ int main() {
     s8.insert(0, CPatchStr("test"));
     assert(s8.m_head == s8.m_tail && s8.size() == 4 && strcmp(s8.m_head->m_patch.get(), "test") == 0);
     s8.assert_healthy_structure();
+
+    cout << get_random_string(10) << endl;
+    random_test();
 
     return EXIT_SUCCESS;
 }
