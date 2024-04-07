@@ -256,17 +256,18 @@ public:
         return *this;
     }
 
-    static pair<shared_ptr<char[]>, shared_ptr<char[]>> split(const char *src, size_t offset) {
+    static pair<shared_ptr<char[]>, shared_ptr<char[]>> split(const CPatch *patch, size_t offset) {
+        auto patch_str = patch->m_patch.get();
         char *left_part = new char[offset + 1];
-        char *right_part = new char[strlen(src) - offset + 1];
+        char *right_part = new char[patch->size() - offset + 1];
         for (size_t i = 0; i < offset; i++) {
-            left_part[i] = src[i];
+            left_part[i] = patch_str[i];
         }
         left_part[offset] = '\0';
-        for (size_t i = 0; i < strlen(src) - offset; i++) {
-            right_part[i] = src[i + offset];
+        for (size_t i = 0; i < patch->size() - offset; i++) {
+            right_part[i] = patch_str[i + offset];
         }
-        right_part[strlen(src) - offset] = '\0';
+        right_part[patch->size() - offset] = '\0';
 
         return {shared_ptr<char[]>(left_part), shared_ptr<char[]>(right_part)};
     }
@@ -325,7 +326,7 @@ public:
             m_tail = tail_tmp;
         } else {
             // split into two parts and insert between them using split
-            auto [left, right] = split(current->m_patch.get(), pos - current_offset);
+            auto [left, right] = split(current, pos - current_offset);
             auto *next = current->next();
             current->next() = nullptr;
 
