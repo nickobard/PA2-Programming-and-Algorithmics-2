@@ -97,6 +97,24 @@ public:
         return *this;
     }
 
+    void assert_healthy_structure() const {
+        size_t total_size = 0;
+        if (empty()) {
+            assert(m_head == m_tail);
+            assert(m_head->empty());
+        }
+        auto current = m_head;
+
+        while (current->next() != nullptr) {
+            assert(!current->empty());
+            total_size += current->size();
+            current = current->next();
+        }
+        total_size += current->size();
+        assert(current == m_tail);
+        assert(m_size == total_size);
+    }
+
     // operator =
     CPatchStr subStr(size_t from,
                      size_t len) const {
@@ -162,6 +180,9 @@ public:
         if (this == &src) {
             auto copy = src;
             return append(copy);
+        }
+        if (src.empty()) {
+            return *this;
         }
         // current CPatchStr is empty string
         CPatch **dst_next;
@@ -415,6 +436,13 @@ public:
             }
             current->next() = nullptr;
             m_size -= current->size();
+            if (m_tail == current) {
+                if (left_end == nullptr) {
+                    left_end = new CPatch("");
+                    m_head = left_end;
+                }
+                m_tail = left_end;
+            }
             delete current;
         } else {
             auto substr = substring(from + len - current_offset, current->size() + current_offset - from - len,
@@ -498,30 +526,42 @@ int main() {
     char tmpStr[100];
 
     CPatchStr a("test");
+    a.assert_healthy_structure();
     assert (stringMatch(a.toStr(), "test"));
     std::strncpy(tmpStr, " da", sizeof(tmpStr) - 1);
     a.append(tmpStr);
+    a.assert_healthy_structure();
     assert (stringMatch(a.toStr(), "test da"));
     std::strncpy(tmpStr, "ta", sizeof(tmpStr) - 1);
     a.append(tmpStr);
+    a.assert_healthy_structure();
     assert (stringMatch(a.toStr(), "test data"));
     std::strncpy(tmpStr, "foo text", sizeof(tmpStr) - 1);
     CPatchStr b(tmpStr);
+    b.assert_healthy_structure();
     assert (stringMatch(b.toStr(), "foo text"));
     CPatchStr c(a);
+    a.assert_healthy_structure();
     assert (stringMatch(c.toStr(), "test data"));
     auto substring = a.subStr(3, 5);
+    substring.assert_healthy_structure();
     CPatchStr d(a.subStr(3, 5));
+    d.assert_healthy_structure();
     assert (stringMatch(d.toStr(), "t dat"));
     d.append(b);
+    d.assert_healthy_structure();
     assert (stringMatch(d.toStr(), "t datfoo text"));
     d.append(b.subStr(3, 4));
+    d.assert_healthy_structure();
     assert (stringMatch(d.toStr(), "t datfoo text tex"));
     c.append(d);
+    c.assert_healthy_structure();
     assert (stringMatch(c.toStr(), "test datat datfoo text tex"));
     c.append(c);
+    c.assert_healthy_structure();
     assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
     d.insert(2, c.subStr(6, 9));
+    d.assert_healthy_structure();
     assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
     b = "abcdefgh";
     assert (stringMatch(b.toStr(), "abcdefgh"));
@@ -548,35 +588,49 @@ int main() {
     assert(stringMatch(s2.toStr(), ""));
     assert(s2.size() == strlen(""));
     s1.append(s2);
+    s1.assert_healthy_structure();
     assert(stringMatch(s1.toStr(), ""));
     assert(s1.size() == strlen(""));
 
 
     CPatchStr s3 = CPatchStr("Hello");
+    s3.assert_healthy_structure();
     s3.append(s1);
+    s3.assert_healthy_structure();
     assert(stringMatch(s3.toStr(), "Hello"));
     assert(s3.size() == strlen("Hello"));
 
     s1.append(s3);
+    s1.assert_healthy_structure();
     assert(stringMatch(s1.toStr(), "Hello"));
     assert(s1.size() == strlen("Hello"));
 
     assert(stringMatch(s1.subStr(0, 4).toStr(), "Hell"));
+    s1.subStr(0, 4).assert_healthy_structure();
     assert(s1.subStr(0, 4).size() == strlen("Hell"));
     assert(stringMatch(s1.subStr(0, 5).toStr(), "Hello"));
+    s1.subStr(0, 5).assert_healthy_structure();
     assert(s1.subStr(0, 5).size() == strlen("Hello"));
 
     assert(stringMatch(s1.subStr(1, 4).toStr(), "ello"));
+    s1.subStr(1, 4).assert_healthy_structure();
     assert(s1.subStr(1, 4).size() == strlen("ello"));
     assert(stringMatch(s1.subStr(1, 3).toStr(), "ell"));
+    s1.subStr(1, 3).assert_healthy_structure();
     assert(s1.subStr(1, 3).size() == strlen("ell"));
 
     CPatchStr s4 = CPatchStr(" there");
+    s4.assert_healthy_structure();
     CPatchStr s5 = CPatchStr(" world");
+    s5.assert_healthy_structure();
     s3.append(s4);
+    s3.assert_healthy_structure();
     s3.append(s5);
+    s3.assert_healthy_structure();
     s5 = s3;
+    s5.assert_healthy_structure();
     auto s6 = CPatchStr(s3);
+    s6.assert_healthy_structure();
 
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
@@ -586,225 +640,285 @@ int main() {
     assert(s6.size() == strlen("Hello there world"));
 
     assert(stringMatch(s3.subStr(0, 17).toStr(), "Hello there world"));
+    s3.subStr(0, 17).assert_healthy_structure();
     assert(s3.subStr(0, 17).size() == strlen("Hello there world"));
     assert(stringMatch(s3.subStr(5, 6).toStr(), " there"));
+    s3.subStr(5, 6).assert_healthy_structure();
     assert(s3.subStr(5, 6).size() == strlen(" there"));
     assert(stringMatch(s3.subStr(6, 5).toStr(), "there"));
+    s3.subStr(6, 5).assert_healthy_structure();
     assert(s3.subStr(6, 5).size() == strlen("there"));
     assert(stringMatch(s3.subStr(6, 4).toStr(), "ther"));
+    s3.subStr(6, 4).assert_healthy_structure();
     assert(s3.subStr(6, 4).size() == strlen("ther"));
     assert(stringMatch(s3.subStr(5, 5).toStr(), " ther"));
+    s3.subStr(5, 5).assert_healthy_structure();
     assert(s3.subStr(5, 5).size() == strlen(" ther"));
     assert(stringMatch(s3.subStr(0, 0).toStr(), ""));
+    s3.subStr(0, 0).assert_healthy_structure();
     assert(s3.subStr(0, 0).size() == strlen(""));
     assert(stringMatch(s3.subStr(0, 16).toStr(), "Hello there worl"));
+    s3.subStr(0, 16).assert_healthy_structure();
     assert(s3.subStr(0, 16).size() == strlen("Hello there worl"));
     assert(stringMatch(s3.subStr(1, 15).toStr(), "ello there worl"));
+    s3.subStr(1, 15).assert_healthy_structure();
     assert(s3.subStr(1, 15).size() == strlen("ello there worl"));
     assert(stringMatch(s3.subStr(0, 11).toStr(), "Hello there"));
+    s3.subStr(0, 11).assert_healthy_structure();
     assert(s3.subStr(0, 11).size() == strlen("Hello there"));
     assert(stringMatch(s3.subStr(1, 10).toStr(), "ello there"));
+    s3.subStr(1, 10).assert_healthy_structure();
     assert(s3.subStr(1, 10).size() == strlen("ello there"));
     assert(stringMatch(s3.subStr(4, 7).toStr(), "o there"));
+    s3.subStr(4, 7).assert_healthy_structure();
     assert(s3.subStr(4, 7).size() == strlen("o there"));
 
     // testing insert
     s6 = CPatchStr("INJ");
+    s6.assert_healthy_structure();
     s3.insert(0, s6);
     assert(stringMatch(s3.toStr(), "INJHello there world"));
     assert(s3.size() == strlen("INJHello there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(16, s6);
     assert(stringMatch(s3.toStr(), "Hello there worldINJ"));
     assert(s3.size() == strlen("Hello there worldINJ"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(5, s6);
     assert(stringMatch(s3.toStr(), "HelloINJ there world"));
     assert(s3.size() == strlen("HelloINJ there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(11, s6);
     assert(stringMatch(s3.toStr(), "Hello thereINJ world"));
     assert(s3.size() == strlen("Hello thereINJ world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(4, s6);
     assert(stringMatch(s3.toStr(), "HellINJo there world"));
     assert(s3.size() == strlen("HellINJo there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(10, s6);
     assert(stringMatch(s3.toStr(), "Hello therINJe world"));
     assert(s3.size() == strlen("Hello therINJe world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(1, s6);
     assert(stringMatch(s3.toStr(), "HINJello there world"));
     assert(s3.size() == strlen("HINJello there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(7, s6);
     assert(stringMatch(s3.toStr(), "Hello tINJhere world"));
     assert(s3.size() == strlen("Hello tINJhere world"));
+    s3.assert_healthy_structure();
 
     s6.append(s6).append(s6);
+    s6.assert_healthy_structure();
     assert(stringMatch(s6.toStr(), "INJINJINJINJ"));
     assert(s6.size() == strlen("INJINJINJINJ"));
+
 
     s3 = s5;
     s3.insert(0, s6);
     assert(stringMatch(s3.toStr(), "INJINJINJINJHello there world"));
     assert(s3.size() == strlen("INJINJINJINJHello there world"));
+    s3.assert_healthy_structure();
+
     s3 = s5;
     s3.insert(16, s6);
     assert(stringMatch(s3.toStr(), "Hello there worldINJINJINJINJ"));
     assert(s3.size() == strlen("Hello there worldINJINJINJINJ"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(5, s6);
     assert(stringMatch(s3.toStr(), "HelloINJINJINJINJ there world"));
     assert(s3.size() == strlen("HelloINJINJINJINJ there world"));
+    s3.assert_healthy_structure();
+
     s3 = s5;
     s3.insert(11, s6);
     assert(stringMatch(s3.toStr(), "Hello thereINJINJINJINJ world"));
     assert(s3.size() == strlen("Hello thereINJINJINJINJ world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(4, s6);
     assert(stringMatch(s3.toStr(), "HellINJINJINJINJo there world"));
     assert(s3.size() == strlen("HellINJINJINJINJo there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(10, s6);
+
     assert(stringMatch(s3.toStr(), "Hello therINJINJINJINJe world"));
     assert(s3.size() == strlen("Hello therINJINJINJINJe world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(1, s6);
     assert(stringMatch(s3.toStr(), "HINJINJINJINJello there world"));
     assert(s3.size() == strlen("HINJINJINJINJello there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.insert(7, s6);
+
     assert(stringMatch(s3.toStr(), "Hello tINJINJINJINJhere world"));
     assert(s3.size() == strlen("Hello tINJINJINJINJhere world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(0, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.remove(4, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.remove(11, 0);
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.remove(7, 0);
+
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
-
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.remove(0, 2);
     assert(stringMatch(s3.toStr(), "llo there world"));
     assert(s3.size() == strlen("llo there world"));
+    s3.assert_healthy_structure();
     s3 = s5;
     s3.remove(1, 2);
     assert(stringMatch(s3.toStr(), "Hlo there world"));
     assert(s3.size() == strlen("Hlo there world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(4, 2);
     assert(stringMatch(s3.toStr(), "Hellthere world"));
     assert(s3.size() == strlen("Hellthere world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(0, 13);
     assert(stringMatch(s3.toStr(), "orld"));
     assert(s3.size() == strlen("orld"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(0, 17);
     assert(stringMatch(s3.toStr(), ""));
     assert(s3.size() == strlen(""));
+    s3.assert_healthy_structure();
 
 
     s3 = s5;
     s3.remove(0, 11);
     assert(stringMatch(s3.toStr(), " world"));
     assert(s3.size() == strlen(" world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(3, 4);
     assert(stringMatch(s3.toStr(), "Helhere world"));
     assert(s3.size() == strlen("Helhere world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(3, 8);
     assert(stringMatch(s3.toStr(), "Hel world"));
     assert(s3.size() == strlen("Hel world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(3, 10);
     assert(stringMatch(s3.toStr(), "Helorld"));
     assert(s3.size() == strlen("Helorld"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(3, 14);
     assert(stringMatch(s3.toStr(), "Hel"));
     assert(s3.size() == strlen("Hel"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(5, 2);
     assert(stringMatch(s3.toStr(), "Hellohere world"));
     assert(s3.size() == strlen("Hellohere world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(5, 6);
     assert(stringMatch(s3.toStr(), "Hello world"));
     assert(s3.size() == strlen("Hello world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(5, 8);
     assert(stringMatch(s3.toStr(), "Helloorld"));
     assert(s3.size() == strlen("Helloorld"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(5, 12);
     assert(stringMatch(s3.toStr(), "Hello"));
     assert(s3.size() == strlen("Hello"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(7, 2);
     assert(stringMatch(s3.toStr(), "Hello tre world"));
     assert(s3.size() == strlen("Hello tre world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(7, 4);
     assert(stringMatch(s3.toStr(), "Hello t world"));
     assert(s3.size() == strlen("Hello t world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(7, 6);
     assert(stringMatch(s3.toStr(), "Hello torld"));
     assert(s3.size() == strlen("Hello torld"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(7, 10);
     assert(stringMatch(s3.toStr(), "Hello t"));
     assert(s3.size() == strlen("Hello t"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(10, 7);
     assert(stringMatch(s3.toStr(), "Hello ther"));
     assert(s3.size() == strlen("Hello ther"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(11, 2);
     assert(stringMatch(s3.toStr(), "Hello thereorld"));
     assert(s3.size() == strlen("Hello thereorld"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(11, 6);
     assert(stringMatch(s3.toStr(), "Hello there"));
     assert(s3.size() == strlen("Hello there"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.remove(0, 4);
     assert(stringMatch(s3.toStr(), "o there world"));
     assert(s3.size() == strlen("o there world"));
+    s3.assert_healthy_structure();
 
     try {
         s3.subStr(20, 0).toStr();
@@ -881,34 +995,41 @@ int main() {
     s3.insert(0, s3);
     assert(stringMatch(s3.toStr(), "Hello there worldHello there world"));
     assert(s3.size() == strlen("Hello there worldHello there world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.insert(16, s3);
     assert(stringMatch(s3.toStr(), "Hello there worldHello there world"));
     assert(s3.size() == strlen("Hello there worldHello there world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.insert(3, s3);
     assert(stringMatch(s3.toStr(), "HelHello there worldlo there world"));
     assert(s3.size() == strlen("HelHello there worldlo there world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.insert(0, CPatchStr(""));
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
+    s3.assert_healthy_structure();
 
     s3 = s5;
     s3.append(CPatchStr("")).remove(1, 3).insert(1, CPatchStr("ell"));
     assert(stringMatch(s3.toStr(), "Hello there world"));
     assert(s3.size() == strlen("Hello there world"));
+    s3.assert_healthy_structure();
 
     CPatchStr s8 = CPatchStr("");
     s8.insert(0, CPatchStr(""));
     assert(s8.m_head == s8.m_tail && s8.empty() && strcmp(s8.m_head->m_patch.get(), "") == 0);
+    s8.assert_healthy_structure();
 
     s8 = CPatchStr("");
     s8.insert(0, CPatchStr("test"));
     assert(s8.m_head == s8.m_tail && s8.size() == 4 && strcmp(s8.m_head->m_patch.get(), "test") == 0);
+    s8.assert_healthy_structure();
 
     return EXIT_SUCCESS;
 }
