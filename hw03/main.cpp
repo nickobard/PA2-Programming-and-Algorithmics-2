@@ -277,7 +277,7 @@ public:
             auto *tail_tmp = m_tail;
             m_tail = current;
             append(src);
-            current->next()->next() = next;
+            m_tail->next() = next;
             m_tail = tail_tmp;
         } else {
             // split into two parts and insert between them using split
@@ -562,6 +562,34 @@ int main() {
     s3 = s5;
     s3.insert(7, s6);
     assert(stringMatch(s3.toStr(), "Hello tINJhere world"));
+
+    s6.append(s6).append(s6);
+    assert(stringMatch(s6.toStr(), "INJINJINJINJ"));
+
+    s3 = s5;
+    s3.insert(0, s6);
+    assert(stringMatch(s3.toStr(), "INJINJINJINJHello there world"));
+    s3 = s5;
+    s3.insert(16, s6);
+    assert(stringMatch(s3.toStr(), "Hello there worldINJINJINJINJ"));
+    s3 = s5;
+    s3.insert(5, s6);
+    assert(stringMatch(s3.toStr(), "HelloINJINJINJINJ there world"));
+    s3 = s5;
+    s3.insert(11, s6);
+    assert(stringMatch(s3.toStr(), "Hello thereINJINJINJINJ world"));
+    s3 = s5;
+    s3.insert(4, s6);
+    assert(stringMatch(s3.toStr(), "HellINJINJINJINJo there world"));
+    s3 = s5;
+    s3.insert(10, s6);
+    assert(stringMatch(s3.toStr(), "Hello therINJINJINJINJe world"));
+    s3 = s5;
+    s3.insert(1, s6);
+    assert(stringMatch(s3.toStr(), "HINJINJINJINJello there world"));
+    s3 = s5;
+    s3.insert(7, s6);
+    assert(stringMatch(s3.toStr(), "Hello tINJINJINJINJhere world"));
 
 
     return EXIT_SUCCESS;
