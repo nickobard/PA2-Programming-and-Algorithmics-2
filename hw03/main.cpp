@@ -107,14 +107,9 @@ public:
             return {""};
         }
         // find first
-        auto *current = m_head;
-        size_t current_offset = 0;
-        size_t remaining_len = len;
-        while (current_offset + current->size() < from) {
-            current_offset += current->size();
-            current = current->next();
-        }
+        auto [current_offset, current] = patch_at(from);
 
+        size_t remaining_len = len;
         CPatchStr patch_str("");
         if (from != current_offset || (from + len < current_offset + current->size())) {
             // in this case just make first patch a substring
@@ -263,20 +258,15 @@ public:
         }
 
 
-        CPatch *pred = nullptr;
-        CPatch *current = m_head;
         size_t current_offset = 0;
-        while (current_offset + current->size() < pos) {
-            current_offset += current->size();
-            pred = current;
-            current = current->next();
-        }
+        auto [previous, current] = patch_at(pos, current_offset);
+
 
         if (pos == current_offset) {
             // use predecessor to append
             auto *tail_tmp = m_tail;
-            pred->next() = nullptr;
-            m_tail = pred;
+            previous->next() = nullptr;
+            m_tail = previous;
             append(src);
             m_tail->next() = current;
             m_tail = tail_tmp;
@@ -298,8 +288,8 @@ public:
 
             auto *tail_tmp = m_tail;
 
-            pred->next() = new CPatch(left);
-            m_tail = pred->next();
+            previous->next() = new CPatch(left);
+            m_tail = previous->next();
             append(src);
             m_tail->next() = new CPatch(right);
             m_tail->next()->next() = next;
@@ -319,14 +309,8 @@ public:
         }
 
         // find first
-        CPatch *previous = nullptr;
-        auto *current = m_head;
         size_t current_offset = 0;
-        while (current_offset + current->size() < from) {
-            current_offset += current->size();
-            previous = current;
-            current = current->next();
-        }
+        auto [previous, current] = patch_at(from, current_offset);
 
         CPatch *left_end = nullptr;
 
@@ -400,6 +384,26 @@ public:
             delete current;
         }
         return *this;
+    }
+
+    pair<size_t, CPatch *> patch_at(size_t index) const {
+        size_t current_offset = 0;
+        auto [previous, current] = patch_at(index, current_offset);
+        return {current_offset, current};
+    }
+
+
+    pair<CPatch *, CPatch *> patch_at(size_t index, size_t &offset) const {
+        CPatch *previous = nullptr;
+        CPatch *current = m_head;
+        size_t current_offset = 0;
+        while (current_offset + current->size() < index) {
+            current_offset += current->size();
+            previous = current;
+            current = current->next();
+        }
+        offset = current_offset;
+        return {previous, current};
     }
 
     char *toStr() const {
@@ -535,6 +539,24 @@ int main() {
     s3 = s5;
     s3.insert(16, s6);
     assert(stringMatch(s3.toStr(), "Hello there worldINJ"));
+    s3 = s5;
+//    s3.insert(5, s6);
+//    assert(stringMatch(s3.toStr(), "HelloINJ there world"));
+//    s3 = s5;
+//    s3.insert(11, s6);
+//    assert(stringMatch(s3.toStr(), "Hello thereINJ world"));
+//    s3 = s5;
+//    s3.insert(4, s6);
+//    assert(stringMatch(s3.toStr(), "HellINJo there world"));
+//    s3 = s5;
+//    s3.insert(10, s6);
+//    assert(stringMatch(s3.toStr(), "Hello therINJe world"));
+//    s3 = s5;
+//    s3.insert(1, s6);
+//    assert(stringMatch(s3.toStr(), "HINJello there world"));
+//    s3 = s5;
+//    s3.insert(7, s6);
+//    assert(stringMatch(s3.toStr(), "Hello tINJhere world"));
 
 
     return EXIT_SUCCESS;
