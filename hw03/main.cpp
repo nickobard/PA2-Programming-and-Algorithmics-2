@@ -329,9 +329,13 @@ public:
             auto [left, right] = split(current->m_patch.get(), pos - current_offset);
             auto *next = current->next();
             current->next() = nullptr;
-            delete current;
 
-            auto *tail_tmp = m_tail;
+
+            CPatch *tail_tmp = nullptr;
+
+            if (current != m_tail) {
+                tail_tmp = m_tail;
+            }
 
             if (previous == nullptr) {
                 m_head = new CPatch(left);
@@ -341,8 +345,12 @@ public:
                 m_tail = previous->next();
             }
             append(src);
-            m_tail->next() = new CPatch(right);
+            auto *right_patch = new CPatch(right);
+            m_tail->next() = right_patch;
             m_tail->next()->next() = next;
+            if (tail_tmp == nullptr) {
+                tail_tmp = right_patch;
+            }
             m_tail = tail_tmp;
         }
 
@@ -556,7 +564,7 @@ size_t random_int(size_t limit) {
     return distribution(engine);
 }
 
-constexpr long long STOP_ITERATION = 4;
+constexpr long long STOP_ITERATION = 42;
 
 void random_test() {
     string str = "";
