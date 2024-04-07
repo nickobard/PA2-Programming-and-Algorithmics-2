@@ -324,9 +324,12 @@ public:
             // deal with both sides then
             if (from == current_offset) {
                 // current should be disconnected
-                // TODO - fix when prev is nullptr - m_head should be used!!
-                previous->next() = nullptr;
-                left_end = previous;
+                if (previous != nullptr) {
+                    previous->next() = nullptr;
+                    left_end = previous;
+                } else {
+                    m_head = nullptr;
+                }
             } else {
                 // get substring, connect it and leave the left end
                 auto substr = substring(0, from - current_offset, current->m_patch.get());
@@ -344,7 +347,12 @@ public:
                 auto substr = substring(from + len - current_offset, current->size() - (from + len - current_offset),
                                         current->m_patch.get());
                 auto *to_add = new CPatch(substr);
-                left_end->next() = to_add;
+                if (left_end == nullptr) {
+                    left_end = to_add;
+                    m_head = to_add;
+                } else {
+                    left_end->next() = to_add;
+                }
                 m_size += to_add->size();
                 to_add->next() = current->next();
                 current->next() = nullptr;
@@ -353,7 +361,13 @@ public:
                 return *this;
 
             } else if (from + len == current_offset + current->size()) {
-                left_end->next() = current->next();
+                if (left_end == nullptr) {
+                    left_end = current->next();
+                    m_head = current->next();
+                } else {
+                    left_end->next() = current->next();
+
+                }
                 current->next() = nullptr;
                 m_size -= current->size();
                 delete current;
@@ -590,6 +604,33 @@ int main() {
     s3 = s5;
     s3.insert(7, s6);
     assert(stringMatch(s3.toStr(), "Hello tINJINJINJINJhere world"));
+
+    s3 = s5;
+    s3.remove(0, 0);
+    assert(stringMatch(s3.toStr(), "Hello there world"));
+    s3 = s5;
+    s3.remove(4, 0);
+    assert(stringMatch(s3.toStr(), "Hello there world"));
+    s3 = s5;
+    s3.remove(11, 0);
+    assert(stringMatch(s3.toStr(), "Hello there world"));
+    s3 = s5;
+    s3.remove(7, 0);
+    assert(stringMatch(s3.toStr(), "Hello there world"));
+
+    s3 = s5;
+    s3.remove(0, 2);
+    assert(stringMatch(s3.toStr(), "llo there world"));
+//    s3 = s5;
+//    s3.remove(1, 2);
+//    assert(stringMatch(s3.toStr(), "Hlo there world"));
+//
+//    s3 = s5;
+//    s3.remove(7, 0);
+//    assert(stringMatch(s3.toStr(), "Hello there world"));
+//    s3 = s5;
+//    s3.remove(7, 0);
+//    assert(stringMatch(s3.toStr(), "Hello there world"));
 
 
     return EXIT_SUCCESS;
