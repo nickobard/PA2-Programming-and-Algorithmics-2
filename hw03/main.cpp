@@ -500,6 +500,32 @@ int main() {
     assert(stringMatch(s1.subStr(0, 4).toStr(), "Hell"));
     assert(stringMatch(s1.subStr(0, 5).toStr(), "Hello"));
 
+    assert(stringMatch(s1.subStr(1, 4).toStr(), "ello"));
+    assert(stringMatch(s1.subStr(1, 3).toStr(), "ell"));
+
+    CPatchStr s4 = CPatchStr(" there");
+    CPatchStr s5 = CPatchStr(" world");
+    s3.append(s4);
+    s3.append(s5);
+    s5 = s3;
+    auto s6 = CPatchStr(s3);
+
+    assert(stringMatch(s3.toStr(), "Hello there world"));
+    assert(stringMatch(s5.toStr(), "Hello there world"));
+    assert(stringMatch(s6.toStr(), "Hello there world"));
+
+    assert(stringMatch(s3.subStr(0, 17).toStr(), "Hello there world"));
+    assert(stringMatch(s3.subStr(5, 6).toStr(), " there"));
+    assert(stringMatch(s3.subStr(6, 5).toStr(), "there"));
+    assert(stringMatch(s3.subStr(6, 4).toStr(), "ther"));
+    assert(stringMatch(s3.subStr(5, 5).toStr(), " ther"));
+    assert(stringMatch(s3.subStr(0, 0).toStr(), ""));
+    assert(stringMatch(s3.subStr(0, 16).toStr(), "Hello there worl"));
+    assert(stringMatch(s3.subStr(1, 15).toStr(), "ello there worl"));
+    assert(stringMatch(s3.subStr(0, 11).toStr(), "Hello there"));
+    assert(stringMatch(s3.subStr(1, 10).toStr(), "ello there"));
+    assert(stringMatch(s3.subStr(4, 7).toStr(), "o there"));
+
 
     return EXIT_SUCCESS;
 }
