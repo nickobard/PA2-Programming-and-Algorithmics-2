@@ -18,19 +18,17 @@
 using namespace std;
 
 struct CPatch {
-    CPatch() : m_next(nullptr) {
-    }
-
 
     CPatch(const char *str) : m_next(nullptr) {
-        size_t length = strlen(str);
-        char *patch = new char[length + 1];
+        m_size = strlen(str);
+        char *patch = new char[m_size + 1];
         strcpy(patch, str);
         m_patch = shared_ptr<char[]>(patch);
     }
 
     CPatch(shared_ptr<char[]> &patch) {
         m_patch = patch;
+        m_size = strlen(patch.get());
         m_next = nullptr;
     }
 
@@ -39,7 +37,7 @@ struct CPatch {
     }
 
     size_t size() const {
-        return strlen(m_patch.get());
+        return m_size;
     }
 
     bool empty() const {
@@ -52,6 +50,7 @@ struct CPatch {
 
     CPatch *m_next;
     shared_ptr<char[]> m_patch;
+    size_t m_size;
 
 };
 
