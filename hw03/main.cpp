@@ -404,7 +404,13 @@ public:
             m_size -= current->size();
             auto *p = new CPatch(substr);
             m_size += p->size();
-            left_end->next() = p;
+            if (left_end == nullptr) {
+                left_end = p;
+                m_head = left_end;
+            } else {
+                left_end->next() = p;
+
+            }
             p->next() = current->next();
             current->next() = nullptr;
             if (current == m_tail) {
@@ -687,8 +693,8 @@ int main() {
     s3.remove(4, 2);
     assert(stringMatch(s3.toStr(), "Hellthere world"));
     assert(s3.size() == strlen("Hellthere world"));
-//    s3 = s5;
-//    s3.remove(0, 6);
+    s3 = s5;
+    s3.remove(0, 6);
 //    assert(stringMatch(s3.toStr(), "there world"));
 //    assert(s3.size() == strlen("there world"));
 //
