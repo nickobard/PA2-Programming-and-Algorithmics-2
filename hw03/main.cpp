@@ -255,9 +255,11 @@ public:
         if (pos == 0) {
             // just prepend
             prepend(src);
-        } else if (pos == m_size) {
+            return *this;
+        } else if (pos == m_size - 1) {
             // just append
             append(src);
+            return *this;
         }
 
 
@@ -525,6 +527,14 @@ int main() {
     assert(stringMatch(s3.subStr(0, 11).toStr(), "Hello there"));
     assert(stringMatch(s3.subStr(1, 10).toStr(), "ello there"));
     assert(stringMatch(s3.subStr(4, 7).toStr(), "o there"));
+
+    // testing insert
+    s6 = CPatchStr("INJ");
+    s3.insert(0, s6);
+    assert(stringMatch(s3.toStr(), "INJHello there world"));
+    s3 = s5;
+    s3.insert(16, s6);
+    assert(stringMatch(s3.toStr(), "Hello there worldINJ"));
 
 
     return EXIT_SUCCESS;
