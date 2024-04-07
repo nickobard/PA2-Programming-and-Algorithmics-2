@@ -410,6 +410,15 @@ public:
                 to_add->next() = current->next();
                 current->next() = nullptr;
                 m_size -= current->size();
+                if (current == m_tail) {
+                    if (left_end == nullptr) {
+                        left_end = new CPatch("");
+                        m_head = left_end;
+                        m_tail = m_head;
+                    } else {
+                        m_tail = left_end->next();
+                    }
+                }
                 delete current;
                 return *this;
 
@@ -564,7 +573,7 @@ size_t random_int(size_t limit) {
     return distribution(engine);
 }
 
-constexpr long long STOP_ITERATION = 42;
+constexpr long long STOP_ITERATION = 58;
 
 void random_test() {
     string str = "";
@@ -606,10 +615,11 @@ void random_test() {
             cout << "break point here please" << endl;
         }
 
-        patch_str.assert_healthy_structure();
         str_size = str.size();
         delete[] patched_str;
         patched_str = patch_str.toStr();
+        patch_str.assert_healthy_structure();
+
 
         assert(stringMatch(patched_str, str.data()));
         assert(patch_str.size() == str_size);
