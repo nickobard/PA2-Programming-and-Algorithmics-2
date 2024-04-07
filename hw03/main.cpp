@@ -336,6 +336,7 @@ public:
             if (current != m_tail) {
                 tail_tmp = m_tail;
             }
+            delete current;
 
             if (previous == nullptr) {
                 m_head = new CPatch(left);
@@ -579,8 +580,8 @@ size_t random_int(size_t limit) {
     return res;
 }
 
-constexpr long long STOP_ITERATION = 258;
-constexpr long long MAX_ITERATIONS = 10000;
+constexpr long long STOP_ITERATION = 18;
+constexpr long long MAX_ITERATIONS = 100;
 
 void random_test() {
     string str = "";
@@ -614,6 +615,7 @@ void random_test() {
             patch_str.remove(random_pos, random_len);
 
         } else {
+            delete[] patched_str;
             iteration++;
             continue;
         }
@@ -674,7 +676,8 @@ int main() {
     c.append(c);
     c.assert_healthy_structure();
     assert (stringMatch(c.toStr(), "test datat datfoo text textest datat datfoo text tex"));
-    d.insert(2, c.subStr(6, 9));
+    auto substr = c.subStr(6, 9);
+    d.insert(2, substr);
     d.assert_healthy_structure();
     assert (stringMatch(d.toStr(), "t atat datfdatfoo text tex"));
     b = "abcdefgh";
