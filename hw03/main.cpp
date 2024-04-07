@@ -416,7 +416,11 @@ public:
                         m_head = left_end;
                         m_tail = m_head;
                     } else {
-                        m_tail = left_end->next();
+                        if (left_end->next() != nullptr) {
+                            m_tail = left_end->next();
+                        } else {
+                            m_tail = left_end;
+                        }
                     }
                 }
                 delete current;
@@ -555,6 +559,7 @@ string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 size_t seed = 42;
 mt19937 engine(seed);
 
+
 constexpr size_t MAX_STRING_LENGTH = 5;
 constexpr size_t MAX_TOTAL_STRING_LENGTH = 20;
 
@@ -570,10 +575,11 @@ string get_random_string(size_t length) {
 
 size_t random_int(size_t limit) {
     uniform_int_distribution<int> distribution(0, (int) limit);
-    return distribution(engine);
+    int res = distribution(engine);
+    return res;
 }
 
-constexpr long long STOP_ITERATION = 91;
+constexpr long long STOP_ITERATION = 258;
 
 void random_test() {
     string str = "";
@@ -596,7 +602,7 @@ void random_test() {
 
         } else if (operation == 1 && str.size() < MAX_TOTAL_STRING_LENGTH) { // insert
             string random_string = get_random_string(random_int(MAX_STRING_LENGTH));
-            size_t random_pos = random_int(str.size() - 1);
+            size_t random_pos = random_int(str.size());
             str.insert(random_pos, random_string);
             patch_str.insert(random_pos, random_string.data());
 
