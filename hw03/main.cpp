@@ -413,6 +413,15 @@ public:
                     left_end->next() = current->next();
 
                 }
+                if (current == m_tail) {
+                    if (left_end == nullptr) {
+                        left_end = new CPatch("");
+                        m_head = left_end;
+                        m_tail = m_head;
+                    } else {
+                        m_tail = left_end;
+                    }
+                }
                 current->next() = nullptr;
                 m_size -= current->size();
                 delete current;
