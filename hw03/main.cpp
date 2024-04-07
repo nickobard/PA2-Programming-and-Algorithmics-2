@@ -385,7 +385,12 @@ public:
         }
 
         if (current_offset + current->size() == from + len) {
-            left_end->next() = current->next();
+            if (left_end == nullptr) {
+                left_end = current->next();
+                m_head = left_end;
+            } else {
+                left_end->next() = current->next();
+            }
             current->next() = nullptr;
             m_size -= current->size();
             delete current;
@@ -621,16 +626,16 @@ int main() {
     s3 = s5;
     s3.remove(0, 2);
     assert(stringMatch(s3.toStr(), "llo there world"));
-//    s3 = s5;
-//    s3.remove(1, 2);
-//    assert(stringMatch(s3.toStr(), "Hlo there world"));
-//
-//    s3 = s5;
-//    s3.remove(7, 0);
-//    assert(stringMatch(s3.toStr(), "Hello there world"));
-//    s3 = s5;
-//    s3.remove(7, 0);
-//    assert(stringMatch(s3.toStr(), "Hello there world"));
+    s3 = s5;
+    s3.remove(1, 2);
+    assert(stringMatch(s3.toStr(), "Hlo there world"));
+
+    s3 = s5;
+    s3.remove(0, 5);
+    assert(stringMatch(s3.toStr(), " there world"));
+    s3 = s5;
+    s3.remove(0, 4);
+    assert(stringMatch(s3.toStr(), "o there world"));
 
 
     return EXIT_SUCCESS;
