@@ -140,18 +140,47 @@ class CFilter {
 public:
     CFilter() = default;
 
-    CFilter &name(const std::string &name);
+    CFilter &name(const std::string &name) {
+        m_names_to_filter.push_back(multiset_split(lower_case(name)));
+        return *this;
+    }
 
-    CFilter &bornBefore(const CDate &date);
+    CFilter &bornBefore(const CDate &date) {
+        if (m_born_before > date) {
+            m_born_before = date;
+        }
+        return *this;
+    }
 
-    CFilter &bornAfter(const CDate &date);
+    CFilter &bornAfter(const CDate &date) {
+        if (m_born_after < date) {
+            m_born_after = date;
+        }
+        return *this;
+    }
 
-    CFilter &enrolledBefore(int year);
+    CFilter &enrolledBefore(int year) {
+        if (m_enrolled_before > year) {
+            m_enrolled_before = year;
+        }
+        return *this;
+    }
 
-    CFilter &enrolledAfter(int year);
+    CFilter &enrolledAfter(int year) {
+        if (m_enrolled_after < year) {
+            m_enrolled_after = year;
+        }
+        return *this;
+    }
+
 
 private:
-    // todo
+
+    CDate m_born_before = CDate(INT32_MAX, INT32_MAX, INT32_MAX);
+    CDate m_born_after = CDate(0, 0, 0);
+    int m_enrolled_before = INT32_MAX;
+    int m_enrolled_after = 0;
+    list<multiset<string>> m_names_to_filter;
 };
 
 class CSort {
