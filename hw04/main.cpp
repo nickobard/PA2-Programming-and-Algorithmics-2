@@ -119,11 +119,64 @@ class CSort {
 public:
     CSort() = default;
 
+    bool operator()(const CStudent &lhs, const CStudent &rhs) const {
+        auto current_key = m_keys.cbegin();
+        return compare(lhs, rhs, current_key);
+    }
+
+    bool
+    compare(const CStudent &lhs, const CStudent &rhs, list<pair<ESortKey, bool>>::const_iterator current_key) const {
+        auto [key, ascending] = *current_key;
+        bool left_term_result;
+        if (ascending) {
+            if (key == ESortKey::NAME) {
+                left_term_result = lhs.m_name < rhs.m_name;
+            } else if (key == ESortKey::BIRTH_DATE) {
+                left_term_result = lhs.m_date < rhs.m_date;
+            } else {
+                left_term_result = lhs.m_enrolled < rhs.m_enrolled;
+            }
+        } else {
+            if (key == ESortKey::NAME) {
+                left_term_result = lhs.m_name > rhs.m_name;
+            } else if (key == ESortKey::BIRTH_DATE) {
+                left_term_result = lhs.m_date > rhs.m_date;
+            } else {
+                left_term_result = lhs.m_enrolled > rhs.m_enrolled;
+            }
+        }
+        if (left_term_result) {
+            return true;
+        }
+
+        current_key++;
+        if (current_key == m_keys.cend()) {
+            return left_term_result;
+        }
+
+        bool equal;
+        if (key == ESortKey::NAME) {
+            equal = lhs.m_name == rhs.m_name;
+        } else if (key == ESortKey::BIRTH_DATE) {
+            equal = lhs.m_date == rhs.m_date;
+        } else {
+            equal = lhs.m_enrolled == rhs.m_enrolled;
+        }
+
+        if (!equal) {
+            return false;
+        }
+        return compare(lhs, rhs, current_key);
+    }
+
     CSort &addKey(ESortKey key,
-                  bool ascending);
+                  bool ascending) {
+        m_keys.emplace_back(key, ascending);
+        return *this;
+    }
 
 private:
-    // todo
+    list<pair<ESortKey, bool>> m_keys;
 };
 
 class CStudyDept {
@@ -169,6 +222,7 @@ public:
         for (auto *student: m_students_by_id) {
             l.push_back(*student);
         }
+        l.sort(sortOpt);
         return l;
     }
 
