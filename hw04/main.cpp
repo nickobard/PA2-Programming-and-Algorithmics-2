@@ -173,15 +173,48 @@ public:
         return *this;
     }
 
+    list<CStudent *> filter(const set<CStudent *, CStudent::ComparatorByID> &students) const {
+        list<CStudent *> filtered;
+
+        for (auto *student: students) {
+            if (student->m_date >= m_born_before || student->m_date <= m_born_after) {
+                continue;
+            }
+            if (student->m_enrolled >= m_enrolled_before || student->m_enrolled <= m_enrolled_after) {
+                continue;
+            }
+            if (!m_names_to_filter.empty()) {
+                auto iter = find(m_names_to_filter.begin(), m_names_to_filter.end(), student->m_filter_name);
+                if (iter == m_names_to_filter.end()) {
+                    continue;
+                }
+            }
+
+            filtered.push_back(student);
+        }
+
+        return filtered;
+    }
+
 
 private:
 
-    CDate m_born_before = CDate(INT32_MAX, INT32_MAX, INT32_MAX);
-    CDate m_born_after = CDate(0, 0, 0);
-    int m_enrolled_before = INT32_MAX;
-    int m_enrolled_after = 0;
+    static const CDate MAX_DATE;
+    static const CDate MIN_DATE;
+    static const int MAX_ENROLLED;
+    static const int MIN_ENROLLED;
+
+    CDate m_born_before = MAX_DATE;
+    CDate m_born_after = MIN_DATE;
+    int m_enrolled_before = MAX_ENROLLED;
+    int m_enrolled_after = MIN_ENROLLED;
     list<multiset<string>> m_names_to_filter;
 };
+
+const CDate CFilter::MAX_DATE = CDate(INT32_MAX, INT32_MAX, INT32_MAX);
+const CDate CFilter::MIN_DATE = CDate(0, 0, 0);
+const int CFilter::MAX_ENROLLED = INT32_MAX;
+const int CFilter::MIN_ENROLLED = 0;
 
 class CSort {
 public:
@@ -298,12 +331,13 @@ public:
 
     std::list<CStudent> search(const CFilter &flt,
                                const CSort &sortOpt) const {
-        list<CStudent> l;
-        for (auto *student: m_students_by_id) {
-            l.emplace_back(student->m_name, student->m_date, student->m_enrolled);
+        list<CStudent *> filtered_students = flt.filter(m_students_by_id);
+        list<CStudent> sorted_students;
+        for (auto *student: filtered_students) {
+            sorted_students.emplace_back(student->m_name, student->m_date, student->m_enrolled);
         }
-        l.sort(sortOpt);
-        return l;
+        sorted_students.sort(sortOpt);
+        return sorted_students;
     }
 
     std::set<std::string> suggest(const std::string &name) const;
@@ -414,32 +448,32 @@ int main(void) {
     multiset<string> m2 = {"ryba", "john", "ryba"};
     cout << (m1 == m2) << endl;
 
-//    assert (x0.search(CFilter().name("james bond"),
-//                      CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
-//                              ESortKey::NAME, true)) == (std::list<CStudent>
-//            {
-//                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
-//                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2012)
-//            }));
-//    assert (x0.search(CFilter().bornAfter(CDate(1980, 4, 11)).bornBefore(CDate(1983, 7, 13)).name("John Taylor").name(
-//            "james BOND"), CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
-//            ESortKey::NAME, true)) == (std::list<CStudent>
-//            {
-//                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
-//                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
-//                    CStudent("John Taylor", CDate(1981, 6, 30), 2012)
-//            }));
-//    assert (x0.search(CFilter().name("james"), CSort().addKey(ESortKey::NAME, true)) == (std::list<CStudent>
-//            {
-//            }));
+    assert (x0.search(CFilter().name("james bond"),
+                      CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
+                              ESortKey::NAME, true)) == (std::list<CStudent>
+            {
+                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
+                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2012)
+            }));
+    assert (x0.search(CFilter().bornAfter(CDate(1980, 4, 11)).bornBefore(CDate(1983, 7, 13)).name("John Taylor").name(
+            "james BOND"), CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
+            ESortKey::NAME, true)) == (std::list<CStudent>
+            {
+                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
+                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
+                    CStudent("John Taylor", CDate(1981, 6, 30), 2012)
+            }));
+    assert (x0.search(CFilter().name("james"), CSort().addKey(ESortKey::NAME, true)) == (std::list<CStudent>
+            {
+            }));
 //    assert (x0.suggest("peter") == (std::set<std::string>
 //            {
 //                    "John Peter Taylor",
