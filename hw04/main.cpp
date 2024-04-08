@@ -54,14 +54,37 @@ enum class ESortKey {
 
 using namespace std;
 
+string lower_case(const string &str) {
+    string lower_cased;
+    for (char c: str) {
+        lower_cased.push_back((char) tolower(c));
+    }
+    return lower_cased;
+}
+
+multiset<string> multiset_split(const string &str) {
+    multiset<string> m;
+    istringstream iss(str);
+    string word;
+    while (iss >> word) {
+        m.insert(word);
+    }
+    return m;
+}
+
 class CStudent {
 public:
     CStudent(const std::string &name,
              const CDate &born,
              int enrolled) : m_id(0),
-                             m_name(name), m_date(born), m_enrolled(enrolled) {
+                             m_name(name), m_date(born), m_enrolled(enrolled) {}
 
-    }
+    CStudent(const std::string &name,
+             const CDate &born,
+             int enrolled, long long id) : m_id(id),
+                                           m_name(name), m_date(born), m_enrolled(enrolled), m_filter_name(
+                    multiset_split(lower_case(name))) {}
+
 
     bool operator==(const CStudent &other) const {
         return m_name == other.m_name && m_date == other.m_date && m_enrolled == other.m_enrolled;
@@ -87,14 +110,11 @@ public:
         }
     };
 
-    void setID(long long id) {
-        m_id = id;
-    }
-
     long long m_id;
     string m_name;
     CDate m_date;
     int m_enrolled;
+    multiset<string> m_filter_name;
 };
 
 class CFilter {
@@ -204,8 +224,7 @@ public:
         if (iter != m_students.end()) {
             return false;
         }
-        auto *to_insert = new CStudent(x.m_name, x.m_date, x.m_enrolled);
-        to_insert->setID(student_id_counter++);
+        auto *to_insert = new CStudent(x.m_name, x.m_date, x.m_enrolled, student_id_counter++);
         m_students.insert(to_insert);
         m_students_by_id.insert(to_insert);
         return true;
@@ -229,7 +248,7 @@ public:
                                const CSort &sortOpt) const {
         list<CStudent> l;
         for (auto *student: m_students_by_id) {
-            l.push_back(*student);
+            l.emplace_back(student->m_name, student->m_date, student->m_enrolled);
         }
         l.sort(sortOpt);
         return l;
@@ -337,6 +356,10 @@ int main(void) {
                     CStudent("John Taylor", CDate(1981, 6, 30), 2012),
                     CStudent("Peter Taylor", CDate(1982, 2, 23), 2011)
             }));
+    multiset<string> m1 = {"john", "ryba", "ryba"};
+    multiset<string> m2 = {"ryba", "john", "ryba"};
+    cout << (m1 == m2) << endl;
+
 //    assert (x0.search(CFilter().name("james bond"),
 //                      CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
 //                              ESortKey::NAME, true)) == (std::list<CStudent>
