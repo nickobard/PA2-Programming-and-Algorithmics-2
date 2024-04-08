@@ -104,38 +104,15 @@ public:
         return !(*this == other);
     }
 
-    bool operator<(const CStudent &other) const {
-        return tie(m_name, m_date, m_enrolled) < tie(other.m_name, other.m_date, other.m_enrolled);
-    }
-
     struct ComparatorByID {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
             return lhs->m_id < rhs->m_id;
         }
     };
 
-    struct ComparatorByDate {
-        bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return tie(lhs->m_date, lhs->m_enrolled, lhs->m_name) < tie(rhs->m_date, rhs->m_enrolled, rhs->m_name);
-        }
-    };
-
-    struct ComparatorByEnrolled {
-        bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return tie(lhs->m_enrolled, lhs->m_name, lhs->m_date) < tie(rhs->m_enrolled, rhs->m_name, rhs->m_date);
-        }
-    };
-
-    struct ComparatorByFilterName {
-        bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return tie(lhs->m_filter_name, lhs->m_name, lhs->m_date, lhs->m_enrolled) <
-                   tie(rhs->m_filter_name, rhs->m_name, rhs->m_date, rhs->m_enrolled);
-        }
-    };
-
     struct DefaultComparator {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return *lhs < *rhs;
+            return tie(lhs->m_name, lhs->m_date, lhs->m_enrolled) < tie(rhs->m_name, rhs->m_date, rhs->m_enrolled);
         }
     };
 
@@ -305,37 +282,33 @@ public:
     CStudyDept() = default;
 
     ~CStudyDept() {
-        for (auto *student: m_students_by_date) {
+        for (auto *student: m_students) {
             delete student;
         }
     }
 
     bool addStudent(const CStudent &x) {
         auto *to_find = &(const_cast<CStudent &>(x));
-        auto iter = m_students_by_date.find(to_find);
-        if (iter != m_students_by_date.end()) {
+        auto iter = m_students.find(to_find);
+        if (iter != m_students.end()) {
             return false;
         }
         auto *to_insert = new CStudent(x.m_name, x.m_date, x.m_enrolled, student_id_counter++);
+        m_students.insert(to_insert);
         m_students_by_id.insert(to_insert);
-        m_students_by_date.insert(to_insert);
-        m_students_by_enrolled.insert(to_insert);
-        m_students_by_filter_name.insert((to_insert));
         return true;
     }
 
     bool delStudent(const CStudent &x) {
         auto *to_find = &(const_cast<CStudent &>(x));
-        auto iter = m_students_by_date.find(to_find);
-        if (iter == m_students_by_date.end()) {
+        auto iter = m_students.find(to_find);
+        if (iter == m_students.end()) {
             // not found
             return false;
         }
         auto to_delete = *iter;
+        m_students.erase(to_delete);
         m_students_by_id.erase(to_delete);
-        m_students_by_date.erase(to_delete);
-        m_students_by_enrolled.erase(to_delete);
-        m_students_by_filter_name.erase(to_delete);
         delete to_delete;
         return true;
     }
@@ -366,10 +339,9 @@ public:
 
 private:
     static long long student_id_counter;
+    set<CStudent *, CStudent::DefaultComparator> m_students;
     set<CStudent *, CStudent::ComparatorByID> m_students_by_id;
-    set<CStudent *, CStudent::ComparatorByDate> m_students_by_date;
-    set<CStudent *, CStudent::ComparatorByEnrolled> m_students_by_enrolled;
-    set<CStudent *, CStudent::ComparatorByFilterName> m_students_by_filter_name;
+
 };
 
 long long CStudyDept::student_id_counter = 0;
