@@ -72,6 +72,16 @@ multiset<string> multiset_split(const string &str) {
     return m;
 }
 
+set<string> set_split(const string &str) {
+    set<string> m;
+    istringstream iss(str);
+    string word;
+    while (iss >> word) {
+        m.insert(word);
+    }
+    return m;
+}
+
 class CStudent {
 public:
     CStudent(const std::string &name,
@@ -83,7 +93,7 @@ public:
              const CDate &born,
              int enrolled, long long id) : m_id(id),
                                            m_name(name), m_date(born), m_enrolled(enrolled), m_filter_name(
-                    multiset_split(lower_case(name))) {}
+                    multiset_split(lower_case(name))), m_suggest_name(set_split(lower_case(name))) {}
 
 
     bool operator==(const CStudent &other) const {
@@ -134,6 +144,7 @@ public:
     CDate m_date;
     int m_enrolled;
     multiset<string> m_filter_name;
+    set<string> m_suggest_name;
 };
 
 class CFilter {
@@ -340,7 +351,18 @@ public:
         return sorted_students;
     }
 
-    std::set<std::string> suggest(const std::string &name) const;
+    std::set<std::string> suggest(const std::string &name) const {
+        set<string> must_be_found = set_split(lower_case(name));
+        set<string> suggested;
+        for (auto *student: m_students_by_id) {
+            if (!includes(student->m_suggest_name.begin(), student->m_suggest_name.end(), must_be_found.begin(),
+                          must_be_found.end())) {
+                continue;
+            }
+            suggested.insert(student->m_name);
+        }
+        return suggested;
+    }
 
 private:
     static long long student_id_counter;
@@ -474,47 +496,47 @@ int main(void) {
     assert (x0.search(CFilter().name("james"), CSort().addKey(ESortKey::NAME, true)) == (std::list<CStudent>
             {
             }));
-//    assert (x0.suggest("peter") == (std::set<std::string>
-//            {
-//                    "John Peter Taylor",
-//                    "Peter John Taylor",
-//                    "Peter Taylor"
-//            }));
-//    assert (x0.suggest("bond") == (std::set<std::string>
-//            {
-//                    "Bond James",
-//                    "James Bond"
-//            }));
-//    assert (x0.suggest("peter joHn") == (std::set<std::string>
-//            {
-//                    "John Peter Taylor",
-//                    "Peter John Taylor"
-//            }));
-//    assert (x0.suggest("peter joHn bond") == (std::set<std::string>
-//            {
-//            }));
-//    assert (x0.suggest("pete") == (std::set<std::string>
-//            {
-//            }));
-//    assert (x0.suggest("peter joHn PETER") == (std::set<std::string>
-//            {
-//                    "John Peter Taylor",
-//                    "Peter John Taylor"
-//            }));
-//    assert (!x0.addStudent(CStudent("James Bond", CDate(1981, 7, 16), 2013)));
-//    assert (x0.delStudent(CStudent("James Bond", CDate(1981, 7, 16), 2013)));
-//    assert (x0.search(CFilter().bornAfter(CDate(1980, 4, 11)).bornBefore(CDate(1983, 7, 13)).name("John Taylor").name(
-//            "james BOND"), CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
-//            ESortKey::NAME, true)) == (std::list<CStudent>
-//            {
-//                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
-//                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
-//                    CStudent("John Taylor", CDate(1981, 6, 30), 2012)
-//            }));
-//    assert (!x0.delStudent(CStudent("James Bond", CDate(1981, 7, 16), 2013)));
+    assert (x0.suggest("peter") == (std::set<std::string>
+            {
+                    "John Peter Taylor",
+                    "Peter John Taylor",
+                    "Peter Taylor"
+            }));
+    assert (x0.suggest("bond") == (std::set<std::string>
+            {
+                    "Bond James",
+                    "James Bond"
+            }));
+    assert (x0.suggest("peter joHn") == (std::set<std::string>
+            {
+                    "John Peter Taylor",
+                    "Peter John Taylor"
+            }));
+    assert (x0.suggest("peter joHn bond") == (std::set<std::string>
+            {
+            }));
+    assert (x0.suggest("pete") == (std::set<std::string>
+            {
+            }));
+    assert (x0.suggest("peter joHn PETER") == (std::set<std::string>
+            {
+                    "John Peter Taylor",
+                    "Peter John Taylor"
+            }));
+    assert (!x0.addStudent(CStudent("James Bond", CDate(1981, 7, 16), 2013)));
+    assert (x0.delStudent(CStudent("James Bond", CDate(1981, 7, 16), 2013)));
+    assert (x0.search(CFilter().bornAfter(CDate(1980, 4, 11)).bornBefore(CDate(1983, 7, 13)).name("John Taylor").name(
+            "james BOND"), CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
+            ESortKey::NAME, true)) == (std::list<CStudent>
+            {
+                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
+                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
+                    CStudent("John Taylor", CDate(1981, 6, 30), 2012)
+            }));
+    assert (!x0.delStudent(CStudent("James Bond", CDate(1981, 7, 16), 2013)));
     return EXIT_SUCCESS;
 }
 
