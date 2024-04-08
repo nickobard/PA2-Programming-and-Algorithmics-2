@@ -104,6 +104,24 @@ public:
         }
     };
 
+    struct ComparatorByDate {
+        bool operator()(const CStudent *lhs, const CStudent *rhs) const {
+            return lhs->m_date < rhs->m_date;
+        }
+    };
+
+    struct ComparatorByEnrolled {
+        bool operator()(const CStudent *lhs, const CStudent *rhs) const {
+            return lhs->m_enrolled < rhs->m_enrolled;
+        }
+    };
+
+    struct ComparatorByFilterName {
+        bool operator()(const CStudent *lhs, const CStudent *rhs) const {
+            return lhs->m_filter_name < rhs->m_filter_name;
+        }
+    };
+
     struct DefaultComparator {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
             return *lhs < *rhs;
@@ -227,6 +245,9 @@ public:
         auto *to_insert = new CStudent(x.m_name, x.m_date, x.m_enrolled, student_id_counter++);
         m_students.insert(to_insert);
         m_students_by_id.insert(to_insert);
+        m_students_by_date.insert(to_insert);
+        m_students_by_enrolled.insert(to_insert);
+        m_students_by_filter_name.insert((to_insert));
         return true;
     }
 
@@ -240,6 +261,9 @@ public:
         auto to_delete = *iter;
         m_students.erase(to_delete);
         m_students_by_id.erase(to_delete);
+        m_students_by_date.erase(to_delete);
+        m_students_by_enrolled.erase(to_delete);
+        m_students_by_filter_name.erase(to_delete);
         delete to_delete;
         return true;
     }
@@ -260,6 +284,9 @@ private:
     static long long student_id_counter;
     set<CStudent *, CStudent::DefaultComparator> m_students;
     set<CStudent *, CStudent::ComparatorByID> m_students_by_id;
+    set<CStudent *, CStudent::ComparatorByDate> m_students_by_date;
+    set<CStudent *, CStudent::ComparatorByEnrolled> m_students_by_enrolled;
+    set<CStudent *, CStudent::ComparatorByFilterName> m_students_by_filter_name;
 };
 
 long long CStudyDept::student_id_counter = 0;
