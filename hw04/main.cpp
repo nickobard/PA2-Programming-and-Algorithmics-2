@@ -104,6 +104,10 @@ public:
         return !(*this == other);
     }
 
+    bool operator<(const CStudent &other) const {
+        return tie(m_name, m_date, m_enrolled) < tie(other.m_name, other.m_date, other.m_enrolled);
+    }
+
     struct ComparatorByID {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
             return lhs->m_id < rhs->m_id;
