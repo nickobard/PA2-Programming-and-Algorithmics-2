@@ -106,19 +106,20 @@ public:
 
     struct ComparatorByDate {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return lhs->m_date < rhs->m_date;
+            return tie(lhs->m_date, lhs->m_enrolled, lhs->m_name) < tie(rhs->m_date, rhs->m_enrolled, rhs->m_name);
         }
     };
 
     struct ComparatorByEnrolled {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return lhs->m_enrolled < rhs->m_enrolled;
+            return tie(lhs->m_enrolled, lhs->m_name, lhs->m_date) < tie(rhs->m_enrolled, rhs->m_name, rhs->m_date);
         }
     };
 
     struct ComparatorByFilterName {
         bool operator()(const CStudent *lhs, const CStudent *rhs) const {
-            return lhs->m_filter_name < rhs->m_filter_name;
+            return tie(lhs->m_filter_name, lhs->m_name, lhs->m_date, lhs->m_enrolled) <
+                   tie(rhs->m_filter_name, rhs->m_name, rhs->m_date, rhs->m_enrolled);
         }
     };
 
@@ -231,19 +232,18 @@ public:
     CStudyDept() = default;
 
     ~CStudyDept() {
-        for (auto *student: m_students) {
+        for (auto *student: m_students_by_date) {
             delete student;
         }
     }
 
     bool addStudent(const CStudent &x) {
         auto *to_find = &(const_cast<CStudent &>(x));
-        auto iter = m_students.find(to_find);
-        if (iter != m_students.end()) {
+        auto iter = m_students_by_date.find(to_find);
+        if (iter != m_students_by_date.end()) {
             return false;
         }
         auto *to_insert = new CStudent(x.m_name, x.m_date, x.m_enrolled, student_id_counter++);
-        m_students.insert(to_insert);
         m_students_by_id.insert(to_insert);
         m_students_by_date.insert(to_insert);
         m_students_by_enrolled.insert(to_insert);
@@ -253,13 +253,12 @@ public:
 
     bool delStudent(const CStudent &x) {
         auto *to_find = &(const_cast<CStudent &>(x));
-        auto iter = m_students.find(to_find);
-        if (iter == m_students.end()) {
+        auto iter = m_students_by_date.find(to_find);
+        if (iter == m_students_by_date.end()) {
             // not found
             return false;
         }
         auto to_delete = *iter;
-        m_students.erase(to_delete);
         m_students_by_id.erase(to_delete);
         m_students_by_date.erase(to_delete);
         m_students_by_enrolled.erase(to_delete);
@@ -282,7 +281,6 @@ public:
 
 private:
     static long long student_id_counter;
-    set<CStudent *, CStudent::DefaultComparator> m_students;
     set<CStudent *, CStudent::ComparatorByID> m_students_by_id;
     set<CStudent *, CStudent::ComparatorByDate> m_students_by_date;
     set<CStudent *, CStudent::ComparatorByEnrolled> m_students_by_enrolled;
