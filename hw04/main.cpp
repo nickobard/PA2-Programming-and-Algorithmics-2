@@ -121,6 +121,9 @@ public:
 
     bool operator()(const CStudent &lhs, const CStudent &rhs) const {
         auto current_key = m_keys.cbegin();
+        if (current_key == m_keys.end()) {
+            return compare_by_id(lhs, rhs);
+        }
         return compare(lhs, rhs, current_key);
     }
 
@@ -149,10 +152,6 @@ public:
             return true;
         }
 
-        current_key++;
-        if (current_key == m_keys.cend()) {
-            return left_term_result;
-        }
 
         bool equal;
         if (key == ESortKey::NAME) {
@@ -166,7 +165,17 @@ public:
         if (!equal) {
             return false;
         }
+
+        current_key++;
+        if (current_key == m_keys.cend()) {
+            return compare_by_id(lhs, rhs);
+        }
         return compare(lhs, rhs, current_key);
+    }
+
+    static bool
+    compare_by_id(const CStudent &lhs, const CStudent &rhs) {
+        return lhs.m_id < rhs.m_id;
     }
 
     CSort &addKey(ESortKey key,
