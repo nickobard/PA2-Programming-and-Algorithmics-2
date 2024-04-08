@@ -309,34 +309,34 @@ int main(void) {
                     CStudent("Peter John Taylor", CDate(1984, 1, 17), 2017),
                     CStudent("Peter Taylor", CDate(1982, 2, 23), 2011)
             }));
-//    assert (x0.search(CFilter(), CSort().addKey(ESortKey::NAME, false)) == (std::list<CStudent>
-//            {
-//                    CStudent("Peter Taylor", CDate(1982, 2, 23), 2011),
-//                    CStudent("Peter John Taylor", CDate(1984, 1, 17), 2017),
-//                    CStudent("John Taylor", CDate(1981, 6, 30), 2012),
-//                    CStudent("John Peter Taylor", CDate(1983, 7, 13), 2014),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
-//                    CStudent("Bond James", CDate(1981, 7, 16), 2013)
-//            }));
-//    assert (x0.search(CFilter(),
-//                      CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
-//                              ESortKey::NAME, true)) == (std::list<CStudent>
-//            {
-//                    CStudent("Peter John Taylor", CDate(1984, 1, 17), 2017),
-//                    CStudent("John Peter Taylor", CDate(1983, 7, 13), 2014),
-//                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
-//                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
-//                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
-//                    CStudent("John Taylor", CDate(1981, 6, 30), 2012),
-//                    CStudent("Peter Taylor", CDate(1982, 2, 23), 2011)
-//            }));
+    assert (x0.search(CFilter(), CSort().addKey(ESortKey::NAME, false)) == (std::list<CStudent>
+            {
+                    CStudent("Peter Taylor", CDate(1982, 2, 23), 2011),
+                    CStudent("Peter John Taylor", CDate(1984, 1, 17), 2017),
+                    CStudent("John Taylor", CDate(1981, 6, 30), 2012),
+                    CStudent("John Peter Taylor", CDate(1983, 7, 13), 2014),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
+                    CStudent("Bond James", CDate(1981, 7, 16), 2013)
+            }));
+    assert (x0.search(CFilter(),
+                      CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
+                              ESortKey::NAME, true)) == (std::list<CStudent>
+            {
+                    CStudent("Peter John Taylor", CDate(1984, 1, 17), 2017),
+                    CStudent("John Peter Taylor", CDate(1983, 7, 13), 2014),
+                    CStudent("James Bond", CDate(1982, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 8, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 17), 2013),
+                    CStudent("Bond James", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2013),
+                    CStudent("James Bond", CDate(1981, 7, 16), 2012),
+                    CStudent("John Taylor", CDate(1981, 6, 30), 2012),
+                    CStudent("Peter Taylor", CDate(1982, 2, 23), 2011)
+            }));
 //    assert (x0.search(CFilter().name("james bond"),
 //                      CSort().addKey(ESortKey::ENROLL_YEAR, false).addKey(ESortKey::BIRTH_DATE, false).addKey(
 //                              ESortKey::NAME, true)) == (std::list<CStudent>
