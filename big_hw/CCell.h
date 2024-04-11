@@ -5,4 +5,8 @@
 #ifndef BARDANIK_CCELL_H
 #define BARDANIK_CCELL_H
 
+class CCell{
+
+};
+
 #endif //BARDANIK_CCELL_H
