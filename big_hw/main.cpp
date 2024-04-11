@@ -1,4 +1,5 @@
 #ifndef __PROGTEST__
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -33,66 +34,74 @@
 #include <span>
 #include <utility>
 #include "expression.h"
+
 using namespace std::literals;
 using CValue = std::variant<std::monostate, double, std::string>;
 
-constexpr unsigned                     SPREADSHEET_CYCLIC_DEPS                 = 0x01;
-constexpr unsigned                     SPREADSHEET_FUNCTIONS                   = 0x02;
-constexpr unsigned                     SPREADSHEET_FILE_IO                     = 0x04;
-constexpr unsigned                     SPREADSHEET_SPEED                       = 0x08;
-constexpr unsigned                     SPREADSHEET_PARSER                      = 0x10;
+constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
+constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;
+constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
+constexpr unsigned SPREADSHEET_SPEED = 0x08;
+constexpr unsigned SPREADSHEET_PARSER = 0x10;
 #endif /* __PROGTEST__ */
 
-class CPos
-{
-  public:
-                                       CPos                                    ( std::string_view                      str );
-  private:
+using namespace std;
+
+class CPos {
+public:
+    CPos(std::string_view str);
+
+private:
     // todo
 };
 
-class CSpreadsheet
-{
-  public:
-    static unsigned                    capabilities                            ()
-    {
-      return SPREADSHEET_CYCLIC_DEPS | SPREADSHEET_FUNCTIONS | SPREADSHEET_FILE_IO | SPREADSHEET_SPEED | SPREADSHEET_PARSER;
+class CSpreadsheet {
+public:
+    static unsigned capabilities() {
+        return 0;
+//        return SPREADSHEET_CYCLIC_DEPS | SPREADSHEET_FUNCTIONS | SPREADSHEET_FILE_IO | SPREADSHEET_SPEED |
+        SPREADSHEET_PARSER;
     }
-                                       CSpreadsheet                            ();
-    bool                               load                                    ( std::istream                        & is );
-    bool                               save                                    ( std::ostream                        & os ) const;
-    bool                               setCell                                 ( CPos                                  pos,
-                                                                                 std::string                           contents );
-    CValue                             getValue                                ( CPos                                  pos );
-    void                               copyRect                                ( CPos                                  dst,
-                                                                                 CPos                                  src,
-                                                                                 int                                   w = 1,
-                                                                                 int                                   h = 1 );
-  private:
+
+    CSpreadsheet();
+
+    bool load(std::istream &is);
+
+    bool save(std::ostream &os) const;
+
+    bool setCell(CPos pos,
+                 std::string contents);
+
+    CValue getValue(CPos pos);
+
+    void copyRect(CPos dst,
+                  CPos src,
+                  int w = 1,
+                  int h = 1);
+
+private:
     // todo
 };
 
 #ifndef __PROGTEST__
 
-bool                                   valueMatch                              ( const CValue                        & r,
-                                                                                 const CValue                        & s )
-
-{
-  if ( r . index () != s . index () )
-    return false;
-  if ( r . index () == 0 )
-    return true;
-  if ( r . index () == 2 )
-    return std::get<std::string> ( r ) == std::get<std::string> ( s );
-  if ( std::isnan ( std::get<double> ( r ) ) && std::isnan ( std::get<double> ( s ) ) )
-    return true;
-  if ( std::isinf ( std::get<double> ( r ) ) && std::isinf ( std::get<double> ( s ) ) )
-    return ( std::get<double> ( r ) < 0 && std::get<double> ( s ) < 0 )
-           || ( std::get<double> ( r ) > 0 && std::get<double> ( s ) > 0 );
-  return fabs ( std::get<double> ( r ) - std::get<double> ( s ) ) <= 1e8 * DBL_EPSILON * fabs ( std::get<double> ( r ) );
+bool valueMatch(const CValue &r,
+                const CValue &s) {
+    if (r.index() != s.index())
+        return false;
+    if (r.index() == 0)
+        return true;
+    if (r.index() == 2)
+        return std::get<std::string>(r) == std::get<std::string>(s);
+    if (std::isnan(std::get<double>(r)) && std::isnan(std::get<double>(s)))
+        return true;
+    if (std::isinf(std::get<double>(r)) && std::isinf(std::get<double>(s)))
+        return (std::get<double>(r) < 0 && std::get<double>(s) < 0)
+               || (std::get<double>(r) > 0 && std::get<double>(s) > 0);
+    return fabs(std::get<double>(r) - std::get<double>(s)) <= 1e8 * DBL_EPSILON * fabs(std::get<double>(r));
 }
-int main ()
-{
+
+int main() {
 //  CSpreadsheet x0, x1;
 //  std::ostringstream oss;
 //  std::istringstream iss;
@@ -223,6 +232,7 @@ int main ()
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "H12" ) ), CValue ( 25.0 ) ) );
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "H13" ) ), CValue ( -22.0 ) ) );
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "H14" ) ), CValue ( -22.0 ) ) );
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
+
 #endif /* __PROGTEST__ */
