@@ -38,7 +38,7 @@
 #include <charconv>
 #include <span>
 #include <utility>
-#include "expression.h"
+#include "../expression.h"
 
 #include "CPos.h"
 

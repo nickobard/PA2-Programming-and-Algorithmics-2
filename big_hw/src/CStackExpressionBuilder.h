@@ -5,7 +5,7 @@
 #ifndef BARDANIK_CSTACKEXPRESSIONBUILDER_H
 #define BARDANIK_CSTACKEXPRESSIONBUILDER_H
 
-#include "expression.h"
+#include "../expression.h"
 
 
 class CStackExpressionBuilder : public CExprBuilder {

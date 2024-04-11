@@ -36,7 +36,7 @@
 #include "expression.h"
 
 
-#include "CSpreadsheet.h"
+#include "src/CSpreadsheet.h"
 
 #endif /* __PROGTEST__ */
 
