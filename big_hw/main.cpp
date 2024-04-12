@@ -61,6 +61,12 @@ bool valueMatch(const CValue &r,
 }
 
 int main() {
+
+    vector<int> v;
+    v.push_back(1);
+    cout << v.size() << " " << v.capacity() << endl;
+    v[4] = 5;
+    cout << v[4] << endl;
 //  CSpreadsheet x0, x1;
 //  std::ostringstream oss;
 //  std::istringstream iss;

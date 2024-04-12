@@ -17,7 +17,10 @@ bool CSpreadsheet::save(ostream &os) const {
 }
 
 bool CSpreadsheet::setCell(CPos pos, string contents) {
-    m_cells.
+    auto [row, col] = pos.getCoords();
+    if (m_cells.size() <= row){
+
+    }
     return false;
 }
 

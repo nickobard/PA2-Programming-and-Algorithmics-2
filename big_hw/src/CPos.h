@@ -42,8 +42,12 @@ using namespace std;
 
 class CPos {
 public:
-    CPos(string_view str);
+    explicit CPos(string_view str);
 
+    /**
+     *
+     * @return row, column pair
+     */
     pair<unsigned int, unsigned int> getCoords() const;
 
 private:

@@ -12,12 +12,11 @@ using CValue = variant<monostate, double, string>;
 
 class CCell {
 public:
-    CCell();
-    CCell(const CPos &pos, const string &contents);
-    pair<unsigned int, unsigned int> getCoords() const;
+    CCell() = default;
+
+    explicit CCell(const string &contents);
 
 private:
-    CPos m_pos;
     CValue m_value;
 };
 
