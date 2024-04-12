@@ -42,8 +42,7 @@
 
 #include "CCell.h"
 
-using namespace literals;
-using CValue = variant<monostate, double, string>;
+
 
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
 constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;

@@ -54,3 +54,7 @@ unsigned int CPos::convertColLabelToNumber(const string &col_label) {
     result -= 1; // correction for indexing from 0
     return result;
 }
+
+pair<unsigned int, unsigned int> CPos::getCoords() const {
+    return {m_row, m_col};
+}

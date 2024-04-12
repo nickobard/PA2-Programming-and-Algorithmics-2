@@ -17,7 +17,7 @@ bool CSpreadsheet::save(ostream &os) const {
 }
 
 bool CSpreadsheet::setCell(CPos pos, string contents) {
-
+    m_cells.
     return false;
 }
 

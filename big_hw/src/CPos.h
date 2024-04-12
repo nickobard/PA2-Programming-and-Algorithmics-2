@@ -44,9 +44,12 @@ class CPos {
 public:
     CPos(string_view str);
 
+    pair<unsigned int, unsigned int> getCoords() const;
+
 private:
 
     static pair<string, unsigned int> splitPosition(const string &position);
+
     static unsigned int convertColLabelToNumber(const string &col_label);
 
     unsigned int m_row;
