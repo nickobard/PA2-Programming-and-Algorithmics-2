@@ -47,7 +47,7 @@ mkdir progtmp
 #sed '/#EX_BEGIN/,/#EX_END/d' "$1" > progtmp/s
 sed '1,/#IN_SRC/!d'         "$1" | head -n -1 > progtmp/0s
 sed '1,/#IN_SRC/ d'         "$1"              > progtmp/1s
-for HEADER in "$2"/*.hpp;
+for HEADER in "$2"/*.h;
 do
 	if PRIOR=$(grep -E '#PRIOR_NO' "$HEADER" );
 	then

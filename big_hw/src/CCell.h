@@ -5,6 +5,8 @@
 #ifndef BARDANIK_CCELL_H
 #define BARDANIK_CCELL_H
 
+#include "CPos.h"
+
 class CCell{
 
 };

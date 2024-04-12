@@ -40,7 +40,7 @@
 #include <utility>
 #include "../expression.h"
 
-#include "CPos.h"
+#include "CCell.h"
 
 using namespace literals;
 using CValue = variant<monostate, double, string>;
@@ -51,13 +51,12 @@ constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
 constexpr unsigned SPREADSHEET_SPEED = 0x08;
 constexpr unsigned SPREADSHEET_PARSER = 0x10;
 
-
 class CSpreadsheet {
 public:
     static unsigned capabilities() {
         return 0;
 //        return SPREADSHEET_CYCLIC_DEPS | SPREADSHEET_FUNCTIONS | SPREADSHEET_FILE_IO | SPREADSHEET_SPEED |
-        SPREADSHEET_PARSER;
+//        SPREADSHEET_PARSER;
     }
 
     CSpreadsheet();
@@ -77,7 +76,8 @@ public:
                   int h = 1);
 
 private:
-    // todo
+    vector<vector<CCell>> m_cells;
 };
+
 
 #endif //BARDANIK_CSPREADSHEET_H

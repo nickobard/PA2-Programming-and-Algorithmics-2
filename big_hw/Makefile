@@ -17,14 +17,14 @@ all: test
 
 deps:
 	g++ -MM *.cpp > Makefile.d
-
-pt_all: pt_compile
-
-pt_tinker:
-	./src/assets/progt.sh ./src/assets/solution.cpp ./src
-
-pt_compile: progtest.o sample_tester.o
-	$(LD) $(CXXFLAGS) -o $@ $^ -L./$(MACHINE) -lexpression_parser
+#
+#pt_all: pt_compile
+#
+#pt_tinker:
+#	./src/assets/progt.sh ./src/assets/solution.cpp ./src
+#
+#pt_compile: progtest.o sample_tester.o
+#	$(LD) $(CXXFLAGS) -o $@ $^ -L./$(MACHINE) -lexpression_parser
 
 test: main.o
 	$(LD) $(CXXFLAGS) -o $@ $^ -L./$(MACHINE) -lexpression_parser
@@ -32,9 +32,20 @@ test: main.o
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-lib: expression_parser.o
-	mkdir -p $(MACHINE)
-	$(AR) cfr $(MACHINE)/expression_parser.a $^
+CSpreadsheet.o: src/CSpreadsheet.cpp src/CSpreadsheet.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+CCell.o: src/CCell.cpp src/CCell.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+CPos.o: src/CPos.cpp src/CPos.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+
+#
+#lib: expression_parser.o
+#	mkdir -p $(MACHINE)
+#	$(AR) cfr $(MACHINE)/expression_parser.a $^
 
 clean:
 	rm -f *.o test *~ core sample.tgz Makefile.d

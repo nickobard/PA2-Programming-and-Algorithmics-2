@@ -45,7 +45,14 @@ public:
     CPos(string_view str);
 
 private:
-    // todo
+
+    static pair<string, unsigned int> splitPosition(const string &position);
+    static unsigned int convertColLabelToNumber(const string &col_label);
+
+    unsigned int m_row;
+    unsigned int m_col;
+    string m_col_label;
+
 };
 
 #endif //BARDANIK_CPOS_H
