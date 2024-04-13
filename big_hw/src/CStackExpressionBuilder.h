@@ -61,6 +61,9 @@ public:
 
 private:
 
+    pair<double, double> getTwoDoubleArgumentsAndPop() ;
+    double getTopAndPop();
+
     stack<CValue> m_expression_result;
     const CSpreadsheet &m_spreadsheet;
 

@@ -91,15 +91,15 @@ int main() {
 
 
     assert (valueMatch(x0.getValue(CPos("A8")), CValue()));
-  assert ( valueMatch ( x0 . getValue ( CPos ( "AAAA9999" ) ), CValue() ) );
-  assert ( x0 . setCell ( CPos ( "B1" ), "=A1+A2*A3" ) );
-  assert ( x0 . setCell ( CPos ( "B2" ), "= -A1 ^ 2 - A2 / 2   " ) );
-  assert ( x0 . setCell ( CPos ( "B3" ), "= 2 ^ $A$1" ) );
-  assert ( x0 . setCell ( CPos ( "B4" ), "=($A1+A$2)^2" ) );
-  assert ( x0 . setCell ( CPos ( "B5" ), "=B1+B2+B3+B4" ) );
-  assert ( x0 . setCell ( CPos ( "B6" ), "=B1+B2+B3+B4+B5" ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B1" ) ), CValue ( 625.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "B2" ) ), CValue ( -110.25 ) ) );
+    assert (valueMatch(x0.getValue(CPos("AAAA9999")), CValue()));
+    assert (x0.setCell(CPos("B1"), "=A1+A2*A3"));
+    assert (x0.setCell(CPos("B2"), "= -A1 ^ 2 - A2 / 2   "));
+    assert (x0.setCell(CPos("B3"), "= 2 ^ $A$1"));
+    assert (x0.setCell(CPos("B4"), "=($A1+A$2)^2"));
+    assert (x0.setCell(CPos("B5"), "=B1+B2+B3+B4"));
+    assert (x0.setCell(CPos("B6"), "=B1+B2+B3+B4+B5"));
+    assert (valueMatch(x0.getValue(CPos("B1")), CValue(625.0)));
+    assert (valueMatch(x0.getValue(CPos("B2")), CValue(-110.25)));
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "B3" ) ), CValue ( 1024.0 ) ) );
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "B4" ) ), CValue ( 930.25 ) ) );
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "B5" ) ), CValue ( 2469.0 ) ) );

@@ -6,37 +6,39 @@
 #include "CSpreadsheet.h"
 
 void CStackExpressionBuilder::opAdd() {
-    CValue first_arg = m_expression_result.top();
-    m_expression_result.pop();
-    CValue second_arg = m_expression_result.top();
-    m_expression_result.top();
-    CValue result = get<double>(first_arg) + get<double>(second_arg);
-    m_expression_result.push(result);
+    auto [first, second] = getTwoDoubleArgumentsAndPop();
+    auto result = first + second;
+    m_expression_result.emplace(result);
 }
 
 void CStackExpressionBuilder::opSub() {
-
+    auto [first, second] = getTwoDoubleArgumentsAndPop();
+    auto result = second - first;
+    m_expression_result.emplace(result);
 }
 
 void CStackExpressionBuilder::opMul() {
-    CValue first_arg = m_expression_result.top();
-    m_expression_result.pop();
-    CValue second_arg = m_expression_result.top();
-    m_expression_result.pop();
-    CValue result = get<double>(first_arg) * get<double>(second_arg);
-    m_expression_result.push(result);
+    auto [first, second] = getTwoDoubleArgumentsAndPop();
+    auto result = first * second;
+    m_expression_result.emplace(result);
 }
 
 void CStackExpressionBuilder::opDiv() {
-
+    auto [first, second] = getTwoDoubleArgumentsAndPop();
+    auto result = second / first;
+    m_expression_result.emplace(result);
 }
 
 void CStackExpressionBuilder::opPow() {
-
+    auto [first, second] = getTwoDoubleArgumentsAndPop();
+    auto result = pow(second, first);
+    m_expression_result.emplace(result);
 }
 
 void CStackExpressionBuilder::opNeg() {
-
+    auto arg = getTopAndPop();
+    auto result = -arg;
+    m_expression_result.emplace(result);
 }
 
 void CStackExpressionBuilder::opEq() {
@@ -86,4 +88,19 @@ void CStackExpressionBuilder::funcCall(std::string fnName, int paramCount) {
 
 CValue CStackExpressionBuilder::getResult() const {
     return m_expression_result.top();
+}
+
+pair<double, double> CStackExpressionBuilder::getTwoDoubleArgumentsAndPop() {
+    double first_arg = get<double>(m_expression_result.top());
+    m_expression_result.pop();
+    double second_arg = get<double>(m_expression_result.top());
+    m_expression_result.pop();
+    return {first_arg, second_arg};
+
+}
+
+double CStackExpressionBuilder::getTopAndPop() {
+    double top = get<double>(m_expression_result.top());
+    m_expression_result.pop();
+    return top;
 }
