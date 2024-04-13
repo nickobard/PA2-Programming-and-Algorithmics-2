@@ -43,7 +43,6 @@
 #include "CCell.h"
 
 
-
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
 constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;
 constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
@@ -77,6 +76,8 @@ public:
                   int h = 1);
 
 private:
+    bool cellOutOfRange(const CPos &pos) const;
+
     vector<vector<CCell>> m_cells;
     size_t m_rows;
     size_t m_cols;

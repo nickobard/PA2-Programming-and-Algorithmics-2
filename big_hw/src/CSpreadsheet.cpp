@@ -39,10 +39,21 @@ bool CSpreadsheet::setCell(CPos pos, string contents) {
 }
 
 CValue CSpreadsheet::getValue(CPos pos) {
+    if (!cellOutOfRange(pos)) {
+        return {};
+    }
     auto [row, col] = pos.getCoords();
     return m_cells[row][col].getValue();
 }
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
 
+}
+
+bool CSpreadsheet::cellOutOfRange(const CPos &pos) const {
+    auto [row, col] = pos.getCoords();
+    if (m_rows <= row || m_cols <= col) {
+        return false;
+    }
+    return true;
 }

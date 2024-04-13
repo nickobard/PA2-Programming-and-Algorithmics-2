@@ -91,8 +91,8 @@ int main() {
 
 
     assert (valueMatch(x0.getValue(CPos("A8")), CValue()));
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "AAAA9999" ) ), CValue() ) );
-//  assert ( x0 . setCell ( CPos ( "B1" ), "=A1+A2*A3" ) );
+  assert ( valueMatch ( x0 . getValue ( CPos ( "AAAA9999" ) ), CValue() ) );
+  assert ( x0 . setCell ( CPos ( "B1" ), "=A1+A2*A3" ) );
 //  assert ( x0 . setCell ( CPos ( "B2" ), "= -A1 ^ 2 - A2 / 2   " ) );
 //  assert ( x0 . setCell ( CPos ( "B3" ), "= 2 ^ $A$1" ) );
 //  assert ( x0 . setCell ( CPos ( "B4" ), "=($A1+A$2)^2" ) );
