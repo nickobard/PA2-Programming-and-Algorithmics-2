@@ -43,7 +43,7 @@ CValue CSpreadsheet::getValue(CPos pos) {
         return {};
     }
     auto [row, col] = pos.getCoords();
-    return m_cells[row][col].getValue();
+    return m_cells[row][col].getValue(*this);
 }
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
@@ -56,4 +56,12 @@ bool CSpreadsheet::cellOutOfRange(const CPos &pos) const {
         return false;
     }
     return true;
+}
+
+CValue CSpreadsheet::getValue(CPos pos) const {
+    if (!cellOutOfRange(pos)) {
+        return {};
+    }
+    auto [row, col] = pos.getCoords();
+    return m_cells[row][col].getValue(*this);
 }

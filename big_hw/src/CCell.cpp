@@ -20,10 +20,10 @@ CCell::CCell(const string &contents) {
     }
 }
 
-CValue CCell::getValue() const {
+CValue CCell::getValue(const CSpreadsheet &spreadsheet) const {
     if (m_type == CellType::EXPRESSION) {
         try {
-            CStackExpressionBuilder builder;
+            CStackExpressionBuilder builder(spreadsheet);
             parseExpression(get<string>(m_value), builder);
             return builder.getResult();
         } catch (invalid_argument &e) {

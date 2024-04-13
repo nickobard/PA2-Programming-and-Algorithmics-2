@@ -70,6 +70,8 @@ public:
 
     CValue getValue(CPos pos);
 
+    CValue getValue(CPos pos) const;
+
     void copyRect(CPos dst,
                   CPos src,
                   int w = 1,

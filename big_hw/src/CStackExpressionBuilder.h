@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stack>
 #include <variant>
+#include <vector>
 
 #include "../expression.h"
 
@@ -15,8 +16,12 @@ using namespace std;
 using namespace literals;
 using CValue = variant<monostate, double, string>;
 
+class CSpreadsheet;
+
 class CStackExpressionBuilder : public CExprBuilder {
 public:
+    explicit CStackExpressionBuilder(const CSpreadsheet &spreadsheet) : m_spreadsheet(spreadsheet) {}
+
     void opAdd() override;
 
     void opSub() override;
@@ -57,6 +62,7 @@ public:
 private:
 
     stack<CValue> m_expression_result;
+    const CSpreadsheet &m_spreadsheet;
 
 };
 

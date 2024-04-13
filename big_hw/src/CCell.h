@@ -16,13 +16,15 @@ enum class CellType{
     EXPRESSION
 };
 
+class CSpreadsheet;
+
 class CCell {
 public:
     CCell() = default;
 
     explicit CCell(const string &contents);
 
-    CValue getValue() const;
+    CValue getValue(const CSpreadsheet &spreadsheet) const;
 
 private:
 
