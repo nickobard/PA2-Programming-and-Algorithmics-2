@@ -2,17 +2,34 @@
 // Created by bardanik on 11/04/24.
 //
 #include "CCell.h"
+#include "../expression.h"
+#include "CStackExpressionBuilder.h"
 
 CCell::CCell(const string &contents) {
     try {
         double number = stod(contents);
         m_value = number;
+        m_type = CellType::DOUBLE;
     } catch (invalid_argument &e) {
+        if (!contents.empty() && contents[0] == '=') {
+            m_type = CellType::EXPRESSION;
+        } else {
+            m_type = CellType::STRING;
+        }
         m_value = contents;
     }
 }
 
 CValue CCell::getValue() const {
+    if (m_type == CellType::EXPRESSION) {
+        try {
+            CStackExpressionBuilder builder;
+            parseExpression(get<string>(m_value), builder);
+            return m_value;
+        } catch (invalid_argument &e){
+            return m_value;
+        }
+    }
     return m_value;
 }
 
