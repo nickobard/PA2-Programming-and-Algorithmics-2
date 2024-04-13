@@ -7,8 +7,10 @@ set(MEMDEBUGGER "-fsanitize=address")
 
 set(CMAKE_CXX_FLAGS ${WARNINGS})
 
-add_executable(big_task main.cpp)
-add_executable(memdebug main.cpp)
+file(GLOB SOURCES "src/*.cpp")
+
+add_executable(big_task main.cpp ${SOURCES})
+add_executable(memdebug main.cpp ${SOURCES})
 
 # Setting additional memory debugger flag for memdebug target
 target_compile_options(memdebug PRIVATE ${MEMDEBUGGER})
