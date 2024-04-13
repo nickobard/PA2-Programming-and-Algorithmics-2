@@ -50,6 +50,8 @@ constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
 constexpr unsigned SPREADSHEET_SPEED = 0x08;
 constexpr unsigned SPREADSHEET_PARSER = 0x10;
 
+constexpr size_t INITIAL_TABLE_SIZE = 1000;
+
 class CSpreadsheet {
 public:
     static unsigned capabilities() {
@@ -76,6 +78,8 @@ public:
 
 private:
     vector<vector<CCell>> m_cells;
+    size_t m_rows;
+    size_t m_cols;
 };
 
 
