@@ -10,6 +10,12 @@
 using namespace literals;
 using CValue = variant<monostate, double, string>;
 
+enum class CellType{
+    DOUBLE,
+    STRING,
+    EXPRESSION
+};
+
 class CCell {
 public:
     CCell() = default;
@@ -20,6 +26,8 @@ public:
 
 private:
     CValue m_value;
+    CellType m_type;
+
 };
 
 #endif //BARDANIK_CCELL_H
