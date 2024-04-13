@@ -41,7 +41,6 @@
 #endif /* __PROGTEST__ */
 
 
-
 #ifndef __PROGTEST__
 
 bool valueMatch(const CValue &r,
@@ -61,25 +60,37 @@ bool valueMatch(const CValue &r,
 }
 
 int main() {
-  CSpreadsheet x0, x1;
-  std::ostringstream oss;
-  std::istringstream iss;
-  std::string data;
-  assert ( x0 . setCell ( CPos ( "A1" ), "10" ) );
-  assert ( x0 . setCell ( CPos ( "A2" ), "20.5" ) );
-  assert ( x0 . setCell ( CPos ( "A3" ), "3e1" ) );
-  assert ( x0 . setCell ( CPos ( "A4" ), "=40" ) );
-  assert ( x0 . setCell ( CPos ( "A5" ), "=5e+1" ) );
-  assert ( x0 . setCell ( CPos ( "A6" ), "raw text with any characters, including a quote \" or a newline\n" ) );
-  assert ( x0 . setCell ( CPos ( "A7" ), "=\"quoted string, quotes must be doubled: \"\". Moreover, backslashes are needed for C++.\"" ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "A1" ) ), CValue ( 10.0 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "A2" ) ), CValue ( 20.5 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "A3" ) ), CValue ( 30.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "A4" ) ), CValue ( 40.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "A5" ) ), CValue ( 50.0 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "A6" ) ), CValue ( "raw text with any characters, including a quote \" or a newline\n" ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "A7" ) ), CValue ( "quoted string, quotes must be doubled: \". Moreover, backslashes are needed for C++." ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "A8" ) ), CValue() ) );
+    CSpreadsheet x0, x1;
+    std::ostringstream oss;
+    std::istringstream iss;
+    std::string data;
+    assert (x0.setCell(CPos("A1"), "10"));
+    assert (x0.setCell(CPos("A2"), "20.5"));
+    assert (x0.setCell(CPos("A3"), "3e1"));
+    assert (x0.setCell(CPos("A4"), "=40"));
+    assert (x0.setCell(CPos("A5"), "=5e+1"));
+    assert (x0.setCell(CPos("A6"), "raw text with any characters, including a quote \" or a newline\n"));
+
+    assert (x0.setCell(CPos("A9"), "=blbost..no"));
+    auto v1 = x0.getValue(CPos("A9"));
+
+
+    assert (x0.setCell(CPos("A7"),
+                       "=\"quoted string, quotes must be doubled: \"\". Moreover, backslashes are needed for C++.\""));
+
+    auto val = x0.getValue(CPos("A7"));
+    assert (valueMatch(x0.getValue(CPos("A7")),
+                       CValue("quoted string, quotes must be doubled: \". Moreover, backslashes are needed for C++.")));
+    assert (valueMatch(x0.getValue(CPos("A1")), CValue(10.0)));
+    assert (valueMatch(x0.getValue(CPos("A2")), CValue(20.5)));
+    assert (valueMatch(x0.getValue(CPos("A3")), CValue(30.0)));
+    assert (valueMatch(x0.getValue(CPos("A4")), CValue(40.0)));
+    assert (valueMatch(x0.getValue(CPos("A5")), CValue(50.0)));
+    assert (valueMatch(x0.getValue(CPos("A6")),
+                       CValue("raw text with any characters, including a quote \" or a newline\n")));
+
+
+    assert (valueMatch(x0.getValue(CPos("A8")), CValue()));
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "AAAA9999" ) ), CValue() ) );
 //  assert ( x0 . setCell ( CPos ( "B1" ), "=A1+A2*A3" ) );
 //  assert ( x0 . setCell ( CPos ( "B2" ), "= -A1 ^ 2 - A2 / 2   " ) );

@@ -25,9 +25,6 @@ public:
     CValue getValue() const;
 
 private:
-    bool isQuoteExpression() const;
-    CValue evaluateQuoteExpression() const;
-    static string reduceQuotationMarks(const string &contents);
 
     CValue m_value;
     CellType m_type;

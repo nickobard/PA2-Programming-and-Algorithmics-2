@@ -53,11 +53,11 @@ void CStackExpressionBuilder::opGe() {
 }
 
 void CStackExpressionBuilder::valNumber(double val) {
-
+    m_expression_result.emplace(val);
 }
 
 void CStackExpressionBuilder::valString(string val) {
-
+    m_expression_result.emplace(val);
 }
 
 void CStackExpressionBuilder::valReference(string val) {
@@ -70,4 +70,8 @@ void CStackExpressionBuilder::valRange(string val) {
 
 void CStackExpressionBuilder::funcCall(std::string fnName, int paramCount) {
 
+}
+
+CValue CStackExpressionBuilder::getResult() const {
+    return m_expression_result.top();
 }

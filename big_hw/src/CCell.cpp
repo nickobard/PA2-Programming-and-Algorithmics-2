@@ -25,51 +25,12 @@ CValue CCell::getValue() const {
         try {
             CStackExpressionBuilder builder;
             parseExpression(get<string>(m_value), builder);
-            return m_value;
+            return builder.getResult();
         } catch (invalid_argument &e) {
-            if (isQuoteExpression()) {
-                return evaluateQuoteExpression();
-            }
             return m_value;
         }
     }
     return m_value;
-}
-
-string CCell::reduceQuotationMarks(const string &contents) {
-    string reduced;
-    bool opened_quote = false;
-    for (char c: contents) {
-        if (c == '\"' && opened_quote) {
-            opened_quote = false;
-            continue;
-        } else {
-            opened_quote = true;
-        }
-        reduced.push_back(c);
-    }
-    return reduced;
-}
-
-CValue CCell::evaluateQuoteExpression() const {
-    string content = get<string>(m_value);
-    string reduced = reduceQuotationMarks(content.substr(3, content.size() - 5));
-    return {reduced};
-}
-
-bool CCell::isQuoteExpression() const {
-    try {
-        string content = get<string>(m_value);
-        if (content.at(1) != '\\' || content.at(2) != '\"') {
-            return false;
-        }
-        if (content.at(content.size() - 2) != '\\' || content.at(content.size() - 1) != '\"') {
-            return false;
-        }
-    } catch (out_of_range &e) {
-        return false;
-    }
-    return true;
 }
 
 

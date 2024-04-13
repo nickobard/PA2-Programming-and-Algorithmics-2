@@ -5,9 +5,15 @@
 #ifndef BARDANIK_CSTACKEXPRESSIONBUILDER_H
 #define BARDANIK_CSTACKEXPRESSIONBUILDER_H
 
+#include <iostream>
+#include <stack>
+#include <variant>
+
 #include "../expression.h"
 
 using namespace std;
+using namespace literals;
+using CValue = variant<monostate, double, string>;
 
 class CStackExpressionBuilder : public CExprBuilder {
 public:
@@ -46,7 +52,11 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
+    CValue getResult() const;
+
 private:
+
+    stack<CValue> m_expression_result;
 
 };
 
