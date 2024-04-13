@@ -6,7 +6,7 @@
 string toUpperCase(const string_view &str) {
     string lower_cased;
     for (char c: str) {
-        lower_cased.push_back((char) tolower(c));
+        lower_cased.push_back((char) toupper(c));
     }
     return lower_cased;
 }

@@ -16,6 +16,8 @@ public:
 
     explicit CCell(const string &contents);
 
+    CValue getValue() const;
+
 private:
     CValue m_value;
 };

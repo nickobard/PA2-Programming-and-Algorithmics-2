@@ -35,11 +35,12 @@ bool CSpreadsheet::setCell(CPos pos, string contents) {
     }
 
     m_cells[row][col] = CCell(contents);
-    return false;
+    return true;
 }
 
 CValue CSpreadsheet::getValue(CPos pos) {
-    return CValue();
+    auto [row, col] = pos.getCoords();
+    return m_cells[row][col].getValue();
 }
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
