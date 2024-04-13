@@ -45,7 +45,6 @@ public:
     explicit CPos(string_view str);
 
     /**
-     *
      * @return row, column pair
      */
     pair<unsigned int, unsigned int> getCoords() const;
