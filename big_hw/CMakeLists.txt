@@ -12,6 +12,9 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(big_task main.cpp ${SOURCES})
 add_executable(memdebug main.cpp ${SOURCES})
 
+target_link_libraries(big_task ${CMAKE_SOURCE_DIR}/x86_64-linux-gnu/libexpression_parser.a)
+target_link_libraries(memdebug ${CMAKE_SOURCE_DIR}/x86_64-linux-gnu/libexpression_parser.a)
+
 # Setting additional memory debugger flag for memdebug target
 target_compile_options(memdebug PRIVATE ${MEMDEBUGGER})
 # Need to add memory debugger to linker too
