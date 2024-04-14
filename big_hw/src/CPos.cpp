@@ -32,7 +32,7 @@ void CPos::splitPositionAndParse(const string &position) {
             } else if (isdigit(c)) {
                 readingColumnLabel = false;
                 number.push_back(c);
-            } else if (i > 1 && c == '$') {
+            } else if (!label.empty() && c == '$') {
                 readingColumnLabel = false;
                 m_absolute_row = true;
             } else {
@@ -42,6 +42,7 @@ void CPos::splitPositionAndParse(const string &position) {
             if (!isdigit(c)) {
                 throw invalid_argument("Non valid character in row number.");
             }
+            number.push_back(c);
         }
     }
 
