@@ -5,7 +5,6 @@
 #ifndef PA2_BIG_TASK_CAST_H
 #define PA2_BIG_TASK_CAST_H
 
-#endif //PA2_BIG_TASK_CAST_H
 
 #include <variant>
 #include <string>
@@ -44,8 +43,10 @@ public:
     explicit UnaryOperationNode(CASTNode *operand);
 
     ~UnaryOperationNode();
+
 protected:
     double getDoubleOperand() const;
+
 private:
     CASTNode *m_operand;
 };
@@ -110,3 +111,6 @@ class NegationNode : public UnaryOperationNode {
 public:
     CValue evaluate() override;
 };
+
+#endif //PA2_BIG_TASK_CAST_H
+
