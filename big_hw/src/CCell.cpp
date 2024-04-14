@@ -2,9 +2,6 @@
 // Created by bardanik on 11/04/24.
 //
 #include "CCell.h"
-#include "ExpressionParser.h"
-#include "CStackExpressionBuilder.h"
-#include "CASTExpressionBuilder.h"
 
 CCell::CCell(const string &contents) : m_root(nullptr) {
     try {
@@ -24,7 +21,7 @@ CCell::CCell(const string &contents) : m_root(nullptr) {
 CValue CCell::getValue(CSpreadsheet &spreadsheet) {
     if (m_type == CellType::EXPRESSION) {
         try {
-            CStackExpressionBuilder builder(spreadsheet);
+            CASTExpressionBuilder builder(spreadsheet, m_root);
             parseExpression(get<string>(m_value), builder);
             return builder.evaluate();
         } catch (invalid_argument &e) {

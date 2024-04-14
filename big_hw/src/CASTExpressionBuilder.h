@@ -7,11 +7,8 @@
 
 #endif //PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 
-#include "ExpressionParser.h"
 #include "CExprBuilder.h"
-
-class CASTNode;
-class CSpreadsheet;
+#include "CASTNode.h"
 
 class CASTExpressionBuilder : public CExprBuilder {
 public:

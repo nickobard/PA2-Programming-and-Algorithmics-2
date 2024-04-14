@@ -5,7 +5,8 @@
 #ifndef BARDANIK_CCELL_H
 #define BARDANIK_CCELL_H
 
-#include "CASTNode.h"
+#include "CASTExpressionBuilder.h"
+#include "CStackExpressionBuilder.h"
 
 using namespace literals;
 using CValue = variant<monostate, double, string>;

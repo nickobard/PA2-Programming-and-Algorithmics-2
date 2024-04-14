@@ -53,6 +53,8 @@ public:
 };
 
 
+void parseExpression(std::string expr,
+                     CExprBuilder &builder);
 
 
 #endif //PA2_BIG_TASK_CEXPRBUILDER_H
