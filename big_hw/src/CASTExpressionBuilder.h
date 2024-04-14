@@ -12,8 +12,10 @@
 
 class CASTExpressionBuilder : public CExprBuilder {
 public:
-    explicit CASTExpressionBuilder(const CSpreadsheet &spreadsheet);
+    explicit CASTExpressionBuilder(const CSpreadsheet &spreadsheet, CASTNode *&root);
+
     ~CASTExpressionBuilder();
+
     void opAdd() override;
 
     void opSub() override;
@@ -52,6 +54,6 @@ public:
     CValue evaluate() const override;
 
 private:
-    CASTNode *m_root;
+    CASTNode *&m_root;
     const CSpreadsheet &m_spreadsheet;
 };

@@ -57,11 +57,3 @@ bool CSpreadsheet::cellOutOfRange(const CPos &pos) const {
     }
     return true;
 }
-
-CValue CSpreadsheet::getValue(CPos pos) const {
-    if (!cellOutOfRange(pos)) {
-        return {};
-    }
-    auto [row, col] = pos.getCoords();
-    return m_cells[row][col].getValue(*this);
-}

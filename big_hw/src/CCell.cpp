@@ -4,8 +4,9 @@
 #include "CCell.h"
 #include "ExpressionParser.h"
 #include "CStackExpressionBuilder.h"
+#include "CASTExpressionBuilder.h"
 
-CCell::CCell(const string &contents) {
+CCell::CCell(const string &contents) : m_root(nullptr) {
     try {
         double number = stod(contents);
         m_value = number;
@@ -20,10 +21,10 @@ CCell::CCell(const string &contents) {
     }
 }
 
-CValue CCell::getValue(const CSpreadsheet &spreadsheet) const {
+CValue CCell::getValue(const CSpreadsheet &spreadsheet) {
     if (m_type == CellType::EXPRESSION) {
         try {
-            CStackExpressionBuilder builder(spreadsheet);
+            CASTExpressionBuilder builder(spreadsheet, m_root);
             parseExpression(get<string>(m_value), builder);
             return builder.evaluate();
         } catch (invalid_argument &e) {
@@ -31,6 +32,10 @@ CValue CCell::getValue(const CSpreadsheet &spreadsheet) const {
         }
     }
     return m_value;
+}
+
+CCell::~CCell() {
+    delete m_root;
 }
 
 

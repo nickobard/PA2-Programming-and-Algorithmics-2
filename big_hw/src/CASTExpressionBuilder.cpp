@@ -3,9 +3,9 @@
 //
 #include "CASTExpressionBuilder.h"
 
-CASTExpressionBuilder::CASTExpressionBuilder(const CSpreadsheet &spreadsheet) : m_root(nullptr),
-                                                                                m_spreadsheet(spreadsheet) {
-
+CASTExpressionBuilder::CASTExpressionBuilder(const CSpreadsheet &spreadsheet, CASTNode *&root) : m_root(root),
+                                                                                                 m_spreadsheet(
+                                                                                                         spreadsheet) {
 }
 
 CASTExpressionBuilder::~CASTExpressionBuilder() {

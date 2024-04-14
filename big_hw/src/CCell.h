@@ -6,6 +6,7 @@
 #define BARDANIK_CCELL_H
 
 #include "CPos.h"
+#include "CASTNode.h"
 
 using namespace literals;
 using CValue = variant<monostate, double, string>;
@@ -21,16 +22,17 @@ class CSpreadsheet;
 class CCell {
 public:
     CCell() = default;
+    ~CCell();
 
     explicit CCell(const string &contents);
 
-    CValue getValue(const CSpreadsheet &spreadsheet) const;
+    CValue getValue(const CSpreadsheet &spreadsheet);
 
 private:
 
     CValue m_value;
     CellType m_type;
-
+    CASTNode * m_root;
 };
 
 #endif //BARDANIK_CCELL_H
