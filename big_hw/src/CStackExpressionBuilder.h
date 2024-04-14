@@ -12,10 +12,6 @@
 
 #include "../expression.h"
 
-using namespace std;
-using namespace literals;
-using CValue = variant<monostate, double, string>;
-
 class CSpreadsheet;
 
 class CStackExpressionBuilder : public CExprBuilder {
@@ -57,11 +53,12 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
-    CValue getResult() const;
+    CValue evaluate() const override;
 
 private:
 
-    pair<double, double> getTwoDoubleArgumentsAndPop() ;
+    pair<double, double> getTwoDoubleArgumentsAndPop();
+
     double getTopAndPop();
 
     stack<CValue> m_expression_result;

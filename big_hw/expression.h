@@ -3,6 +3,10 @@
 
 #include <string>
 
+using namespace std;
+using namespace literals;
+using CValue = variant<monostate, double, string>;
+
 class CExprBuilder {
 public:
     virtual void opAdd() = 0;
@@ -39,6 +43,8 @@ public:
 
     virtual void funcCall(std::string fnName,
                           int paramCount) = 0;
+
+    virtual CValue evaluate() const = 0;
 };
 
 void parseExpression(std::string expr,

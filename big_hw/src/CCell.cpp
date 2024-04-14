@@ -25,7 +25,7 @@ CValue CCell::getValue(const CSpreadsheet &spreadsheet) const {
         try {
             CStackExpressionBuilder builder(spreadsheet);
             parseExpression(get<string>(m_value), builder);
-            return builder.getResult();
+            return builder.evaluate();
         } catch (invalid_argument &e) {
             return m_value;
         }

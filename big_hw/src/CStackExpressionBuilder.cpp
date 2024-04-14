@@ -86,7 +86,7 @@ void CStackExpressionBuilder::funcCall(std::string fnName, int paramCount) {
 
 }
 
-CValue CStackExpressionBuilder::getResult() const {
+CValue CStackExpressionBuilder::evaluate() const {
     return m_expression_result.top();
 }
 
