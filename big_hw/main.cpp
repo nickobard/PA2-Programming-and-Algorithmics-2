@@ -33,7 +33,7 @@
 #include <charconv>
 #include <span>
 #include <utility>
-#include "expression.h"
+#include "src/ExpressionParser.h"
 
 
 #include "src/CSpreadsheet.h"
@@ -105,13 +105,13 @@ int main() {
     assert (valueMatch(x0.getValue(CPos("B4")), CValue(930.25)));
     assert (valueMatch(x0.getValue(CPos("B5")), CValue(2469.0)));
     assert (valueMatch(x0.getValue(CPos("B6")), CValue(4938.0)));
-  assert ( x0 . setCell ( CPos ( "A1" ), "12" ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B1" ) ), CValue ( 627.0 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B2" ) ), CValue ( -154.25 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B3" ) ), CValue ( 4096.0 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B4" ) ), CValue ( 1056.25 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B5" ) ), CValue ( 5625.0 ) ) );
-  assert ( valueMatch ( x0 . getValue ( CPos ( "B6" ) ), CValue ( 11250.0 ) ) );
+    assert (x0.setCell(CPos("A1"), "12"));
+    assert (valueMatch(x0.getValue(CPos("B1")), CValue(627.0)));
+    assert (valueMatch(x0.getValue(CPos("B2")), CValue(-154.25)));
+    assert (valueMatch(x0.getValue(CPos("B3")), CValue(4096.0)));
+    assert (valueMatch(x0.getValue(CPos("B4")), CValue(1056.25)));
+    assert (valueMatch(x0.getValue(CPos("B5")), CValue(5625.0)));
+    assert (valueMatch(x0.getValue(CPos("B6")), CValue(11250.0)));
 //  x1 = x0;
 //  assert ( x0 . setCell ( CPos ( "A2" ), "100" ) );
 //  assert ( x1 . setCell ( CPos ( "A2" ), "=A3+A5+A4" ) );

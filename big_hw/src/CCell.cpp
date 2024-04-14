@@ -2,7 +2,7 @@
 // Created by bardanik on 11/04/24.
 //
 #include "CCell.h"
-#include "../expression.h"
+#include "ExpressionParser.h"
 #include "CStackExpressionBuilder.h"
 
 CCell::CCell(const string &contents) {
