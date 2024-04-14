@@ -51,12 +51,15 @@ public:
 
 private:
 
-    static pair<string, unsigned int> splitPosition(const string &position);
+    void splitPositionAndParse(const string &position);
 
     static unsigned int convertColLabelToNumber(const string &col_label);
 
     unsigned int m_row;
+    bool m_absolute_row;
     unsigned int m_col;
+    bool m_absolute_col;
+
     string m_col_label;
 
 };

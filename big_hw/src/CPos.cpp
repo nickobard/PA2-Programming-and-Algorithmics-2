@@ -12,37 +12,42 @@ string toUpperCase(const string_view &str) {
 }
 
 
-CPos::CPos(string_view str) {
+CPos::CPos(string_view str) : m_row(0), m_absolute_row(false), m_col(0), m_absolute_col(false) {
     string upper_cased_pos = toUpperCase(str);
-    auto [col_label, row_number] = splitPosition(upper_cased_pos);
-    m_col_label = col_label;
-    m_row = row_number;
-    m_col = convertColLabelToNumber(m_col_label);
+    splitPositionAndParse(upper_cased_pos);
 }
 
-pair<string, unsigned int> CPos::splitPosition(const string &position) {
-    string label;
-    string number;
+void CPos::splitPositionAndParse(const string &position) {
+    string label, number;
 
     bool readingColumnLabel = true;
 
-    for (char c: position) {
+    for (size_t i = 0; i < position.size(); i++) {
+        char c = position[i];
         if (readingColumnLabel) {
-            if (isalpha(c)) {
+            if (i == 0 && c == '$') {
+                m_absolute_col = true;
+            } else if (isalpha(c)) {
                 label.push_back(c);
             } else if (isdigit(c)) {
                 readingColumnLabel = false;
                 number.push_back(c);
+            } else if (i > 1 && c == '$') {
+                readingColumnLabel = false;
+                m_absolute_row = true;
             } else {
-                throw invalid_argument("Non alphabetic character in column label.");
+                throw invalid_argument("Non valid character in column label.");
             }
         } else {
             if (!isdigit(c)) {
-                throw invalid_argument("Non digit character in row number.");
+                throw invalid_argument("Non valid character in row number.");
             }
         }
     }
-    return {label, stoul(number)};
+
+    m_col_label = label;
+    m_row = stoul(number);
+    m_col = convertColLabelToNumber(m_col_label);
 }
 
 unsigned int CPos::convertColLabelToNumber(const string &col_label) {
