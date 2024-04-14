@@ -5,6 +5,8 @@
 #include "CStackExpressionBuilder.h"
 #include "CSpreadsheet.h"
 
+CStackExpressionBuilder::CStackExpressionBuilder(CSpreadsheet &spreadsheet) : m_spreadsheet(spreadsheet) {}
+
 void CStackExpressionBuilder::opAdd() {
     auto [first, second] = getTwoDoubleArgumentsAndPop();
     auto result = first + second;
@@ -86,7 +88,7 @@ void CStackExpressionBuilder::funcCall(std::string fnName, int paramCount) {
 
 }
 
-CValue CStackExpressionBuilder::evaluate() const {
+CValue CStackExpressionBuilder::evaluate() {
     return m_expression_result.top();
 }
 
@@ -104,3 +106,5 @@ double CStackExpressionBuilder::getTopAndPop() {
     m_expression_result.pop();
     return top;
 }
+
+

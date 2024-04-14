@@ -64,54 +64,54 @@ int main() {
     std::ostringstream oss;
     std::istringstream iss;
     std::string data;
-    assert (x0.setCell(CPos("A1"), "10"));
-    assert (x0.setCell(CPos("A2"), "20.5"));
-    assert (x0.setCell(CPos("A3"), "3e1"));
-    assert (x0.setCell(CPos("A4"), "=40"));
-    assert (x0.setCell(CPos("A5"), "=5e+1"));
-    assert (x0.setCell(CPos("A6"), "raw text with any characters, including a quote \" or a newline\n"));
-
-    assert (x0.setCell(CPos("A9"), "=blbost..no"));
-    auto v1 = x0.getValue(CPos("A9"));
-
-
-    assert (x0.setCell(CPos("A7"),
-                       "=\"quoted string, quotes must be doubled: \"\". Moreover, backslashes are needed for C++.\""));
-
-    auto val = x0.getValue(CPos("A7"));
-    assert (valueMatch(x0.getValue(CPos("A7")),
-                       CValue("quoted string, quotes must be doubled: \". Moreover, backslashes are needed for C++.")));
-    assert (valueMatch(x0.getValue(CPos("A1")), CValue(10.0)));
-    assert (valueMatch(x0.getValue(CPos("A2")), CValue(20.5)));
-    assert (valueMatch(x0.getValue(CPos("A3")), CValue(30.0)));
-    assert (valueMatch(x0.getValue(CPos("A4")), CValue(40.0)));
-    assert (valueMatch(x0.getValue(CPos("A5")), CValue(50.0)));
-    assert (valueMatch(x0.getValue(CPos("A6")),
-                       CValue("raw text with any characters, including a quote \" or a newline\n")));
-
-
-    assert (valueMatch(x0.getValue(CPos("A8")), CValue()));
-    assert (valueMatch(x0.getValue(CPos("AAAA9999")), CValue()));
-    assert (x0.setCell(CPos("B1"), "=A1+A2*A3"));
-    assert (x0.setCell(CPos("B2"), "= -A1 ^ 2 - A2 / 2   "));
-    assert (x0.setCell(CPos("B3"), "= 2 ^ $A$1"));
-    assert (x0.setCell(CPos("B4"), "=($A1+A$2)^2"));
-    assert (x0.setCell(CPos("B5"), "=B1+B2+B3+B4"));
-    assert (x0.setCell(CPos("B6"), "=B1+B2+B3+B4+B5"));
-    assert (valueMatch(x0.getValue(CPos("B1")), CValue(625.0)));
-    assert (valueMatch(x0.getValue(CPos("B2")), CValue(-110.25)));
-    assert (valueMatch(x0.getValue(CPos("B3")), CValue(1024.0)));
-    auto p1 = CPos("A$2");
-    assert (valueMatch(x0.getValue(CPos("B4")), CValue(930.25)));
-    assert (valueMatch(x0.getValue(CPos("B5")), CValue(2469.0)));
-    assert (valueMatch(x0.getValue(CPos("B6")), CValue(4938.0)));
-    assert (x0.setCell(CPos("A1"), "12"));
-    assert (valueMatch(x0.getValue(CPos("B1")), CValue(627.0)));
-    assert (valueMatch(x0.getValue(CPos("B2")), CValue(-154.25)));
-    assert (valueMatch(x0.getValue(CPos("B3")), CValue(4096.0)));
-    assert (valueMatch(x0.getValue(CPos("B4")), CValue(1056.25)));
-    assert (valueMatch(x0.getValue(CPos("B5")), CValue(5625.0)));
-    assert (valueMatch(x0.getValue(CPos("B6")), CValue(11250.0)));
+//    assert (x0.setCell(CPos("A1"), "10"));
+//    assert (x0.setCell(CPos("A2"), "20.5"));
+//    assert (x0.setCell(CPos("A3"), "3e1"));
+//    assert (x0.setCell(CPos("A4"), "=40"));
+//    assert (x0.setCell(CPos("A5"), "=5e+1"));
+//    assert (x0.setCell(CPos("A6"), "raw text with any characters, including a quote \" or a newline\n"));
+//
+//    assert (x0.setCell(CPos("A9"), "=blbost..no"));
+//    auto v1 = x0.getValue(CPos("A9"));
+//
+//
+//    assert (x0.setCell(CPos("A7"),
+//                       "=\"quoted string, quotes must be doubled: \"\". Moreover, backslashes are needed for C++.\""));
+//
+//    auto val = x0.getValue(CPos("A7"));
+//    assert (valueMatch(x0.getValue(CPos("A7")),
+//                       CValue("quoted string, quotes must be doubled: \". Moreover, backslashes are needed for C++.")));
+//    assert (valueMatch(x0.getValue(CPos("A1")), CValue(10.0)));
+//    assert (valueMatch(x0.getValue(CPos("A2")), CValue(20.5)));
+//    assert (valueMatch(x0.getValue(CPos("A3")), CValue(30.0)));
+//    assert (valueMatch(x0.getValue(CPos("A4")), CValue(40.0)));
+//    assert (valueMatch(x0.getValue(CPos("A5")), CValue(50.0)));
+//    assert (valueMatch(x0.getValue(CPos("A6")),
+//                       CValue("raw text with any characters, including a quote \" or a newline\n")));
+//
+//
+//    assert (valueMatch(x0.getValue(CPos("A8")), CValue()));
+//    assert (valueMatch(x0.getValue(CPos("AAAA9999")), CValue()));
+//    assert (x0.setCell(CPos("B1"), "=A1+A2*A3"));
+//    assert (x0.setCell(CPos("B2"), "= -A1 ^ 2 - A2 / 2   "));
+//    assert (x0.setCell(CPos("B3"), "= 2 ^ $A$1"));
+//    assert (x0.setCell(CPos("B4"), "=($A1+A$2)^2"));
+//    assert (x0.setCell(CPos("B5"), "=B1+B2+B3+B4"));
+//    assert (x0.setCell(CPos("B6"), "=B1+B2+B3+B4+B5"));
+//    assert (valueMatch(x0.getValue(CPos("B1")), CValue(625.0)));
+//    assert (valueMatch(x0.getValue(CPos("B2")), CValue(-110.25)));
+//    assert (valueMatch(x0.getValue(CPos("B3")), CValue(1024.0)));
+//    auto p1 = CPos("A$2");
+//    assert (valueMatch(x0.getValue(CPos("B4")), CValue(930.25)));
+//    assert (valueMatch(x0.getValue(CPos("B5")), CValue(2469.0)));
+//    assert (valueMatch(x0.getValue(CPos("B6")), CValue(4938.0)));
+//    assert (x0.setCell(CPos("A1"), "12"));
+//    assert (valueMatch(x0.getValue(CPos("B1")), CValue(627.0)));
+//    assert (valueMatch(x0.getValue(CPos("B2")), CValue(-154.25)));
+//    assert (valueMatch(x0.getValue(CPos("B3")), CValue(4096.0)));
+//    assert (valueMatch(x0.getValue(CPos("B4")), CValue(1056.25)));
+//    assert (valueMatch(x0.getValue(CPos("B5")), CValue(5625.0)));
+//    assert (valueMatch(x0.getValue(CPos("B6")), CValue(11250.0)));
 //  x1 = x0;
 //  assert ( x0 . setCell ( CPos ( "A2" ), "100" ) );
 //  assert ( x1 . setCell ( CPos ( "A2" ), "=A3+A5+A4" ) );

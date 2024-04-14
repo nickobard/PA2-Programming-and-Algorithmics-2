@@ -19,7 +19,7 @@ using CValue = variant<monostate, double, string>;
 
 class CASTNode {
 public:
-    virtual CValue evaluate() const = 0;
+    virtual CValue evaluate() = 0;
 
     virtual ~CASTNode() = default;
 };
@@ -54,7 +54,7 @@ class CStringNode : public CASTNode {
 public:
     CStringNode(const string &parsed_value);
 
-    CValue evaluate() const override;
+    CValue evaluate() override;
 
 private:
     CValue m_value;
@@ -62,20 +62,20 @@ private:
 
 class CReferenceNode : public CASTNode {
 public:
-    CReferenceNode(const string &pos, const CSpreadsheet &spreadsheet);
+    CReferenceNode(const string &pos, CSpreadsheet &spreadsheet);
 
-    CValue evaluate() const override;
+    CValue evaluate() override;
 
 private:
     CPos m_reference_position;
-    const CSpreadsheet &m_spreadsheet;
+    CSpreadsheet &m_spreadsheet;
 };
 
 class CNumberNode : CASTNode {
 public:
     CNumberNode(double number);
 
-    CValue evaluate() const override;
+    CValue evaluate() override;
 
 private:
     CValue m_number;
@@ -83,30 +83,30 @@ private:
 
 class AddNode : public BinaryOperationNode {
 public:
-    CValue evaluate() const override;
+    CValue evaluate() override;
 };
 
 class SubtractNode : public BinaryOperationNode {
 public:
-    CValue evaluate() const override;
+    CValue evaluate() override;
 };
 
 class MultiplicationNode : public BinaryOperationNode {
 public:
-    CValue evaluate() const override;
+    CValue evaluate() override;
 };
 
 class DivisionNode : public BinaryOperationNode {
 public:
-    CValue evaluate() const override;
+    CValue evaluate() override;
 };
 
 class PowerNode : public BinaryOperationNode {
 public:
-    CValue evaluate() const override;
+    CValue evaluate() override;
 };
 
 class NegationNode : public UnaryOperationNode {
 public:
-    CValue evaluate() const override;
+    CValue evaluate() override;
 };

@@ -2,10 +2,9 @@
 // Created by bardanik on 14/04/24.
 //
 
-#include "CASTNode.h"
 #include "CSpreadsheet.h"
 
-CReferenceNode::CReferenceNode(const string &pos, const CSpreadsheet &spreadsheet) : m_reference_position(CPos(pos)),
+CReferenceNode::CReferenceNode(const string &pos, CSpreadsheet &spreadsheet) : m_reference_position(CPos(pos)),
                                                                                      m_spreadsheet(spreadsheet) {
 
 }
@@ -20,7 +19,7 @@ CStringNode::CStringNode(const string &parsed_value) : m_value({parsed_value}) {
 
 }
 
-CValue CStringNode::evaluate() const {
+CValue CStringNode::evaluate() {
     return m_value;
 }
 
@@ -56,41 +55,41 @@ CNumberNode::CNumberNode(double number) : m_number({number}) {
 
 }
 
-CValue CNumberNode::evaluate() const {
+CValue CNumberNode::evaluate() {
     return m_number;
 }
 
-CValue AddNode::evaluate() const {
+CValue AddNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = left + right;
     return result;
 }
 
-CValue SubtractNode::evaluate() const {
+CValue SubtractNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = left - right;
     return result;
 }
 
-CValue MultiplicationNode::evaluate() const {
+CValue MultiplicationNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = left * right;
     return result;
 }
 
-CValue DivisionNode::evaluate() const {
+CValue DivisionNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = left / right;
     return result;
 }
 
-CValue PowerNode::evaluate() const {
+CValue PowerNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = pow(left, right);
     return result;
 }
 
-CValue NegationNode::evaluate() const {
+CValue NegationNode::evaluate() {
     auto operand = getDoubleOperand();
     auto result = -operand;
     return result;

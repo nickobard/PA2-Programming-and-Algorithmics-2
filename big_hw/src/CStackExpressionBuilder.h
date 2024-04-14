@@ -16,7 +16,7 @@ class CSpreadsheet;
 
 class CStackExpressionBuilder : public CExprBuilder {
 public:
-    explicit CStackExpressionBuilder(const CSpreadsheet &spreadsheet) : m_spreadsheet(spreadsheet) {}
+    explicit CStackExpressionBuilder(CSpreadsheet &spreadsheet);
 
     void opAdd() override;
 
@@ -53,7 +53,7 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
-    CValue evaluate() const override;
+    CValue evaluate() override;
 
 private:
 
@@ -62,7 +62,7 @@ private:
     double getTopAndPop();
 
     stack<CValue> m_expression_result;
-    const CSpreadsheet &m_spreadsheet;
+    CSpreadsheet &m_spreadsheet;
 
 };
 

@@ -2,17 +2,18 @@
 // Created by bardanik on 14/04/24.
 //
 #include "CASTExpressionBuilder.h"
+#include "CASTNode.h"
 
-CASTExpressionBuilder::CASTExpressionBuilder(const CSpreadsheet &spreadsheet, CASTNode *&root) : m_root(root),
-                                                                                                 m_spreadsheet(
-                                                                                                         spreadsheet) {
+CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, CASTNode *&root) : m_root(root),
+                                                                                           m_spreadsheet(
+                                                                                                   spreadsheet) {
 }
 
 CASTExpressionBuilder::~CASTExpressionBuilder() {
     delete m_root;
 }
 
-CValue CASTExpressionBuilder::evaluate() const {
+CValue CASTExpressionBuilder::evaluate() {
     return m_root->evaluate();
 }
 

@@ -5,7 +5,6 @@
 #ifndef BARDANIK_CCELL_H
 #define BARDANIK_CCELL_H
 
-#include "CPos.h"
 #include "CASTNode.h"
 
 using namespace literals;
@@ -26,7 +25,7 @@ public:
 
     explicit CCell(const string &contents);
 
-    CValue getValue(const CSpreadsheet &spreadsheet);
+    CValue getValue(CSpreadsheet &spreadsheet);
 
 private:
 

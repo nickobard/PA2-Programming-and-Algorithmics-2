@@ -8,11 +8,14 @@
 #endif //PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 
 #include "ExpressionParser.h"
-#include "CASTNode.h"
+#include "CExprBuilder.h"
+
+class CASTNode;
+class CSpreadsheet;
 
 class CASTExpressionBuilder : public CExprBuilder {
 public:
-    explicit CASTExpressionBuilder(const CSpreadsheet &spreadsheet, CASTNode *&root);
+    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, CASTNode *&root);
 
     ~CASTExpressionBuilder();
 
@@ -51,9 +54,9 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
-    CValue evaluate() const override;
+    CValue evaluate() override;
 
 private:
     CASTNode *&m_root;
-    const CSpreadsheet &m_spreadsheet;
+    CSpreadsheet &m_spreadsheet;
 };
