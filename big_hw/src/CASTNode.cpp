@@ -20,7 +20,7 @@ CStringNode::CStringNode(const string &parsed_value) : m_value({parsed_value}) {
 
 }
 
-CValue CStringNode::evaluate() {
+CValue CStringNode::evaluate() const {
     return m_value;
 }
 
@@ -56,41 +56,41 @@ CNumberNode::CNumberNode(double number) : m_number({number}) {
 
 }
 
-CValue CNumberNode::evaluate() {
+CValue CNumberNode::evaluate() const {
     return m_number;
 }
 
-CValue AddNode::evaluate() {
+CValue AddNode::evaluate() const {
     auto [left, right] = getDoubleValues();
     auto result = left + right;
     return result;
 }
 
-CValue SubtractNode::evaluate() {
+CValue SubtractNode::evaluate() const {
     auto [left, right] = getDoubleValues();
     auto result = left - right;
     return result;
 }
 
-CValue MultiplicationNode::evaluate() {
+CValue MultiplicationNode::evaluate() const {
     auto [left, right] = getDoubleValues();
     auto result = left * right;
     return result;
 }
 
-CValue DivisionNode::evaluate() {
+CValue DivisionNode::evaluate() const {
     auto [left, right] = getDoubleValues();
     auto result = left / right;
     return result;
 }
 
-CValue PowerNode::evaluate() {
+CValue PowerNode::evaluate() const {
     auto [left, right] = getDoubleValues();
     auto result = pow(left, right);
     return result;
 }
 
-CValue NegationNode::evaluate() {
+CValue NegationNode::evaluate() const {
     auto operand = getDoubleOperand();
     auto result = -operand;
     return result;
