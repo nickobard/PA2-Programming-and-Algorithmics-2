@@ -14,14 +14,15 @@ using CValue = variant<monostate, double, string>;
 enum class CellType{
     DOUBLE,
     STRING,
-    EXPRESSION
+    EXPRESSION,
+    UNDEFINED
 };
 
 class CSpreadsheet;
 
 class CCell {
 public:
-    CCell() = default;
+    CCell();
     ~CCell();
 
     explicit CCell(const string &contents);
@@ -33,6 +34,7 @@ private:
     CValue m_value;
     CellType m_type;
     CASTNode * m_root;
+    pair<int, int> m_shift;
 };
 
 #endif //BARDANIK_CCELL_H

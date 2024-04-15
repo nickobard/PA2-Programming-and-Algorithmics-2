@@ -41,13 +41,13 @@
 
 #include "CCell.h"
 
+using Cells = map<unsigned int, map<unsigned int, CCell>>;
+
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
 constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;
 constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
 constexpr unsigned SPREADSHEET_SPEED = 0x08;
 constexpr unsigned SPREADSHEET_PARSER = 0x10;
-
-constexpr size_t INITIAL_TABLE_SIZE = 1000;
 
 class CSpreadsheet {
 public:
@@ -57,7 +57,7 @@ public:
 //        SPREADSHEET_PARSER;
     }
 
-    CSpreadsheet();
+    CSpreadsheet() = default;
 
     bool load(istream &is);
 
@@ -74,11 +74,7 @@ public:
                   int h = 1);
 
 private:
-    bool cellOutOfRange(const CPos &pos) const;
-
-    vector<vector<CCell>> m_cells;
-    size_t m_rows;
-    size_t m_cols;
+    Cells m_cells;
 };
 
 

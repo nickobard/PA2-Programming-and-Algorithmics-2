@@ -3,7 +3,12 @@
 //
 #include "CCell.h"
 
-CCell::CCell(const string &contents) : m_root(nullptr) {
+
+CCell::CCell() {
+
+}
+
+CCell::CCell(const string &contents) : m_root(nullptr), m_shift({0, 0}) {
     try {
         double number = stod(contents);
         m_value = number;
@@ -16,6 +21,11 @@ CCell::CCell(const string &contents) : m_root(nullptr) {
         }
         m_value = contents;
     }
+}
+
+
+CCell::~CCell() {
+    delete m_root;
 }
 
 CValue CCell::getValue(CSpreadsheet &spreadsheet) {
@@ -32,10 +42,6 @@ CValue CCell::getValue(CSpreadsheet &spreadsheet) {
         return m_root->evaluate();
     }
     return m_value;
-}
-
-CCell::~CCell() {
-    delete m_root;
 }
 
 
