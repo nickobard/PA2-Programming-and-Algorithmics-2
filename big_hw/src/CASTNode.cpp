@@ -3,9 +3,11 @@
 //
 
 #include "CSpreadsheet.h"
+#include "CASTNode.h"
+
 
 CReferenceNode::CReferenceNode(const string &pos, CSpreadsheet &spreadsheet) : m_reference_position(CPos(pos)),
-                                                                                     m_spreadsheet(spreadsheet) {
+                                                                               m_spreadsheet(spreadsheet) {
 
 }
 
@@ -65,10 +67,18 @@ CValue AddNode::evaluate() {
     return result;
 }
 
+AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+}
+
 CValue SubtractNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = left - right;
     return result;
+}
+
+SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
 }
 
 CValue MultiplicationNode::evaluate() {
@@ -77,10 +87,19 @@ CValue MultiplicationNode::evaluate() {
     return result;
 }
 
+MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
+                                                                                                        second_arg) {
+
+}
+
 CValue DivisionNode::evaluate() {
     auto [left, right] = getDoubleValues();
     auto result = left / right;
     return result;
+}
+
+DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
 }
 
 CValue PowerNode::evaluate() {
@@ -89,8 +108,16 @@ CValue PowerNode::evaluate() {
     return result;
 }
 
+PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+}
+
 CValue NegationNode::evaluate() {
     auto operand = getDoubleOperand();
     auto result = -operand;
     return result;
+}
+
+NegationNode::NegationNode(CASTNode *arg) : UnaryOperationNode(arg) {
+
 }

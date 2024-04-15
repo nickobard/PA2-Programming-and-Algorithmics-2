@@ -49,7 +49,6 @@ public:
     virtual void funcCall(std::string fnName,
                           int paramCount) = 0;
 
-    virtual CValue evaluate() = 0;
 };
 
 

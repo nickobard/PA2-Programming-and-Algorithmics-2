@@ -52,7 +52,7 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
-    CValue evaluate() override;
+    CValue getResult();
 
 private:
 

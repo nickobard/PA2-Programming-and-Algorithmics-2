@@ -12,9 +12,7 @@
 
 class CASTExpressionBuilder : public CExprBuilder {
 public:
-    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, CASTNode *&root);
-
-    ~CASTExpressionBuilder();
+    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet);
 
     void opAdd() override;
 
@@ -51,9 +49,12 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
-    CValue evaluate() override;
+    CASTNode *getResult();
 
 private:
-    CASTNode *&m_root;
+
+    pair<CASTNode *, CASTNode *> getNodesPairAndPop();
+
+    stack<CASTNode *> m_stack;
     CSpreadsheet &m_spreadsheet;
 };

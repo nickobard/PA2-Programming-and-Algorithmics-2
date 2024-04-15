@@ -3,41 +3,52 @@
 //
 #include "CASTExpressionBuilder.h"
 
-CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, CASTNode *&root) : m_root(root),
-                                                                                           m_spreadsheet(
-                                                                                                   spreadsheet) {
+CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet) :
+        m_spreadsheet(
+                spreadsheet) {
 }
 
-CASTExpressionBuilder::~CASTExpressionBuilder() {
-    delete m_root;
-}
-
-CValue CASTExpressionBuilder::evaluate() {
-    return m_root->evaluate();
+CASTNode *CASTExpressionBuilder::getResult() {
+    auto root = m_stack.top();
+    m_stack.pop();
+    return root;
 }
 
 void CASTExpressionBuilder::opAdd() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new AddNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opSub() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new SubtractNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opMul() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new MultiplicationNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opDiv() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new DivisionNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opPow() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new PowerNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opNeg() {
-
+    auto arg = m_stack.top();
+    m_stack.pop();
+    CASTNode *node = new NegationNode(arg);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opEq() {
@@ -65,15 +76,18 @@ void CASTExpressionBuilder::opGe() {
 }
 
 void CASTExpressionBuilder::valNumber(double val) {
-
+    CASTNode *node = new CNumberNode(val);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::valString(string val) {
-
+    CASTNode *node = new CStringNode(val);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::valReference(string val) {
-
+    CASTNode *node = new CReferenceNode(val, m_spreadsheet);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::valRange(string val) {
@@ -82,5 +96,13 @@ void CASTExpressionBuilder::valRange(string val) {
 
 void CASTExpressionBuilder::funcCall(std::string fnName, int paramCount) {
 
+}
+
+pair<CASTNode *, CASTNode *> CASTExpressionBuilder::getNodesPairAndPop() {
+    auto *second_arg = m_stack.top();
+    m_stack.pop();
+    auto *first_arg = m_stack.top();
+    m_stack.pop();
+    return {first_arg, second_arg};
 }
 

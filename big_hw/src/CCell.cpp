@@ -20,13 +20,16 @@ CCell::CCell(const string &contents) : m_root(nullptr) {
 
 CValue CCell::getValue(CSpreadsheet &spreadsheet) {
     if (m_type == CellType::EXPRESSION) {
-        try {
-            CASTExpressionBuilder builder(spreadsheet, m_root);
-            parseExpression(get<string>(m_value), builder);
-            return builder.evaluate();
-        } catch (invalid_argument &e) {
-            return m_value;
+        if (m_root == nullptr) {
+            try {
+                CASTExpressionBuilder builder(spreadsheet);
+                parseExpression(get<string>(m_value), builder);
+                m_root = builder.getResult();
+            } catch (invalid_argument &e) {
+                return m_value;
+            }
         }
+        return m_root->evaluate();
     }
     return m_value;
 }

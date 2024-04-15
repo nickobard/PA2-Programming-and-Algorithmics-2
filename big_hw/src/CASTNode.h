@@ -72,7 +72,7 @@ private:
     CSpreadsheet &m_spreadsheet;
 };
 
-class CNumberNode : CASTNode {
+class CNumberNode : public CASTNode {
 public:
     CNumberNode(double number);
 
@@ -84,31 +84,37 @@ private:
 
 class AddNode : public BinaryOperationNode {
 public:
+    AddNode(CASTNode * first_arg, CASTNode * second_arg);
     CValue evaluate() override;
 };
 
 class SubtractNode : public BinaryOperationNode {
 public:
+    SubtractNode(CASTNode * first_arg, CASTNode * second_arg);
     CValue evaluate() override;
 };
 
 class MultiplicationNode : public BinaryOperationNode {
 public:
+    MultiplicationNode(CASTNode * first_arg, CASTNode * second_arg);
     CValue evaluate() override;
 };
 
 class DivisionNode : public BinaryOperationNode {
 public:
+    DivisionNode(CASTNode * first_arg, CASTNode * second_arg);
     CValue evaluate() override;
 };
 
 class PowerNode : public BinaryOperationNode {
 public:
+    PowerNode(CASTNode * first_arg, CASTNode * second_arg);
     CValue evaluate() override;
 };
 
 class NegationNode : public UnaryOperationNode {
 public:
+    NegationNode(CASTNode * arg);
     CValue evaluate() override;
 };
 
