@@ -6,10 +6,44 @@
 
 
 bool CSpreadsheet::load(istream &is) {
+    Cells cells;
+    string line;
+    while (getline(is, line)) {sa
+        vector<string> words;
+        string current_word;
+        for (size_t i = 0; i < line.size(); i++) {
+            if (words.size() == 5) {
+                auto size = (size_t) stoul(words[4]);
+
+            } else {
+                char current = line[i];
+                if (current == ';') {
+                    words.push_back(current_word);
+                    current_word.clear();
+                    continue;
+                }
+                current_word += current;
+            }
+        }
+
+    }
     return false;
 }
 
 bool CSpreadsheet::save(ostream &os) const {
+    for (auto &[row_pos, column]: m_cells) {
+        for (auto &[col_pos, cell]: column) {
+            os << to_string(row_pos) + ',' + to_string(col_pos) + ',';
+            os << cell.m_shift.first + ',' + cell.m_shift.second + ',';
+            string value;
+            if (cell.m_type == CellType::DOUBLE) {
+                value = to_string(get<double>(cell.m_value));
+            } else {
+                value = get<string>(cell.m_value);
+            }
+            os << to_string(value.size()) + ',' + value + ';' << endl;
+        }
+    }
     return false;
 }
 

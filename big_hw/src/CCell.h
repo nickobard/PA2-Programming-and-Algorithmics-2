@@ -35,6 +35,8 @@ private:
     CellType m_type;
     CASTNode * m_root;
     pair<int, int> m_shift;
+
+    friend class CSpreadsheet;
 };
 
 #endif //BARDANIK_CCELL_H
