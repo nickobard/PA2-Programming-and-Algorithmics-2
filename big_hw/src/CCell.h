@@ -14,15 +14,15 @@ using CValue = variant<monostate, double, string>;
 enum class CellType{
     DOUBLE,
     STRING,
-    EXPRESSION,
-    UNDEFINED
+    EXPRESSION
 };
 
 class CSpreadsheet;
 
 class CCell {
 public:
-    CCell();
+    CCell(const CCell& src);
+    CCell& operator=(const CCell & src);
     ~CCell();
 
     explicit CCell(const string &contents);
