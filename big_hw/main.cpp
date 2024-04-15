@@ -125,11 +125,11 @@ int main() {
   assert ( valueMatch ( x1 . getValue ( CPos ( "B4" ) ), CValue ( 17424.0 ) ) );
   assert ( valueMatch ( x1 . getValue ( CPos ( "B5" ) ), CValue ( 24928.0 ) ) );
   assert ( valueMatch ( x1 . getValue ( CPos ( "B6" ) ), CValue ( 49856.0 ) ) );
-//  oss . clear ();
-//  oss . str ( "" );
-//  assert ( x0 . save ( oss ) );
-//  data = oss . str ();
-//  iss . clear ();
+  oss . clear ();
+  oss . str ( "" );
+  assert ( x0 . save ( oss ) );
+  data = oss . str ();
+  iss . clear ();
 //  iss . str ( data );
 //  assert ( x1 . load ( iss ) );
 //  assert ( valueMatch ( x1 . getValue ( CPos ( "B1" ) ), CValue ( 3012.0 ) ) );

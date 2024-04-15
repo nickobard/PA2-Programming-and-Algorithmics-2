@@ -47,17 +47,17 @@ bool CSpreadsheet::save(ostream &os) const {
     for (auto &[row_pos, column]: m_cells) {
         for (auto &[col_pos, cell]: column) {
             os << to_string(row_pos) + ',' + to_string(col_pos) + ',';
-            os << cell.m_shift.first + ',' + cell.m_shift.second + ',';
+            os << to_string(cell.m_shift.first) + ',' + to_string(cell.m_shift.second) + ',';
             string value;
             if (cell.m_type == CellType::DOUBLE) {
                 value = to_string(get<double>(cell.m_value));
             } else {
                 value = get<string>(cell.m_value);
             }
-            os << to_string(value.size()) + ',' + value + ';' << endl;
+            os << to_string(value.size()) + ',' + value + ';' << flush;
         }
     }
-    return false;
+    return true;
 }
 
 bool CSpreadsheet::setCell(CPos pos, string contents) {
