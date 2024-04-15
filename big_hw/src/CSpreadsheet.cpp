@@ -7,27 +7,40 @@
 
 bool CSpreadsheet::load(istream &is) {
     Cells cells;
-    string line;
-    while (getline(is, line)) {sa
+    while (is) {
         vector<string> words;
         string current_word;
-        for (size_t i = 0; i < line.size(); i++) {
-            if (words.size() == 5) {
-                auto size = (size_t) stoul(words[4]);
-
-            } else {
-                char current = line[i];
-                if (current == ';') {
-                    words.push_back(current_word);
-                    current_word.clear();
-                    continue;
-                }
-                current_word += current;
+        while (is && words.size() < 5) {
+            char c = (char) is.get();
+            if (c == ',') {
+                words.push_back(current_word);
+                current_word.clear();
+                continue;
             }
+            current_word.push_back(c);
         }
 
+        string value;
+        size_t size = stoul(words[4]);
+        for (size_t i = 0; i < size; i++) {
+            char c = (char) is.get();
+            value.push_back(c);
+        }
+
+        if (is.get() != ';') {
+            return false;
+        } else {
+            unsigned int row_pos = stoul(words[0]);
+            unsigned int col_pos = stoul(words[1]);
+//        unsigned int row_shift = stoul(words[2]);
+//        unsigned int col_shift = stoul(words[3]);
+
+            setCell(CPos(row_pos, col_pos), value);
+        }
     }
-    return false;
+
+    m_cells = cells;
+    return true;
 }
 
 bool CSpreadsheet::save(ostream &os) const {

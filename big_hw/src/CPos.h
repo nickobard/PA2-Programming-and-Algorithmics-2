@@ -43,6 +43,7 @@ using namespace std;
 class CPos {
 public:
     explicit CPos(string_view str);
+    CPos(unsigned int row, unsigned int col);
 
     /**
      * @return row, column pair

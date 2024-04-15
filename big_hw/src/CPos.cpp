@@ -17,6 +17,10 @@ CPos::CPos(string_view str) : m_row(0), m_absolute_row(false), m_col(0), m_absol
     splitPositionAndParse(upper_cased_pos);
 }
 
+CPos::CPos(unsigned int row, unsigned int col) : m_row(row), m_col(col) {
+
+}
+
 void CPos::splitPositionAndParse(const string &position) {
     string label, number;
 
@@ -64,3 +68,5 @@ unsigned int CPos::convertColLabelToNumber(const string &col_label) {
 pair<unsigned int, unsigned int> CPos::getCoords() const {
     return {m_row, m_col};
 }
+
+
