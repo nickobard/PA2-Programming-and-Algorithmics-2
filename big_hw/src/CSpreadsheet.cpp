@@ -12,12 +12,18 @@ bool CSpreadsheet::load(istream &is) {
         string current_word;
         while (is && words.size() < 5) {
             char c = (char) is.get();
+            if (is.eof()) {
+                break;
+            }
             if (c == ',') {
                 words.push_back(current_word);
                 current_word.clear();
                 continue;
             }
             current_word.push_back(c);
+        }
+        if (is.eof()) {
+            break;
         }
 
         string value;
