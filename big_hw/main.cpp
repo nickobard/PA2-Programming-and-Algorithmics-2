@@ -147,19 +147,19 @@ int main() {
     assert (x1.load(iss));
 
 
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B1" ) ), CValue ( 3012.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B2" ) ), CValue ( -194.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B3" ) ), CValue ( 4096.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B4" ) ), CValue ( 12544.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B5" ) ), CValue ( 19458.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B6" ) ), CValue ( 38916.0 ) ) );
-//  assert ( x0 . setCell ( CPos ( "A3" ), "4e1" ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B1" ) ), CValue ( 3012.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B2" ) ), CValue ( -194.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B3" ) ), CValue ( 4096.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B4" ) ), CValue ( 12544.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B5" ) ), CValue ( 19458.0 ) ) );
-//  assert ( valueMatch ( x1 . getValue ( CPos ( "B6" ) ), CValue ( 38916.0 ) ) );
+    assert (valueMatch(x1.getValue(CPos("B1")), CValue(3012.0)));
+    assert (valueMatch(x1.getValue(CPos("B2")), CValue(-194.0)));
+    assert (valueMatch(x1.getValue(CPos("B3")), CValue(4096.0)));
+    assert (valueMatch(x1.getValue(CPos("B4")), CValue(12544.0)));
+    assert (valueMatch(x1.getValue(CPos("B5")), CValue(19458.0)));
+    assert (valueMatch(x1.getValue(CPos("B6")), CValue(38916.0)));
+    assert (x0.setCell(CPos("A3"), "4e1"));
+    assert (valueMatch(x1.getValue(CPos("B1")), CValue(3012.0)));
+    assert (valueMatch(x1.getValue(CPos("B2")), CValue(-194.0)));
+    assert (valueMatch(x1.getValue(CPos("B3")), CValue(4096.0)));
+    assert (valueMatch(x1.getValue(CPos("B4")), CValue(12544.0)));
+    assert (valueMatch(x1.getValue(CPos("B5")), CValue(19458.0)));
+    assert (valueMatch(x1.getValue(CPos("B6")), CValue(38916.0)));
 //  oss . clear ();
 //  oss . str ( "" );
 //  assert ( x0 . save ( oss ) );
