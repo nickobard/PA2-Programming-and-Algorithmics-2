@@ -30,7 +30,14 @@ public:
     ~BinaryOperationNode();
 
 protected:
-    pair<double, double> getDoubleValues() const;
+
+    template<typename L, typename R>
+    pair<L, R> getValues(const pair<CValue, CValue> &values) const;
+
+    template<typename L, typename R>
+    bool bothTypesAre(const pair<CValue, CValue> &values) const;
+
+    pair<CValue, CValue> evaluateValues();
 
 private:
 
