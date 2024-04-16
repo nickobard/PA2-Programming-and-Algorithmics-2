@@ -79,11 +79,11 @@ private:
     static bool setCell(Cells &cells, const CPos &pos, const CCell &cell);
 
 
-    Cells copyCellsAndShift(CPos src, CPos dst, int w = 1, int h = 1);
+    Cells copyCellsAndShift(const CPos &src, const CPos &dst, int w = 1, int h = 1);
 
-    void deleteCells(CPos dst, int w = 1, int h = 1);
+    void deleteCells(const CPos &dst, int w = 1, int h = 1);
 
-    void pasteCells();
+    void pasteCells(const Cells &cells);
 
 
     Cells m_cells;
