@@ -41,7 +41,7 @@ pair<CValue, CValue> BinaryOperationNode::evaluateValues() {
 }
 
 template<typename L, typename R>
-bool BinaryOperationNode::bothTypesAre(const pair<CValue, CValue> &values) const {
+bool BinaryOperationNode::typesAre(const pair<CValue, CValue> &values) const {
     return holds_alternative<L>(values.first) && holds_alternative<R>(values.second);
 }
 
@@ -74,9 +74,28 @@ CValue CNumberNode::evaluate() {
 }
 
 CValue AddNode::evaluate() {
-    auto [left, right] = getValues<double, double>(evaluateValues());
-    auto result = left + right;
-    return result;
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto result = left + right;
+        return result;
+    }
+    if (typesAre<double, string>(values)) {
+        auto [left, right] = getValues<double, string>(evaluateValues());
+        auto result = to_string(left) + right;
+        return result;
+    }
+    if (typesAre<string, double>(values)) {
+        auto [left, right] = getValues<string, double>(evaluateValues());
+        auto result = left + to_string(right);
+        return result;
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(evaluateValues());
+        auto result = left + right;
+        return result;
+    }
+    return {};
 }
 
 AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {

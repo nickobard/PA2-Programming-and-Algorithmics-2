@@ -35,7 +35,7 @@ protected:
     pair<L, R> getValues(const pair<CValue, CValue> &values) const;
 
     template<typename L, typename R>
-    bool bothTypesAre(const pair<CValue, CValue> &values) const;
+    bool typesAre(const pair<CValue, CValue> &values) const;
 
     pair<CValue, CValue> evaluateValues();
 
