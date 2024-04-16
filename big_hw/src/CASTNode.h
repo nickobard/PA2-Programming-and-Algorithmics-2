@@ -63,7 +63,7 @@ private:
 
 class CReferenceNode : public CASTNode {
 public:
-    CReferenceNode(const string &pos, CSpreadsheet &spreadsheet);
+    CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, const pair<int, int> &shift);
 
     CValue evaluate() override;
 
@@ -84,37 +84,43 @@ private:
 
 class AddNode : public BinaryOperationNode {
 public:
-    AddNode(CASTNode * first_arg, CASTNode * second_arg);
+    AddNode(CASTNode *first_arg, CASTNode *second_arg);
+
     CValue evaluate() override;
 };
 
 class SubtractNode : public BinaryOperationNode {
 public:
-    SubtractNode(CASTNode * first_arg, CASTNode * second_arg);
+    SubtractNode(CASTNode *first_arg, CASTNode *second_arg);
+
     CValue evaluate() override;
 };
 
 class MultiplicationNode : public BinaryOperationNode {
 public:
-    MultiplicationNode(CASTNode * first_arg, CASTNode * second_arg);
+    MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg);
+
     CValue evaluate() override;
 };
 
 class DivisionNode : public BinaryOperationNode {
 public:
-    DivisionNode(CASTNode * first_arg, CASTNode * second_arg);
+    DivisionNode(CASTNode *first_arg, CASTNode *second_arg);
+
     CValue evaluate() override;
 };
 
 class PowerNode : public BinaryOperationNode {
 public:
-    PowerNode(CASTNode * first_arg, CASTNode * second_arg);
+    PowerNode(CASTNode *first_arg, CASTNode *second_arg);
+
     CValue evaluate() override;
 };
 
 class NegationNode : public UnaryOperationNode {
 public:
-    NegationNode(CASTNode * arg);
+    NegationNode(CASTNode *arg);
+
     CValue evaluate() override;
 };
 

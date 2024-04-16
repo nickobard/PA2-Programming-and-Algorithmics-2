@@ -31,6 +31,8 @@ public:
 
     void setShift(const pair<int, int> &shift);
 
+    pair<int, int> getShift() const;
+
 private:
 
     CValue m_value;

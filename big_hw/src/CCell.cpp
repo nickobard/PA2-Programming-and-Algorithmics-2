@@ -44,7 +44,7 @@ CValue CCell::getValue(CSpreadsheet &spreadsheet) {
     if (m_type == CellType::EXPRESSION) {
         if (m_root == nullptr) {
             try {
-                CASTExpressionBuilder builder(spreadsheet);
+                CASTExpressionBuilder builder(spreadsheet, *this);
                 parseExpression(get<string>(m_value), builder);
                 m_root = builder.getResult();
             } catch (invalid_argument &e) {
@@ -59,6 +59,10 @@ CValue CCell::getValue(CSpreadsheet &spreadsheet) {
 void CCell::setShift(const pair<int, int> &shift) {
     m_shift.first += shift.first;
     m_shift.second += shift.second;
+}
+
+pair<int, int> CCell::getShift() const {
+    return m_shift;
 }
 
 

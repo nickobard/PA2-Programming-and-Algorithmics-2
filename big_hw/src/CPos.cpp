@@ -73,4 +73,8 @@ pair<unsigned int, unsigned int> CPos::getOffset(const CPos &src, const CPos &ds
     return {dst.m_row - src.m_row, dst.m_col - src.m_col};
 }
 
+void CPos::shiftPos(const pair<int, int> &shift) {
+
+}
+
 

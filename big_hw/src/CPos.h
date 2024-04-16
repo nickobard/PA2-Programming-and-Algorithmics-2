@@ -53,6 +53,8 @@ public:
 
     static pair<unsigned int, unsigned int> getOffset(const CPos &src, const CPos &dst);
 
+    void shiftPos(const pair<int, int> &shift);
+
 private:
 
     void splitPositionAndParse(const string &position);

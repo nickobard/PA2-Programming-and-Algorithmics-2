@@ -6,9 +6,10 @@
 #include "CASTNode.h"
 
 
-CReferenceNode::CReferenceNode(const string &pos, CSpreadsheet &spreadsheet) : m_reference_position(CPos(pos)),
-                                                                               m_spreadsheet(spreadsheet) {
-
+CReferenceNode::CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, const pair<int, int> &shift)
+        : m_reference_position(CPos(pos)),
+          m_spreadsheet(spreadsheet) {
+    m_reference_position.shiftPos(shift);
 }
 
 CValue CReferenceNode::evaluate() {

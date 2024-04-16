@@ -1,11 +1,11 @@
 //
 // Created by bardanik on 14/04/24.
 //
-#include "CASTExpressionBuilder.h"
+#include "CCell.h"
 
-CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet) :
+CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell &current_cell) :
         m_spreadsheet(
-                spreadsheet) {
+                spreadsheet), m_cell(current_cell) {
 }
 
 CASTNode *CASTExpressionBuilder::getResult() {
@@ -86,7 +86,7 @@ void CASTExpressionBuilder::valString(string val) {
 }
 
 void CASTExpressionBuilder::valReference(string val) {
-    CASTNode *node = new CReferenceNode(val, m_spreadsheet);
+    CASTNode *node = new CReferenceNode(val, m_spreadsheet, m_cell.getShift());
     m_stack.push(node);
 }
 
