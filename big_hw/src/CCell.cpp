@@ -56,6 +56,10 @@ CValue CCell::getValue(CSpreadsheet &spreadsheet) {
     return m_value;
 }
 
+void CCell::setShift(const pair<int, int> &shift) {
+    m_shift = shift;
+}
+
 
 
 

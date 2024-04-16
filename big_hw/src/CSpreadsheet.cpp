@@ -104,24 +104,32 @@ CValue CSpreadsheet::getValue(CPos pos) {
 }
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
-    CSpreadsheet copy;
+
+
+}
+
+Cells CSpreadsheet::copyCellsAndShift(CPos src, CPos dst, int w, int h) {
+    Cells cells_shifted_copy;
     auto [src_row, src_col] = src.getCoords();
-    auto [dst_row, dst_col] = dst.getCoords();
-    auto offset_row = dst_row - src_row;
-    auto offset_col = dst_col - src_col;
-    auto row_start = m_cells.lower_bound(src_row);
+    auto offset = CPos::getOffset(src, dst);
+
+    auto row_beg = m_cells.lower_bound(src_row);
     auto row_end = m_cells.upper_bound(src_row + h);
-    while (row_start != row_end) {
-        auto col_start = row_start->second.lower_bound(src_col);
-        auto col_end = row_start->second.upper_bound(src_col + w);
-        while (col_start != col_end) {
-//            copy.setCell(CPos(row_start->first + offset_row, col_start->first + offset_col),)
 
-            col_start++;
+    while (row_beg != row_end) {
+        auto col_beg = row_beg->second.lower_bound(src_col);
+        auto col_end = row_beg->second.upper_bound(src_col + w);
+        while (col_beg != col_end) {
+            CCell cell_copy = CCell(col_beg->second);
+            cell_copy.setShift(offset);
+
+            setCell(cells_shifted_copy, {row_beg->first, col_beg->first}, cell_copy);
+
+            col_beg++;
         }
-        row_start++;
+        row_beg++;
     }
-
+    return cells_shifted_copy;
 }
 
 

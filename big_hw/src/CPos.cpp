@@ -69,4 +69,8 @@ pair<unsigned int, unsigned int> CPos::getCoords() const {
     return {m_row, m_col};
 }
 
+pair<unsigned int, unsigned int> CPos::getOffset(const CPos &src, const CPos &dst) {
+    return {dst.m_row - src.m_row, dst.m_col - src.m_col};
+}
+
 

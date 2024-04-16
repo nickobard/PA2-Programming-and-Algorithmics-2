@@ -43,12 +43,15 @@ using namespace std;
 class CPos {
 public:
     explicit CPos(string_view str);
+
     CPos(unsigned int row, unsigned int col);
 
     /**
      * @return row, column pair
      */
     pair<unsigned int, unsigned int> getCoords() const;
+
+    static pair<unsigned int, unsigned int> getOffset(const CPos &src, const CPos &dst);
 
 private:
 

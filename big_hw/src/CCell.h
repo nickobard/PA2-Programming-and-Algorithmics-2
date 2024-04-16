@@ -29,6 +29,8 @@ public:
 
     CValue getValue(CSpreadsheet &spreadsheet);
 
+    void setShift(const pair<int, int> &shift);
+
 private:
 
     CValue m_value;
