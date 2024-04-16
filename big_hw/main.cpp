@@ -59,25 +59,6 @@ bool valueMatch(const CValue &r,
 
 int main() {
 
-    set<int> s;
-    s.insert(1);
-    s.insert(3);
-    s.insert(4);
-    s.insert(5);
-    s.insert(6);
-    s.insert(8);
-    s.insert(9);
-
-    cout << *s.lower_bound(2) << endl;
-    cout << *s.upper_bound(2) << endl;
-    cout << *s.lower_bound(3) << endl;
-
-    cout << *s.lower_bound(7) << endl;
-    cout << *s.upper_bound(7) << endl;
-    cout << *s.lower_bound(6) << endl;
-    cout << *s.upper_bound(6) << endl;
-    return EXIT_SUCCESS;
-
     CSpreadsheet x0, x1;
     std::ostringstream oss;
     std::istringstream iss;
@@ -203,13 +184,13 @@ int main() {
     assert (x0.setCell(CPos("F11"), "=$D0+5"));
     assert (x0.setCell(CPos("F12"), "=D$0+5"));
     assert (x0.setCell(CPos("F13"), "=$D$0+5"));
-//  x0 . copyRect ( CPos ( "G11" ), CPos ( "F10" ), 1, 4 );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "F10" ) ), CValue ( 15.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "F11" ) ), CValue ( 15.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "F12" ) ), CValue ( 15.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "F13" ) ), CValue ( 15.0 ) ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "F14" ) ), CValue() ) );
-//  assert ( valueMatch ( x0 . getValue ( CPos ( "G10" ) ), CValue() ) );
+    x0.copyRect(CPos("G11"), CPos("F10"), 1, 4);
+    assert (valueMatch(x0.getValue(CPos("F10")), CValue(15.0)));
+    assert (valueMatch(x0.getValue(CPos("F11")), CValue(15.0)));
+    assert (valueMatch(x0.getValue(CPos("F12")), CValue(15.0)));
+    assert (valueMatch(x0.getValue(CPos("F13")), CValue(15.0)));
+    assert (valueMatch(x0.getValue(CPos("F14")), CValue()));
+    assert (valueMatch(x0.getValue(CPos("G10")), CValue()));
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "G11" ) ), CValue ( 75.0 ) ) );
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "G12" ) ), CValue ( 25.0 ) ) );
 //  assert ( valueMatch ( x0 . getValue ( CPos ( "G13" ) ), CValue ( 65.0 ) ) );

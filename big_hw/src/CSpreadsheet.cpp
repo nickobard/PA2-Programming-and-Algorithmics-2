@@ -156,11 +156,8 @@ void CSpreadsheet::pasteCells(const Cells &cells) {
         for (auto &col: columns) {
             auto col_pos = col.first;
             auto &cell = col.second;
-
             setCell(m_cells, {row_pos, col_pos}, cell);
-
         }
-
     }
 }
 
