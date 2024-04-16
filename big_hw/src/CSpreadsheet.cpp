@@ -6,7 +6,7 @@
 
 
 bool CSpreadsheet::load(istream &is) {
-    CSpreadsheet sheet;
+    Cells cells;
     while (is) {
         vector<string> words;
         string current_word;
@@ -38,14 +38,15 @@ bool CSpreadsheet::load(istream &is) {
         } else {
             unsigned int row_pos = stoul(words[0]);
             unsigned int col_pos = stoul(words[1]);
-//        unsigned int row_shift = stoul(words[2]);
-//        unsigned int col_shift = stoul(words[3]);
-
-            sheet.setCell(CPos(row_pos, col_pos), value);
+            unsigned int row_shift = stoul(words[2]);
+            unsigned int col_shift = stoul(words[3]);
+            CCell cell = CCell(value);
+            cell.m_shift = {row_shift, col_shift};
+            setCell(cells, CPos(row_pos, col_pos), cell);
         }
     }
 
-    m_cells = sheet.m_cells;
+    m_cells = cells;
     return true;
 }
 
