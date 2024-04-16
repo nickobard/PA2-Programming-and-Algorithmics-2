@@ -49,6 +49,14 @@ constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
 constexpr unsigned SPREADSHEET_SPEED = 0x08;
 constexpr unsigned SPREADSHEET_PARSER = 0x10;
 
+
+struct CCells {
+    bool setCell(const CPos &pos, const CCell &cell);
+
+    Cells m_cells;
+};
+
+
 class CSpreadsheet {
 public:
     static unsigned capabilities() {
@@ -74,7 +82,16 @@ public:
                   int h = 1);
 
 private:
-    Cells m_cells;
+
+
+    Cells copyCellsAndShift(CPos src, CPos dst, int w = 1, int h = 1);
+
+    void deleteCells(CPos dst, int w = 1, int h = 1);
+
+    void pasteCells();
+
+
+    CCells m_cells;
 };
 
 
