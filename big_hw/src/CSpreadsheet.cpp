@@ -36,10 +36,10 @@ bool CSpreadsheet::load(istream &is) {
         if (is.get() != ';') {
             return false;
         } else {
-            unsigned int row_pos = stoul(words[0]);
-            unsigned int col_pos = stoul(words[1]);
-            unsigned int row_shift = stoul(words[2]);
-            unsigned int col_shift = stoul(words[3]);
+            int row_pos = stoi(words[0]);
+            int col_pos = stoi(words[1]);
+            int row_shift = stoi(words[2]);
+            int col_shift = stoi(words[3]);
             CCell cell = CCell(value);
             cell.m_shift = {row_shift, col_shift};
             setCell(cells, CPos(row_pos, col_pos), cell);
@@ -115,11 +115,11 @@ Cells CSpreadsheet::copyCellsAndShift(const CPos &src, const CPos &dst, int w, i
     auto offset = CPos::getOffset(src, dst);
 
     auto row_beg = m_cells.lower_bound(src_row);
-    auto row_end = m_cells.upper_bound(src_row + h);
+    auto row_end = m_cells.upper_bound(src_row + h - 1);
 
     while (row_beg != row_end) {
         auto col_beg = row_beg->second.lower_bound(src_col);
-        auto col_end = row_beg->second.upper_bound(src_col + w);
+        auto col_end = row_beg->second.upper_bound(src_col + w - 1);
         while (col_beg != col_end) {
             CCell cell_copy = CCell(col_beg->second);
             cell_copy.setShift(offset);
@@ -138,10 +138,10 @@ Cells CSpreadsheet::copyCellsAndShift(const CPos &src, const CPos &dst, int w, i
 void CSpreadsheet::deleteCells(const CPos &dst, int w, int h) {
     auto [dst_row, dst_col] = dst.getCoords();
     auto row_beg = m_cells.lower_bound(dst_row);
-    auto row_end = m_cells.upper_bound(dst_row + h);
+    auto row_end = m_cells.upper_bound(dst_row + h - 1);
     while (row_beg != row_end) {
         auto col_beg = row_beg->second.lower_bound(dst_col);
-        auto col_end = row_beg->second.upper_bound(dst_col + w);
+        auto col_end = row_beg->second.upper_bound(dst_col + w - 1);
         row_beg->second.erase(col_beg, col_end);
         if (row_beg->second.empty()) {
             row_beg = m_cells.erase(row_beg);

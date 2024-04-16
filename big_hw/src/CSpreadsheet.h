@@ -41,7 +41,7 @@
 
 #include "CCell.h"
 
-using Cells = map<unsigned int, map<unsigned int, CCell>>;
+using Cells = map<int, map<int, CCell>>;
 
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
 constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;

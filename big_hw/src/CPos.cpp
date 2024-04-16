@@ -17,7 +17,7 @@ CPos::CPos(string_view str) : m_row(0), m_absolute_row(false), m_col(0), m_absol
     splitPositionAndParse(upper_cased_pos);
 }
 
-CPos::CPos(unsigned int row, unsigned int col) : m_row(row), m_col(col) {
+CPos::CPos(int row, int col) : m_row(row), m_absolute_row(false), m_col(col), m_absolute_col(false) {
 
 }
 
@@ -51,12 +51,12 @@ void CPos::splitPositionAndParse(const string &position) {
     }
 
     m_col_label = label;
-    m_row = stoul(number);
+    m_row = stoi(number);
     m_col = convertColLabelToNumber(m_col_label);
 }
 
-unsigned int CPos::convertColLabelToNumber(const string &col_label) {
-    unsigned int result = 0;
+int CPos::convertColLabelToNumber(const string &col_label) {
+    int result = 0;
     for (char c: col_label) {
         result *= 26;
         result += (c - 'A' + 1);
@@ -65,11 +65,11 @@ unsigned int CPos::convertColLabelToNumber(const string &col_label) {
     return result;
 }
 
-pair<unsigned int, unsigned int> CPos::getCoords() const {
+pair<int, int> CPos::getCoords() const {
     return {m_row, m_col};
 }
 
-pair<unsigned int, unsigned int> CPos::getOffset(const CPos &src, const CPos &dst) {
+pair<int, int> CPos::getOffset(const CPos &src, const CPos &dst) {
     return {dst.m_row - src.m_row, dst.m_col - src.m_col};
 }
 

@@ -44,14 +44,14 @@ class CPos {
 public:
     explicit CPos(string_view str);
 
-    CPos(unsigned int row, unsigned int col);
+    CPos(int row, int col);
 
     /**
      * @return row, column pair
      */
-    pair<unsigned int, unsigned int> getCoords() const;
+    pair<int, int> getCoords() const;
 
-    static pair<unsigned int, unsigned int> getOffset(const CPos &src, const CPos &dst);
+    static pair<int, int> getOffset(const CPos &src, const CPos &dst);
 
     void shiftPos(const pair<int, int> &shift);
 
@@ -59,11 +59,11 @@ private:
 
     void splitPositionAndParse(const string &position);
 
-    static unsigned int convertColLabelToNumber(const string &col_label);
+    static int convertColLabelToNumber(const string &col_label);
 
-    unsigned int m_row;
+    int m_row;
     bool m_absolute_row;
-    unsigned int m_col;
+    int m_col;
     bool m_absolute_col;
 
     string m_col_label;
