@@ -74,7 +74,13 @@ pair<unsigned int, unsigned int> CPos::getOffset(const CPos &src, const CPos &ds
 }
 
 void CPos::shiftPos(const pair<int, int> &shift) {
-
+    auto [row_shift, col_shift] = shift;
+    if (!m_absolute_row) {
+        m_row += row_shift;
+    }
+    if (!m_absolute_col) {
+        m_col += col_shift;
+    }
 }
 
 

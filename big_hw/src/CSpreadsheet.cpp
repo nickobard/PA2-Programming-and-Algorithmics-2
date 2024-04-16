@@ -123,8 +123,10 @@ Cells CSpreadsheet::copyCellsAndShift(const CPos &src, const CPos &dst, int w, i
         while (col_beg != col_end) {
             CCell cell_copy = CCell(col_beg->second);
             cell_copy.setShift(offset);
+            CPos new_pos = {row_beg->first, col_beg->first};
+            new_pos.shiftPos(offset);
 
-            setCell(cells_shifted_copy, {row_beg->first, col_beg->first}, cell_copy);
+            setCell(cells_shifted_copy, new_pos, cell_copy);
 
             col_beg++;
         }
