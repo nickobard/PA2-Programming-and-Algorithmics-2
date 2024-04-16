@@ -50,7 +50,7 @@ bool CSpreadsheet::load(istream &is) {
 }
 
 bool CSpreadsheet::save(ostream &os) const {
-    for (auto &[row_pos, column]: m_cells.m_cells) {
+    for (auto &[row_pos, column]: m_cells) {
         for (auto &[col_pos, cell]: column) {
             os << to_string(row_pos) + ',' + to_string(col_pos) + ',';
             os << to_string(cell.m_shift.first) + ',' + to_string(cell.m_shift.second) + ',';
@@ -68,15 +68,15 @@ bool CSpreadsheet::save(ostream &os) const {
 
 bool CSpreadsheet::setCell(CPos pos, string contents) {
     CCell cell = CCell(contents);
-    return m_cells.setCell(pos, cell);
+    return setCell(m_cells, pos, cell);
 }
 
 
-bool CCells::setCell(const CPos &pos, const CCell &cell) {
+bool CSpreadsheet::setCell(Cells &cells, const CPos &pos, const CCell &cell) {
     auto [row, col] = pos.getCoords();
-    auto row_element = m_cells.find(row);
-    if (row_element == m_cells.end()) {
-        m_cells.insert({row, {{col, cell}}});
+    auto row_element = cells.find(row);
+    if (row_element == cells.end()) {
+        cells.insert({row, {{col, cell}}});
         return true;
     }
     auto col_element = row_element->second.find(col);
@@ -91,8 +91,8 @@ bool CCells::setCell(const CPos &pos, const CCell &cell) {
 
 CValue CSpreadsheet::getValue(CPos pos) {
     auto [row, col] = pos.getCoords();
-    auto row_element = m_cells.m_cells.find(row);
-    if (row_element == m_cells.m_cells.end()) {
+    auto row_element = m_cells.find(row);
+    if (row_element == m_cells.end()) {
         return {};
     }
     auto col_element = row_element->second.find(col);
@@ -108,8 +108,8 @@ void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
     auto [dst_row, dst_col] = dst.getCoords();
     auto offset_row = dst_row - src_row;
     auto offset_col = dst_col - src_col;
-    auto row_start = m_cells.m_cells.lower_bound(src_row);
-    auto row_end = m_cells.m_cells.upper_bound(src_row + h);
+    auto row_start = m_cells.lower_bound(src_row);
+    auto row_end = m_cells.upper_bound(src_row + h);
     while (row_start != row_end) {
         auto col_start = row_start->second.lower_bound(src_col);
         auto col_end = row_start->second.upper_bound(src_col + w);

@@ -50,13 +50,6 @@ constexpr unsigned SPREADSHEET_SPEED = 0x08;
 constexpr unsigned SPREADSHEET_PARSER = 0x10;
 
 
-struct CCells {
-    bool setCell(const CPos &pos, const CCell &cell);
-
-    Cells m_cells;
-};
-
-
 class CSpreadsheet {
 public:
     static unsigned capabilities() {
@@ -83,6 +76,8 @@ public:
 
 private:
 
+    static bool setCell(Cells &cells, const CPos &pos, const CCell &cell);
+
 
     Cells copyCellsAndShift(CPos src, CPos dst, int w = 1, int h = 1);
 
@@ -91,7 +86,7 @@ private:
     void pasteCells();
 
 
-    CCells m_cells;
+    Cells m_cells;
 };
 
 
