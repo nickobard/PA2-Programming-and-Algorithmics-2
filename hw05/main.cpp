@@ -20,11 +20,11 @@ using namespace std;
 class CItem {
 public:
     friend ostream &operator<<(ostream &os, const CItem &item) {
-        item.print(os, false, "");
+        item.print(os, "", "");
         return os;
     }
 
-    virtual void print(ostream &o, bool last_item, const string &offset) const = 0;
+    virtual void print(ostream &os, const string &prefix, const string &offset) const = 0;
 };
 
 class CComponent : public CItem {
@@ -52,12 +52,8 @@ public:
         return new CCPU(*this);
     }
 
-    void print(ostream &os, bool last_item, const string &offset) const override {
-        char start_char = '+';
-        if (last_item) {
-            start_char = '\\';
-        }
-        os << offset << start_char << '-';
+    void print(ostream &os, const string &prefix, const string &offset) const override {
+        os << offset << prefix;
         os << "CPU, " << m_cores << " cores @ " << m_frequency << "MHz" << endl;
     }
 
@@ -74,12 +70,8 @@ public:
         return new CMemory(*this);
     }
 
-    void print(ostream &os, bool last_item, const string &offset) const override {
-        char start_char = '+';
-        if (last_item) {
-            start_char = '\\';
-        }
-        os << offset << start_char << '-';
+    void print(ostream &os, const string &prefix, const string &offset) const override {
+        os << offset << prefix;
         os << "Memory, " << m_mem_size << " MiB" << endl;
     }
 
@@ -101,11 +93,7 @@ public:
         return new CDisk(*this);
     }
 
-    void print(ostream &os, bool last_item, const string &offset) const override {
-        char start_char = '+';
-        if (last_item) {
-            start_char = '\\';
-        }
+    void print(ostream &os, const string &prefix, const string &offset) const override {
 
         string disk_type;
         if (m_disk_type == SSD) {
@@ -114,11 +102,15 @@ public:
             disk_type = "HDD";
         }
 
-        os << offset << start_char << '-';
-        os << disk_type << ", " << m_disk_size << " MiB" << endl;
+        os << offset << prefix;
+        os << disk_type << ", " << m_disk_size << " GiB" << endl;
 
         for (size_t i = 0; i < m_partitions.size(); i++) {
-            os << offset + "  ";
+            if (prefix == "\\-") {
+                os << offset + "  ";
+            } else {
+                os << offset + "| ";
+            }
             if (i == m_partitions.size() - 1) {
                 os << '\\';
             } else {
@@ -188,12 +180,9 @@ public:
         return *this;
     }
 
-    void print(ostream &os, bool last_item, const string &offest) const override {
-        char start_char = '+';
-        if (last_item) {
-            start_char = '\\';
-        }
-        os << start_char << "-Host: " << m_name << endl;
+    void print(ostream &os, const string &prefix, const string &offest) const override {
+
+        os << prefix << "Host: " << m_name << endl;
         for (size_t i = 0; i < m_addresses.size(); i++) {
             os << offest;
             if ((i == m_addresses.size() - 1) && m_components.empty()) {
@@ -206,9 +195,10 @@ public:
 
         for (size_t i = 0; i < m_components.size(); i++) {
             if (i == m_components.size() - 1) {
-                m_components[i]->print(os, true, offest + "  ");
+                m_components[i]->print(os, "\\-", offest);
+            } else {
+                m_components[i]->print(os, "+-", offest);
             }
-            m_components[i]->print(os, false, offest + "| ");
         }
 
     }
@@ -262,13 +252,14 @@ public:
     }
 
 
-    void print(ostream &os, bool last_item, const string &offest) const override {
+    void print(ostream &os, const string &prefix, const string &offest) const override {
         os << "Network: " << m_name << endl;
         for (size_t i = 0; i < m_computers.size(); i++) {
             if (i == m_computers.size() - 1) {
-                m_computers[i]->print(os, true, "  ");
+                m_computers[i]->print(os, "\\-", "  ");
+            } else {
+                m_computers[i]->print(os, "+-", "| ");
             }
-            m_computers[i]->print(os, false, "| ");
         }
     }
 
@@ -316,6 +307,33 @@ int main() {
                     addComponent(CCPU(4, 2500)).
                     addAddress("2001:718:2:2901::238").
                     addComponent(CMemory(8000)));
+    string toCmp = "Network: FIT network\n"
+                   "+-Host: progtest.fit.cvut.cz\n"
+                   "| +-147.32.232.142\n"
+                   "| +-CPU, 8 cores @ 2400MHz\n"
+                   "| +-CPU, 8 cores @ 1200MHz\n"
+                   "| +-HDD, 1500 GiB\n"
+                   "| | +-[0]: 50 GiB, /\n"
+                   "| | +-[1]: 5 GiB, /boot\n"
+                   "| | \\-[2]: 1000 GiB, /var\n"
+                   "| +-SSD, 60 GiB\n"
+                   "| | \\-[0]: 60 GiB, /data\n"
+                   "| +-Memory, 2000 MiB\n"
+                   "| \\-Memory, 2000 MiB\n"
+                   "+-Host: courses.fit.cvut.cz\n"
+                   "| +-147.32.232.213\n"
+                   "| +-CPU, 4 cores @ 1600MHz\n"
+                   "| +-Memory, 4000 MiB\n"
+                   "| \\-HDD, 2000 GiB\n"
+                   "|   +-[0]: 100 GiB, /\n"
+                   "|   \\-[1]: 1900 GiB, /data\n"
+                   "\\-Host: imap.fit.cvut.cz\n"
+                   "  +-147.32.232.238\n"
+                   "  +-2001:718:2:2901::238\n"
+                   "  +-CPU, 4 cores @ 2500MHz\n"
+                   "  \\-Memory, 8000 MiB\n";
+    cout << toString(n);
+    cout << toCmp;
     assert (toString(n) ==
             "Network: FIT network\n"
             "+-Host: progtest.fit.cvut.cz\n"
@@ -344,6 +362,7 @@ int main() {
             "  \\-Memory, 8000 MiB\n");
     CNetwork x = n;
     auto c = x.findComputer("imap.fit.cvut.cz");
+    cout << toString(*c) << endl;
     assert (toString(*c) ==
             "Host: imap.fit.cvut.cz\n"
             "+-147.32.232.238\n"
