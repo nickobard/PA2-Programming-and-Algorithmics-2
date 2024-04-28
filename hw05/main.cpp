@@ -19,6 +19,8 @@ using namespace std;
 
 class CItem {
 public:
+    virtual ~CItem() = default;
+
     friend ostream &operator<<(ostream &os, const CItem &item) {
         item.print(os, "", "");
         return os;
@@ -144,15 +146,13 @@ public:
         }
     }
 
-    CComputer &operator=(const CComputer &src) {
+    CComputer &operator=(CComputer src) {
         if (this == &src) {
             return *this;
         }
-        m_name = src.m_name;
-        m_addresses = src.m_addresses;
-        for (const auto *component: src.m_components) {
-            m_components.push_back(component->copy());
-        }
+        swap(m_name, src.m_name);
+        swap(m_addresses, src.m_addresses);
+        swap(m_components, src.m_components);
         return *this;
     }
 
@@ -226,14 +226,12 @@ public:
         }
     }
 
-    CNetwork &operator=(const CNetwork &src) {
+    CNetwork &operator=(CNetwork src) {
         if (this == &src) {
             return *this;
         }
-        m_name = src.m_name;
-        for (const auto *computer: src.m_computers) {
-            m_computers.push_back(computer->copy());
-        }
+        swap(m_name, src.m_name);
+        swap(m_computers, src.m_computers);
         return *this;
     }
 
@@ -332,8 +330,8 @@ int main() {
                    "  +-2001:718:2:2901::238\n"
                    "  +-CPU, 4 cores @ 2500MHz\n"
                    "  \\-Memory, 8000 MiB\n";
-    cout << toString(n);
-    cout << toCmp;
+//    cout << toString(n);
+//    cout << toCmp;
     assert (toString(n) ==
             "Network: FIT network\n"
             "+-Host: progtest.fit.cvut.cz\n"
@@ -361,8 +359,9 @@ int main() {
             "  +-CPU, 4 cores @ 2500MHz\n"
             "  \\-Memory, 8000 MiB\n");
     CNetwork x = n;
+    assert(toString(x) == toString(n));
     auto c = x.findComputer("imap.fit.cvut.cz");
-    cout << toString(*c) << endl;
+//    cout << toString(*c) << endl;
     assert (toString(*c) ==
             "Host: imap.fit.cvut.cz\n"
             "+-147.32.232.238\n"
