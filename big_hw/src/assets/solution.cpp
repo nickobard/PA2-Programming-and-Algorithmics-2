@@ -33,10 +33,6 @@
 #include <span>
 #include <utility>
 #include "expression.h"
-#include "../CSpreadsheet.h"
-#include "../CPos.h"
-
-
 using namespace std::literals;
 using CValue = std::variant<std::monostate, double, std::string>;
 
@@ -230,4 +226,3 @@ int main ()
   return EXIT_SUCCESS;
 }
 #endif /* __PROGTEST__ */
-
