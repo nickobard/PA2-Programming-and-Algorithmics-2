@@ -51,8 +51,9 @@ public:
 
     ~UnaryOperationNode();
 
+    CValue evaluateValue();
+
 protected:
-    double getDoubleOperand() const;
 
 private:
     CASTNode *m_operand;

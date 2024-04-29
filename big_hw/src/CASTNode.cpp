@@ -61,8 +61,8 @@ UnaryOperationNode::~UnaryOperationNode() {
     delete m_operand;
 }
 
-double UnaryOperationNode::getDoubleOperand() const {
-    return get<double>(m_operand->evaluate());
+CValue UnaryOperationNode::evaluateValue() {
+    return m_operand->evaluate();
 }
 
 CNumberNode::CNumberNode(double number) : m_number({number}) {
@@ -76,22 +76,22 @@ CValue CNumberNode::evaluate() {
 CValue AddNode::evaluate() {
     auto values = evaluateValues();
     if (typesAre<double, double>(values)) {
-        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto [left, right] = getValues<double, double>(values);
         auto result = left + right;
         return result;
     }
     if (typesAre<double, string>(values)) {
-        auto [left, right] = getValues<double, string>(evaluateValues());
+        auto [left, right] = getValues<double, string>(values);
         auto result = to_string(left) + right;
         return result;
     }
     if (typesAre<string, double>(values)) {
-        auto [left, right] = getValues<string, double>(evaluateValues());
+        auto [left, right] = getValues<string, double>(values);
         auto result = left + to_string(right);
         return result;
     }
     if (typesAre<string, string>(values)) {
-        auto [left, right] = getValues<string, string>(evaluateValues());
+        auto [left, right] = getValues<string, string>(values);
         auto result = left + right;
         return result;
     }
@@ -103,9 +103,13 @@ AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNod
 }
 
 CValue SubtractNode::evaluate() {
-    auto [left, right] = getValues<double, double>(evaluateValues());
-    auto result = left - right;
-    return result;
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left - right;
+        return result;
+    }
+    return {};
 }
 
 SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
@@ -113,9 +117,13 @@ SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 }
 
 CValue MultiplicationNode::evaluate() {
-    auto [left, right] = getValues<double, double>(evaluateValues());
-    auto result = left * right;
-    return result;
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto result = left * right;
+        return result;
+    }
+    return {};
 }
 
 MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
@@ -124,9 +132,16 @@ MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg
 }
 
 CValue DivisionNode::evaluate() {
-    auto [left, right] = getValues<double, double>(evaluateValues());
-    auto result = left / right;
-    return result;
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(evaluateValues());
+        if (right == 0) {
+            return {};
+        }
+        auto result = left / right;
+        return result;
+    }
+    return {};
 }
 
 DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
@@ -134,9 +149,13 @@ DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 }
 
 CValue PowerNode::evaluate() {
-    auto [left, right] = getValues<double, double>(evaluateValues());
-    auto result = pow(left, right);
-    return result;
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto result = pow(left, right);
+        return result;
+    }
+    return {};
 }
 
 PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
@@ -144,11 +163,14 @@ PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperatio
 }
 
 CValue NegationNode::evaluate() {
-    auto operand = getDoubleOperand();
-    auto result = -operand;
-    return result;
+    auto value = evaluateValue();
+    if (holds_alternative<double>(value)) {
+        auto operand = get<double>(value);
+        auto result = -operand;
+        return result;
+    }
+    return {};
 }
 
 NegationNode::NegationNode(CASTNode *arg) : UnaryOperationNode(arg) {
-
 }
