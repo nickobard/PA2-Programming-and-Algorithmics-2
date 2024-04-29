@@ -125,9 +125,59 @@ public:
     CValue evaluate() override;
 };
 
+class EqualNode : public BinaryOperationNode {
+public:
+    EqualNode(CASTNode *first_arg, CASTNode *second_arg);
+
+    CValue evaluate() override;
+
+};
+
+
+class NotEqualNode : public BinaryOperationNode {
+public:
+    NotEqualNode(CASTNode *first_arg, CASTNode *second_arg);
+
+    CValue evaluate() override;
+
+};
+
+class LessThanNode : public BinaryOperationNode {
+public:
+    LessThanNode(CASTNode *first_arg, CASTNode *second_arg);
+
+    CValue evaluate() override;
+
+};
+
+class GreaterThanNode : public BinaryOperationNode {
+public:
+    GreaterThanNode(CASTNode *first_arg, CASTNode *second_arg);
+
+    CValue evaluate() override;
+
+};
+
+class LessThanOrEqualNode : public BinaryOperationNode {
+public:
+    LessThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg);
+
+    CValue evaluate() override;
+
+};
+
+class GreaterThanOrEqualNode : public BinaryOperationNode {
+public:
+    GreaterThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg);
+
+    CValue evaluate() override;
+
+};
+
+
 class NegationNode : public UnaryOperationNode {
 public:
-    NegationNode(CASTNode *arg);
+    explicit NegationNode(CASTNode *arg);
 
     CValue evaluate() override;
 };

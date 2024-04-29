@@ -52,27 +52,39 @@ void CASTExpressionBuilder::opNeg() {
 }
 
 void CASTExpressionBuilder::opEq() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new EqualNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opNe() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new NotEqualNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opLt() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new LessThanNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opLe() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new LessThanOrEqualNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opGt() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new GreaterThanNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::opGe() {
-
+    auto [first, second] = getNodesPairAndPop();
+    CASTNode *node = new GreaterThanOrEqualNode(first, second);
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::valNumber(double val) {

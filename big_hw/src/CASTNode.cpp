@@ -119,7 +119,7 @@ SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 CValue MultiplicationNode::evaluate() {
     auto values = evaluateValues();
     if (typesAre<double, double>(values)) {
-        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto [left, right] = getValues<double, double>(values);
         auto result = left * right;
         return result;
     }
@@ -134,7 +134,7 @@ MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg
 CValue DivisionNode::evaluate() {
     auto values = evaluateValues();
     if (typesAre<double, double>(values)) {
-        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto [left, right] = getValues<double, double>(values);
         if (right == 0) {
             return {};
         }
@@ -151,7 +151,7 @@ DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 CValue PowerNode::evaluate() {
     auto values = evaluateValues();
     if (typesAre<double, double>(values)) {
-        auto [left, right] = getValues<double, double>(evaluateValues());
+        auto [left, right] = getValues<double, double>(values);
         auto result = pow(left, right);
         return result;
     }
@@ -173,4 +173,124 @@ CValue NegationNode::evaluate() {
 }
 
 NegationNode::NegationNode(CASTNode *arg) : UnaryOperationNode(arg) {
+
+}
+
+
+EqualNode::EqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+}
+
+CValue EqualNode::evaluate() {
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left == right;
+        return {static_cast<double>(result)};
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(values);
+        auto result = left == right;
+        return {static_cast<double>(result)};
+    }
+    return {};
+}
+
+LessThanNode::LessThanNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+}
+
+CValue LessThanNode::evaluate() {
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left < right;
+        return {static_cast<double>(result)};
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(values);
+        auto result = left < right;
+        return {static_cast<double>(result)};
+    }
+    return {};
+}
+
+NotEqualNode::NotEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+}
+
+CValue NotEqualNode::evaluate() {
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left != right;
+        return {static_cast<double>(result)};
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(values);
+        auto result = left != right;
+        return {static_cast<double>(result)};
+    }
+    return {};
+}
+
+GreaterThanNode::GreaterThanNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
+                                                                                                  second_arg) {
+}
+
+CValue GreaterThanNode::evaluate() {
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left > right;
+        return {static_cast<double>(result)};
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(values);
+        auto result = left > right;
+        return {static_cast<double>(result)};
+    }
+    return {};
+}
+
+LessThanOrEqualNode::LessThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
+                                                                                                          second_arg) {
+
+}
+
+CValue LessThanOrEqualNode::evaluate() {
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left <= right;
+        return {static_cast<double>(result)};
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(values);
+        auto result = left <= right;
+        return {static_cast<double>(result)};
+    }
+    return {};
+}
+
+GreaterThanOrEqualNode::GreaterThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(
+        first_arg, second_arg) {
+
+}
+
+CValue GreaterThanOrEqualNode::evaluate() {
+    auto values = evaluateValues();
+    if (typesAre<double, double>(values)) {
+        auto [left, right] = getValues<double, double>(values);
+        auto result = left >= right;
+        return {static_cast<double>(result)};
+    }
+    if (typesAre<string, string>(values)) {
+        auto [left, right] = getValues<string, string>(values);
+        auto result = left >= right;
+        return {static_cast<double>(result)};
+    }
+    return {};
+}
+
 }
