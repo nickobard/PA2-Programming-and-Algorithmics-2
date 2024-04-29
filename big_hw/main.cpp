@@ -59,9 +59,6 @@ bool valueMatch(const CValue &r,
 
 int main() {
 
-    cout << to_string(ULONG_MAX).size() << endl;
-    return EXIT_SUCCESS;
-
     CSpreadsheet x0, x1;
     std::ostringstream oss;
     std::istringstream iss;
@@ -164,15 +161,15 @@ int main() {
     assert (valueMatch(x1.getValue(CPos("B4")), CValue(12544.0)));
     assert (valueMatch(x1.getValue(CPos("B5")), CValue(19458.0)));
     assert (valueMatch(x1.getValue(CPos("B6")), CValue(38916.0)));
-//  oss . clear ();
-//  oss . str ( "" );
-//  assert ( x0 . save ( oss ) );
-//  data = oss . str ();
-//  for ( size_t i = 0; i < std::min<size_t> ( data . length (), 10 ); i ++ )
-//    data[i] ^=0x5a;
-//  iss . clear ();
-//  iss . str ( data );
-//  assert ( ! x1 . load ( iss ) );
+    oss.clear();
+    oss.str("");
+    assert (x0.save(oss));
+    data = oss.str();
+    for (size_t i = 0; i < std::min<size_t>(data.length(), 10); i++)
+        data[i] ^= 0x5a;
+    iss.clear();
+    iss.str(data);
+    assert (!x1.load(iss));
     assert (x0.setCell(CPos("D0"), "10"));
     assert (x0.setCell(CPos("D1"), "20"));
     assert (x0.setCell(CPos("D2"), "30"));
