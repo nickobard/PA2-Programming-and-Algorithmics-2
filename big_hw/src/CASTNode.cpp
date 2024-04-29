@@ -14,7 +14,6 @@ CReferenceNode::CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, con
 
 CValue CReferenceNode::evaluate() {
     auto value = m_spreadsheet.getValue(m_reference_position);
-    // TODO check if value is defined
     return value;
 }
 
