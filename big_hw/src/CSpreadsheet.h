@@ -40,6 +40,7 @@
 #include <utility>
 
 #include "CCell.h"
+#include "CLoader.h"
 
 using Cells = map<int, map<int, CCell>>;
 
@@ -74,9 +75,9 @@ public:
                   int w = 1,
                   int h = 1);
 
-private:
-
     static bool setCell(Cells &cells, const CPos &pos, const CCell &cell);
+
+private:
 
 
     Cells copyCellsAndShift(const CPos &src, const CPos &dst, int w = 1, int h = 1);
@@ -85,8 +86,8 @@ private:
 
     void pasteCells(const Cells &cells);
 
-
     Cells m_cells;
+
 };
 
 

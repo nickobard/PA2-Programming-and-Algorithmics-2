@@ -11,7 +11,7 @@
 using namespace literals;
 using CValue = variant<monostate, double, string>;
 
-enum class CellType{
+enum class CellType {
     DOUBLE,
     STRING,
     EXPRESSION
@@ -19,10 +19,14 @@ enum class CellType{
 
 class CSpreadsheet;
 
+class CLoader;
+
 class CCell {
 public:
-    CCell(const CCell& src);
-    CCell& operator=(const CCell & src);
+    CCell(const CCell &src);
+
+    CCell &operator=(const CCell &src);
+
     ~CCell();
 
     explicit CCell(const string &contents);
@@ -37,10 +41,10 @@ private:
 
     CValue m_value;
     CellType m_type;
-    CASTNode * m_root;
+    CASTNode *m_root;
     pair<int, int> m_shift;
 
-    friend class CSpreadsheet;
+    friend class CLoader;
 };
 
 #endif //BARDANIK_CCELL_H

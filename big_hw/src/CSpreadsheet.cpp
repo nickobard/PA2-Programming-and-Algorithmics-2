@@ -4,67 +4,20 @@
 
 #include "CSpreadsheet.h"
 
-
 bool CSpreadsheet::load(istream &is) {
-    Cells cells;
-    while (is) {
-        vector<string> words;
-        string current_word;
-        while (is && words.size() < 5) {
-            char c = (char) is.get();
-            if (is.eof()) {
-                break;
-            }
-            if (c == ',') {
-                words.push_back(current_word);
-                current_word.clear();
-                continue;
-            }
-            current_word.push_back(c);
-        }
-        if (is.eof()) {
-            break;
-        }
-
-        string value;
-        size_t size = stoul(words[4]);
-        for (size_t i = 0; i < size; i++) {
-            char c = (char) is.get();
-            value.push_back(c);
-        }
-
-        if (is.get() != ';') {
-            return false;
-        } else {
-            int row_pos = stoi(words[0]);
-            int col_pos = stoi(words[1]);
-            int row_shift = stoi(words[2]);
-            int col_shift = stoi(words[3]);
-            CCell cell = CCell(value);
-            cell.m_shift = {row_shift, col_shift};
-            setCell(cells, CPos(row_pos, col_pos), cell);
-        }
+    CLoader loader(is);
+    Cells loaded;
+    bool ok = loader.load(loaded);
+    if (!ok) {
+        return false;
     }
-
-    m_cells = cells;
+    m_cells = loaded;
     return true;
 }
 
 bool CSpreadsheet::save(ostream &os) const {
-    for (auto &[row_pos, column]: m_cells) {
-        for (auto &[col_pos, cell]: column) {
-            os << to_string(row_pos) + ',' + to_string(col_pos) + ',';
-            os << to_string(cell.m_shift.first) + ',' + to_string(cell.m_shift.second) + ',';
-            string value;
-            if (cell.m_type == CellType::DOUBLE) {
-                value = to_string(get<double>(cell.m_value));
-            } else {
-                value = get<string>(cell.m_value);
-            }
-            os << to_string(value.size()) + ',' + value + ';' << flush;
-        }
-    }
-    return true;
+    CLoader loader(os);
+    return loader.save(m_cells);
 }
 
 bool CSpreadsheet::setCell(CPos pos, string contents) {
@@ -162,5 +115,4 @@ void CSpreadsheet::pasteCells(const Cells &cells) {
         }
     }
 }
-
 

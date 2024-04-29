@@ -58,6 +58,10 @@ bool valueMatch(const CValue &r,
 }
 
 int main() {
+
+    cout << to_string(ULONG_MAX).size() << endl;
+    return EXIT_SUCCESS;
+
     CSpreadsheet x0, x1;
     std::ostringstream oss;
     std::istringstream iss;
