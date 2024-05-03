@@ -138,7 +138,6 @@ public:
         WeakSubstringFactory<T_> weakSubstringFactory(m_data);
 
         for (size_t seq_size = m_data.size() - N_ + 1; seq_size > 0; seq_size--) {
-            vector<array<size_t, N_>> combinations;
 
             list<shared_ptr<pair<WeakSubstring<T_>, vector<size_t>>>> sequences_positions;
             list<shared_ptr<pair<WeakSubstring<T_>, vector<size_t>>>> selected;
@@ -152,18 +151,19 @@ public:
                     auto new_element = shared_ptr<pair<WeakSubstring<T_>, vector<size_t>>>(
                             new pair<WeakSubstring<T_>, vector<size_t>>(weak_string, {pos}));
                     sequences_positions.push_back(new_element);
-                    if (new_element->second.size() >= N_) {
+                    if (new_element->second.size() == N_) {
                         selected.push_back(new_element);
                     }
                 } else {
                     (*element)->second.push_back(pos);
-                    if ((*element)->second.size() >= N_) {
+                    if ((*element)->second.size() == N_) {
                         selected.push_back(*element);
                     }
                 }
 
             }
             if (!selected.empty()) {
+                vector<array<size_t, N_>> combinations;
                 for (const auto &element: selected) {
                     const vector<size_t> &positions = element->second;
                     auto element_combinations = getCombinations<N_>(positions, {}, 0, N_);
@@ -249,6 +249,7 @@ int main() {
     assert (positionMatch(x7.findSequences<2>(), std::vector<std::array<size_t, 2> >{{0, 5}}));
     CSelfMatch<char> x8("abcdXabcdeYabcdZabcd"s);
     assert (x8.sequenceLen(2) == 4);
+    result = x8.findSequences<2>();
     assert (positionMatch(x8.findSequences<2>(), std::vector<std::array<size_t, 2> >{{0,  5},
                                                                                      {0,  11},
                                                                                      {0,  16},
