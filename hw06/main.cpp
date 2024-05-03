@@ -41,7 +41,7 @@ private:
 
 #endif /* __PROGTEST__ */
 
-// #define TEST_EXTRA_INTERFACE
+#define TEST_EXTRA_INTERFACE
 
 using namespace std;
 
@@ -102,7 +102,14 @@ public:
     template<typename Iterator>
     CSelfMatch(Iterator begin, Iterator end) : m_data(begin, end) {}
 
-    // optionally: push_back
+    void push_back(const T_ &element) {
+        m_data.push_back(element);
+    }
+
+    template<typename... Args>
+    void push_back(Args &&...args) {
+        (m_data.push_back(forward<Args>(args)), ...);
+    }
 
     size_t sequenceLen(uint n) const {
 
@@ -201,6 +208,12 @@ private:
     vector<T_> m_data;
 };
 
+template<typename Container>
+CSelfMatch(const Container &container) -> CSelfMatch<typename Container::value_type>;
+
+template<typename Iterator>
+CSelfMatch(Iterator begin, Iterator end) -> CSelfMatch<typename Iterator::value_type>;
+
 
 #ifndef __PROGTEST__
 
@@ -293,18 +306,18 @@ int main() {
     assert (x15.sequenceLen(3) == 4);
     assert (positionMatch(x15.findSequences<3>(), std::vector<std::array<size_t, 3> >{{3, 8, 25}}));
 #ifdef TEST_EXTRA_INTERFACE
-    CSelfMatch y0 ( "aaaaaaaaaaa"s );
-    assert ( y0 . sequenceLen ( 2 ) == 10 );
+    CSelfMatch y0("aaaaaaaaaaa"s);
+    assert (y0.sequenceLen(2) == 10);
 
-    std::string s1 ( "abcd" );
-    CSelfMatch y1 ( s1 . begin (), s1 . end () );
-    assert ( y1 . sequenceLen ( 2 ) == 0 );
+    std::string s1("abcd");
+    CSelfMatch y1(s1.begin(), s1.end());
+    assert (y1.sequenceLen(2) == 0);
 
-    CSelfMatch y2 ( ""s );
-    y2 . push_back ( 'a', 'b', 'c', 'X' );
-    y2 . push_back ( 'a' );
-    y2 . push_back ( 'b', 'c' );
-    assert ( y2 . sequenceLen ( 2 ) == 3 );
+    CSelfMatch y2(""s);
+    y2.push_back('a', 'b', 'c', 'X');
+    y2.push_back('a');
+    y2.push_back('b', 'c');
+    assert (y2.sequenceLen(2) == 3);
 #endif /* TEST_EXTRA_INTERFACE */
     return EXIT_SUCCESS;
 }
