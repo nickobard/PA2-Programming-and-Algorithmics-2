@@ -120,6 +120,7 @@ int main() {
     assert (valueMatch(x0.getValue(CPos("B4")), CValue(12544.0)));
     assert (valueMatch(x0.getValue(CPos("B5")), CValue(19458.0)));
     assert (valueMatch(x0.getValue(CPos("B6")), CValue(38916.0)));
+    auto val1 = x1.getValue(CPos("B1"));
     assert (valueMatch(x1.getValue(CPos("B1")), CValue(3612.0)));
     assert (valueMatch(x1.getValue(CPos("B2")), CValue(-204.0)));
     assert (valueMatch(x1.getValue(CPos("B3")), CValue(4096.0)));

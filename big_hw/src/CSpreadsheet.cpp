@@ -4,6 +4,34 @@
 
 #include "CSpreadsheet.h"
 
+
+CSpreadsheet::CSpreadsheet(const CSpreadsheet &src) {
+    for (const auto &row_element: src.m_cells) {
+        int row = row_element.first;
+        for (const auto &col_element: row_element.second) {
+            int col = col_element.first;
+            shared_ptr<CCell> copy = shared_ptr<CCell>(col_element.second->copy());
+            setCell(m_cells, {row, col}, copy);
+        }
+    }
+}
+
+CSpreadsheet &CSpreadsheet::operator=(const CSpreadsheet &src) {
+    if (this == &src) {
+        return *this;
+    }
+    for (const auto &row_element: src.m_cells) {
+        int row = row_element.first;
+        for (const auto &col_element: row_element.second) {
+            int col = col_element.first;
+            shared_ptr<CCell> copy = shared_ptr<CCell>(col_element.second->copy());
+            setCell(m_cells, {row, col}, copy);
+        }
+    }
+    return *this;
+}
+
+
 bool CSpreadsheet::load(istream &is) {
     CLoader loader(is);
     Cells loaded;
@@ -137,4 +165,5 @@ void CSpreadsheet::pasteCells(const Cells &cells) {
         }
     }
 }
+
 

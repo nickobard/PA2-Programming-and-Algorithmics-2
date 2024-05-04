@@ -59,6 +59,10 @@ public:
 
     CSpreadsheet() = default;
 
+    CSpreadsheet(const CSpreadsheet &src);
+
+    CSpreadsheet &operator=(const CSpreadsheet &src);
+
     bool load(istream &is);
 
     bool save(ostream &os) const;
