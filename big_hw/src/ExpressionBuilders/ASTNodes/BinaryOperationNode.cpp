@@ -1,29 +1,8 @@
 //
-// Created by bardanik on 14/04/24.
+// Created by bardanik on 04/05/24.
 //
 
-#include "CSpreadsheet.h"
-#include "CASTNode.h"
-
-
-CReferenceNode::CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, const pair<int, int> &shift)
-        : m_reference_position(CPos(pos)),
-          m_spreadsheet(spreadsheet) {
-    m_reference_position.shiftPos(shift);
-}
-
-CValue CReferenceNode::evaluate(CCycleDetectionVisitor &visitor) {
-    auto value = m_spreadsheet.getValue(m_reference_position, visitor);
-    return value;
-}
-
-CStringNode::CStringNode(const string &parsed_value) : m_value({parsed_value}) {
-
-}
-
-CValue CStringNode::evaluate(CCycleDetectionVisitor &visitor) {
-    return m_value;
-}
+#include "BinaryOperationNode.h"
 
 BinaryOperationNode::BinaryOperationNode(CASTNode *left_operand, CASTNode *right_operand) : m_left_operand(
         left_operand), m_right_operand(right_operand) {
@@ -52,24 +31,9 @@ pair<L, R> BinaryOperationNode::getValues(const pair<CValue, CValue> &values) co
     return {left, right};
 }
 
-UnaryOperationNode::UnaryOperationNode(CASTNode *operand) : m_operand(operand) {
 
-}
+AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
 
-UnaryOperationNode::~UnaryOperationNode() {
-    delete m_operand;
-}
-
-CValue UnaryOperationNode::evaluateValue(CCycleDetectionVisitor &visitor) {
-    return m_operand->evaluate(visitor);
-}
-
-CNumberNode::CNumberNode(double number) : m_number({number}) {
-
-}
-
-CValue CNumberNode::evaluate(CCycleDetectionVisitor &visitor) {
-    return m_number;
 }
 
 CValue AddNode::evaluate(CCycleDetectionVisitor &visitor) {
@@ -97,7 +61,8 @@ CValue AddNode::evaluate(CCycleDetectionVisitor &visitor) {
     return {};
 }
 
-AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
 
 }
 
@@ -111,9 +76,12 @@ CValue SubtractNode::evaluate(CCycleDetectionVisitor &visitor) {
     return {};
 }
 
-SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
+                                                                                                        second_arg) {
 
 }
+
 
 CValue MultiplicationNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
@@ -125,10 +93,11 @@ CValue MultiplicationNode::evaluate(CCycleDetectionVisitor &visitor) {
     return {};
 }
 
-MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
-                                                                                                        second_arg) {
+
+DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
 
 }
+
 
 CValue DivisionNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
@@ -143,7 +112,8 @@ CValue DivisionNode::evaluate(CCycleDetectionVisitor &visitor) {
     return {};
 }
 
-DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+
+PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
 
 }
 
@@ -155,24 +125,6 @@ CValue PowerNode::evaluate(CCycleDetectionVisitor &visitor) {
         return result;
     }
     return {};
-}
-
-PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
-
-}
-
-CValue NegationNode::evaluate(CCycleDetectionVisitor &visitor) {
-    auto value = evaluateValue(visitor);
-    if (holds_alternative<double>(value)) {
-        auto operand = get<double>(value);
-        auto result = -operand;
-        return result;
-    }
-    return {};
-}
-
-NegationNode::NegationNode(CASTNode *arg) : UnaryOperationNode(arg) {
-
 }
 
 

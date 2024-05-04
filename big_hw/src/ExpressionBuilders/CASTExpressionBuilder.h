@@ -7,7 +7,9 @@
 
 
 #include "CExprBuilder.h"
-#include "../CASTNode.h"
+#include "ASTNodes/CASTNode.h"
+#include "ASTNodes/BinaryOperationNode.h"
+#include "ASTNodes/UnaryOperationNode.h"
 
 class CCell;
 

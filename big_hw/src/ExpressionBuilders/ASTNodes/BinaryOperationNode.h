@@ -1,28 +1,10 @@
+// Created by bardanik on 04/05/24.
 //
-// Created by bardanik on 14/04/24.
-//
 
-#ifndef PA2_BIG_TASK_CAST_H
-#define PA2_BIG_TASK_CAST_H
+#ifndef PA2_BIG_TASK_BINARYOPERATIONNODE_H
+#define PA2_BIG_TASK_BINARYOPERATIONNODE_H
 
-
-#include <variant>
-#include <string>
-#include "CPos.h"
-#include "CCycleDetectionVisitor.h"
-
-class CSpreadsheet;
-
-using namespace std;
-using namespace literals;
-using CValue = variant<monostate, double, string>;
-
-class CASTNode {
-public:
-    virtual CValue evaluate(CCycleDetectionVisitor &visitor) = 0;
-
-    virtual ~CASTNode() = default;
-};
+#include "CASTNode.h"
 
 class BinaryOperationNode : public CASTNode {
 public:
@@ -46,50 +28,6 @@ private:
     CASTNode *m_right_operand;
 };
 
-class UnaryOperationNode : public CASTNode {
-public:
-    explicit UnaryOperationNode(CASTNode *operand);
-
-    ~UnaryOperationNode();
-
-    CValue evaluateValue(CCycleDetectionVisitor &visitor);
-
-protected:
-
-private:
-    CASTNode *m_operand;
-};
-
-class CStringNode : public CASTNode {
-public:
-    CStringNode(const string &parsed_value);
-
-    CValue evaluate(CCycleDetectionVisitor &visitor) override;
-
-private:
-    CValue m_value;
-};
-
-class CReferenceNode : public CASTNode {
-public:
-    CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, const pair<int, int> &shift);
-
-    CValue evaluate(CCycleDetectionVisitor &visitor) override;
-
-private:
-    CPos m_reference_position;
-    CSpreadsheet &m_spreadsheet;
-};
-
-class CNumberNode : public CASTNode {
-public:
-    CNumberNode(double number);
-
-    CValue evaluate(CCycleDetectionVisitor &visitor) override;
-
-private:
-    CValue m_number;
-};
 
 class AddNode : public BinaryOperationNode {
 public:
@@ -176,12 +114,4 @@ public:
 };
 
 
-class NegationNode : public UnaryOperationNode {
-public:
-    explicit NegationNode(CASTNode *arg);
-
-    CValue evaluate(CCycleDetectionVisitor &visitor) override;
-};
-
-#endif //PA2_BIG_TASK_CAST_H
-
+#endif //PA2_BIG_TASK_BINARYOPERATIONNODE_H
