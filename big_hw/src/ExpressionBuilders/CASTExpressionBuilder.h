@@ -10,6 +10,7 @@
 #include "ASTNodes/CASTNode.h"
 #include "ASTNodes/BinaryOperationNode.h"
 #include "ASTNodes/UnaryOperationNode.h"
+#include "ASTNodes/RelationalOperationNode.h"
 
 class CCell;
 
