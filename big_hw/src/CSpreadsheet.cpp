@@ -16,18 +16,8 @@ CSpreadsheet::CSpreadsheet(const CSpreadsheet &src) {
     }
 }
 
-CSpreadsheet &CSpreadsheet::operator=(const CSpreadsheet &src) {
-    if (this == &src) {
-        return *this;
-    }
-    for (const auto &row_element: src.m_cells) {
-        int row = row_element.first;
-        for (const auto &col_element: row_element.second) {
-            int col = col_element.first;
-            shared_ptr<CCell> copy = shared_ptr<CCell>(col_element.second->copy());
-            setCell(m_cells, {row, col}, copy);
-        }
-    }
+CSpreadsheet &CSpreadsheet::operator=(CSpreadsheet src) {
+    swap(m_cells, src.m_cells);
     return *this;
 }
 

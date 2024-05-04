@@ -26,7 +26,7 @@ public:
 
     CSpreadsheet(const CSpreadsheet &src);
 
-    CSpreadsheet &operator=(const CSpreadsheet &src);
+    CSpreadsheet &operator=(CSpreadsheet src);
 
     bool load(istream &is);
 
