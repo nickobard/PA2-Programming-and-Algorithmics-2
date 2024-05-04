@@ -223,9 +223,10 @@ int main() {
     assert(x3.setCell(CPos("A1"), "=5+A2"));
     assert(x3.setCell(CPos("A2"), "=A1"));
     assert(valueMatch(x3.getValue(CPos("A1")), CValue()));
-
-
-
+    assert(x3.setCell(CPos("B1"), "42"));
+    assert(x3.setCell(CPos("B2"), "42"));
+//    assert(x3.setCell(CPos("A3"), "=sum(B1:B2)"));
+//    assert(valueMatch(x3.getValue(CPos("A3")), CValue(84.0)));
     return EXIT_SUCCESS;
 }
 

@@ -38,14 +38,7 @@ void CLoader::loadBuffer(const Cells &cells) {
     for (auto &[row_pos, column]: cells) {
         for (auto &[col_pos, cell]: column) {
             m_buffer.append(to_string(row_pos) + ',' + to_string(col_pos) + ',');
-            m_buffer.append(to_string(cell.m_shift.first) + ',' + to_string(cell.m_shift.second) + ',');
-            string value;
-            if (cell.m_type == CellType::DOUBLE) {
-                value = to_string(get<double>(cell.m_value));
-            } else {
-                value = get<string>(cell.m_value);
-            }
-            m_buffer.append(to_string(value.size()) + ',' + value + ';');
+            m_buffer.append(cell->toString());
         }
     }
 }
@@ -57,23 +50,24 @@ bool CLoader::load(Cells &to_load) {
     istringstream iss(m_buffer);
 
     char sep;
-    int row_pos, col_pos, row_shift, col_shift;
-    streamsize cell_values_size;
-    string cell_value;
+    int row_pos, col_pos, cell_type;
 
     while (iss) {
         iss >> row_pos >> sep
             >> col_pos >> sep
-            >> row_shift >> sep
-            >> col_shift >> sep
-            >> cell_values_size >> sep;
-        cell_value.resize(cell_values_size);
-        iss.read(cell_value.data(), cell_values_size);
-        iss >> sep;
+            >> cell_type >> sep;
 
-        CCell cell = CCell(cell_value);
-        cell.m_shift = {row_shift, col_shift};
-        CSpreadsheet::setCell(to_load, CPos(row_pos, col_pos), cell);
+        CCell *cell = nullptr;
+        if (cell_type == CCellType::NUMBER) {
+            cell = new CNumberCell();
+        } else if (cell_type == CCellType::STRING) {
+            cell = new CStringCell();
+        } else {
+            cell = new CExprCell();
+        }
+        cell->readCell(iss);
+        auto shared_ptr_cell = shared_ptr<CCell>(cell);
+        CSpreadsheet::setCell(to_load, CPos(row_pos, col_pos), shared_ptr_cell);
 
     }
     return true;

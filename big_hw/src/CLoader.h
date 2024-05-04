@@ -8,7 +8,7 @@
 #include "CCell.h"
 
 using namespace std;
-using Cells = map<int, map<int, CCell>>;
+using Cells = map<int, map<int, shared_ptr<CCell>>>;
 
 class CLoader {
 public:

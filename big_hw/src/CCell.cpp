@@ -3,72 +3,168 @@
 //
 #include "CCell.h"
 
+#include <utility>
 
-CCell::CCell(const CCell &src) : m_value(src.m_value), m_type(src.m_type), m_root(nullptr), m_shift(src.m_shift) {
+CCell::CCell(CValue value) : m_value(std::move(value)) {
 
 }
 
-CCell &CCell::operator=(const CCell &other) {
-    if (this == &other) {
-        return *this;
-    }
-    delete m_root;
-    m_root = nullptr;
-    m_value = other.m_value;
-    m_type = other.m_type;
-    m_shift = other.m_shift;
-    return *this;
-}
-
-CCell::CCell(const string &contents) : m_root(nullptr), m_shift({0, 0}) {
+CCell *CCell::createCell(const string &contents) {
     try {
         double number = stod(contents);
-        m_value = number;
-        m_type = CellType::DOUBLE;
+        return new CNumberCell(number);
     } catch (invalid_argument &e) {
         if (!contents.empty() && contents.starts_with('=')) {
-            m_type = CellType::EXPRESSION;
+            return new CExprCell(contents);
         } else {
-            m_type = CellType::STRING;
+            return new CStringCell(contents);
         }
-        m_value = contents;
     }
 }
 
 
-CCell::~CCell() {
-    delete m_root;
+CNumberCell::CNumberCell(double value) : CCell(value) {
 }
+
+CNumberCell::CNumberCell() : CCell(0.0) {
+
+}
+
+CStringCell::CStringCell(const string &value) : CCell(value) {
+
+}
+
+CStringCell::CStringCell() : CCell("") {
+
+}
+
+
+CExprCell::CExprCell(const string &expression) : CCell(expression), m_shift({0, 0}) {
+
+}
+
+
+CExprCell::CExprCell() : CCell(""), m_shift({0, 0}) {
+
+}
+
+
+CCell *CStringCell::copy() const {
+    return new CStringCell(get<string>(m_value));
+}
+
+
+CCell *CNumberCell::copy() const {
+    return new CNumberCell(get<double>(m_value));
+}
+
+CCell *CExprCell::copy() const {
+    auto *copy = new CExprCell(get<string>(m_value));
+    copy->m_shift = m_shift;
+    return copy;
+}
+
+string CStringCell::toString() const {
+    string type = to_string(CCellType::STRING);
+    string value = get<string>(m_value);
+    string size = to_string(value.size());
+    return type + ',' + size + ',' + value + ';';
+}
+
+void CStringCell::readCell(istream &is) {
+    char sep;
+    streamsize cell_value_size = 0;
+    string cell_value;
+
+    is >> cell_value_size >> sep;
+
+    cell_value.resize(cell_value_size);
+    is.read(cell_value.data(), cell_value_size);
+
+    is >> sep;
+
+    m_value = cell_value;
+}
+
+
+string CNumberCell::toString() const {
+    string type = to_string(CCellType::NUMBER);
+    string value = to_string(get<double>(m_value));
+    string size = to_string(value.size());
+    return type + ',' + value + ';';
+}
+
+void CNumberCell::readCell(istream &is) {
+    char sep;
+    double value;
+    is >> value >> sep;
+    m_value = value;
+}
+
+
+string CExprCell::toString() const {
+    string type = to_string(CCellType::EXPRESSION);
+    string shift = to_string(m_shift.first) + ',' + to_string(m_shift.second);
+    string value = get<string>(m_value);
+    string size = to_string(value.size());
+    return type + ',' + shift + ',' + size + ',' + value + ';';
+}
+
 
 CValue CCell::getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor) {
-    if (m_type == CellType::EXPRESSION) {
-        if (m_root == nullptr) {
-            try {
-                CASTExpressionBuilder builder(spreadsheet, *this);
-                parseExpression(get<string>(m_value), builder);
-                m_root = builder.getResult();
-            } catch (invalid_argument &e) {
-                return m_value;
-            }
-        }
-        visitor.visit(this);
-        auto evaluation = m_root->evaluate(visitor);
-        visitor.leave(this);
-        return evaluation;
-    }
     return m_value;
 }
 
-void CCell::setShift(const pair<int, int> &shift) {
+
+CValue CExprCell::getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor) {
+    if (m_root == nullptr) {
+        try {
+            CASTExpressionBuilder builder(spreadsheet, this);
+            parseExpression(get<string>(m_value), builder);
+            m_root = unique_ptr<CASTNode>(builder.getResult());
+        } catch (invalid_argument &e) {
+            return m_value;
+        }
+    }
+    visitor.visit(this);
+    auto evaluation = m_root->evaluate(visitor);
+    visitor.leave(this);
+    return evaluation;
+}
+
+void CCell::shift(const pair<int, int> &shift) {
+}
+
+void CExprCell::shift(const pair<int, int> &shift) {
     m_shift.first += shift.first;
     m_shift.second += shift.second;
 }
 
-pair<int, int> CCell::getShift() const {
-    return m_shift;
+void CExprCell::readCell(istream &is) {
+
+    char sep;
+    int shift_row = 0, shift_col = 0;
+    streamsize cell_value_size = 0;
+    string cell_value;
+
+    is >> shift_row >> sep
+       >> shift_col >> sep
+       >> cell_value_size >> sep;
+
+    cell_value.resize(cell_value_size);
+    is.read(cell_value.data(), cell_value_size);
+
+    is >> sep;
+
+    m_value = cell_value;
+    m_shift = {shift_row, shift_col};
 }
 
+pair<int, int> CCell::getShift() const {
+    return {0, 0};
+}
 
-
-
+pair<int, int> CExprCell::getShift() const {
+    return m_shift;
+}
 

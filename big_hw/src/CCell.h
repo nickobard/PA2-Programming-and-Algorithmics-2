@@ -11,40 +11,94 @@
 using namespace literals;
 using CValue = variant<monostate, double, string>;
 
-enum class CellType {
-    DOUBLE,
-    STRING,
-    EXPRESSION
-};
 
 class CSpreadsheet;
 
 class CLoader;
 
+enum CCellType {
+    NUMBER,
+    STRING,
+    EXPRESSION
+};
+
 class CCell {
 public:
-    CCell(const CCell &src);
+    explicit CCell(CValue value);
 
-    CCell &operator=(const CCell &src);
+    virtual ~CCell() = default;
 
-    ~CCell();
+    static CCell *createCell(const string &contents);
 
-    explicit CCell(const string &contents);
+    virtual CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor);
 
-    CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor);
+    virtual CCell *copy() const = 0;
 
-    void setShift(const pair<int, int> &shift);
+    virtual void shift(const pair<int, int> &shift);
 
-    pair<int, int> getShift() const;
+    virtual string toString() const = 0;
+
+    virtual void readCell(istream &is) = 0;
+
+    virtual pair<int, int> getShift() const;
+
+
+protected:
+    CValue m_value;
+};
+
+
+class CNumberCell : public CCell {
+public:
+    CNumberCell();
+
+    explicit CNumberCell(double value);
+
+    void readCell(std::istream &is) override;
+
+    string toString() const override;
+
+    CCell *copy() const override;
+
+};
+
+class CStringCell : public CCell {
+public:
+    CStringCell();
+
+    explicit CStringCell(const string &value);
+
+    string toString() const override;
+
+    CCell *copy() const override;
+
+    void readCell(std::istream &is) override;
+};
+
+
+class CExprCell : public CCell {
+public:
+    CExprCell();
+
+    explicit CExprCell(const string &expression);
+
+    CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor) override;
+
+    CCell *copy() const override;
+
+    string toString() const override;
+
+    void readCell(std::istream &is) override;
+
+    void shift(const pair<int, int> &shift) override;
+
+    pair<int, int> getShift() const override;
 
 private:
-
-    CValue m_value;
-    CellType m_type;
-    CASTNode *m_root;
+    unique_ptr<CASTNode> m_root;
     pair<int, int> m_shift;
 
-    friend class CLoader;
 };
+
 
 #endif //BARDANIK_CCELL_H

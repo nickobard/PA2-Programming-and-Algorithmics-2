@@ -42,8 +42,6 @@
 #include "CCell.h"
 #include "CLoader.h"
 
-using Cells = map<int, map<int, CCell>>;
-
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
 constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;
 constexpr unsigned SPREADSHEET_FILE_IO = 0x04;
@@ -77,7 +75,7 @@ public:
                   int w = 1,
                   int h = 1);
 
-    static bool setCell(Cells &cells, const CPos &pos, const CCell &cell);
+    static bool setCell(Cells &cells, const CPos &pos, shared_ptr<CCell> &cell);
 
 private:
 

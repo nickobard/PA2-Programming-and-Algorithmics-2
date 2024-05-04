@@ -3,7 +3,7 @@
 //
 #include "CCell.h"
 
-CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell &current_cell) :
+CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell) :
         m_spreadsheet(
                 spreadsheet), m_cell(current_cell) {
 }
@@ -98,16 +98,16 @@ void CASTExpressionBuilder::valString(string val) {
 }
 
 void CASTExpressionBuilder::valReference(string val) {
-    CASTNode *node = new CReferenceNode(val, m_spreadsheet, m_cell.getShift());
+    CASTNode *node = new CReferenceNode(val, m_spreadsheet, m_cell->getShift());
     m_stack.push(node);
 }
 
 void CASTExpressionBuilder::valRange(string val) {
-
+    cout << val << endl;
 }
 
 void CASTExpressionBuilder::funcCall(std::string fnName, int paramCount) {
-
+    cout << fnName << " " << paramCount << endl;
 }
 
 pair<CASTNode *, CASTNode *> CASTExpressionBuilder::getNodesPairAndPop() {
