@@ -3,14 +3,6 @@
 //
 #include "CPos.h"
 
-string toUpperCase(const string_view &str) {
-    string lower_cased;
-    for (char c: str) {
-        lower_cased.push_back((char) toupper(c));
-    }
-    return lower_cased;
-}
-
 
 CPos::CPos(string_view str) : m_row(0), m_absolute_row(false), m_col(0), m_absolute_col(false) {
     string upper_cased_pos = toUpperCase(str);
@@ -20,6 +12,15 @@ CPos::CPos(string_view str) : m_row(0), m_absolute_row(false), m_col(0), m_absol
 CPos::CPos(int row, int col) : m_row(row), m_absolute_row(false), m_col(col), m_absolute_col(false) {
 
 }
+
+string CPos::toUpperCase(const string_view &str) {
+    string lower_cased;
+    for (char c: str) {
+        lower_cased.push_back((char) toupper(c));
+    }
+    return lower_cased;
+}
+
 
 void CPos::splitPositionAndParse(const string &position) {
     string label, number;
@@ -73,8 +74,8 @@ pair<int, int> CPos::getOffset(const CPos &src, const CPos &dst) {
     return {dst.m_row - src.m_row, dst.m_col - src.m_col};
 }
 
-void CPos::shiftPos(const pair<int, int> &shift) {
-    auto [row_shift, col_shift] = shift;
+void CPos::shift(const pair<int, int> &offset) {
+    auto [row_shift, col_shift] = offset;
     if (!m_absolute_row) {
         m_row += row_shift;
     }

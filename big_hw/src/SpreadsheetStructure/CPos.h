@@ -23,7 +23,9 @@ public:
 
     static pair<int, int> getOffset(const CPos &src, const CPos &dst);
 
-    void shiftPos(const pair<int, int> &shift);
+    void shift(const pair<int, int> &offset);
+
+    static string toUpperCase(const string_view &str);
 
 private:
 
