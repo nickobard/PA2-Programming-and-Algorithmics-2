@@ -7,13 +7,11 @@
 
 
 #include <variant>
-#include <string>
 #include "../../SpreadsheetStructure/CPos.h"
 #include "../CycleDetectionVisitor/CCycleDetectionVisitor.h"
 
 class CSpreadsheet;
 
-using namespace std;
 using namespace literals;
 using CValue = variant<monostate, double, string>;
 

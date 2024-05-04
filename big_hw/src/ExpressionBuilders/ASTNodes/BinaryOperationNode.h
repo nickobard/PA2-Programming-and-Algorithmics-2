@@ -4,6 +4,7 @@
 #ifndef PA2_BIG_TASK_BINARYOPERATIONNODE_H
 #define PA2_BIG_TASK_BINARYOPERATIONNODE_H
 
+#include <cmath>
 #include "CASTNode.h"
 
 class BinaryOperationNode : public CASTNode {

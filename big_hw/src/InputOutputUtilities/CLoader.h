@@ -5,6 +5,8 @@
 #define PA2_BIG_TASK_CLOADER_H
 
 #include <iostream>
+#include <sstream>
+#include <map>
 #include "../SpreadsheetStructure/CCell.h"
 
 using namespace std;

@@ -5,7 +5,7 @@
 #ifndef PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 #define PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 
-
+#include <stack>
 #include "CExprBuilder.h"
 #include "ASTNodes/CASTNode.h"
 #include "ASTNodes/BinaryOperationNode.h"

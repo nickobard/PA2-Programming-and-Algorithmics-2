@@ -103,11 +103,9 @@ void CASTExpressionBuilder::valReference(string val) {
 }
 
 void CASTExpressionBuilder::valRange(string val) {
-    cout << val << endl;
 }
 
 void CASTExpressionBuilder::funcCall(std::string fnName, int paramCount) {
-    cout << fnName << " " << paramCount << endl;
 }
 
 pair<CASTNode *, CASTNode *> CASTExpressionBuilder::getNodesPairAndPop() {
