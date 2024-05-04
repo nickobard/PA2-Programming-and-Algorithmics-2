@@ -8,91 +8,48 @@
 #include <memory>
 #include <iostream>
 #include <sstream>
+#include <map>
 #include "../ExpressionBuilders/CASTExpressionBuilder.h"
 
-enum CCellType {
-    NUMBER,
+using Cells = map<int, map<int, CCell>>;
+
+
+enum class CellType {
+    DOUBLE,
     STRING,
     EXPRESSION
 };
 
+class CSpreadsheet;
+
+class CLoader;
+
 class CCell {
 public:
-    explicit CCell(CValue value);
+    CCell(const CCell &src);
 
-    virtual ~CCell() = default;
+    CCell &operator=(const CCell &src);
 
-    static CCell *createCell(const string &contents);
+    ~CCell();
 
-    virtual CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor);
+    explicit CCell(const string &contents);
 
-    virtual CCell *copy() const = 0;
+    CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor);
 
-    virtual void shift(const pair<int, int> &shift);
+    void shift(const pair<int, int> &shift);
 
-    virtual string toString() const = 0;
-
-    virtual void readCell(istream &is) = 0;
-
-    virtual pair<int, int> getShift() const;
-
-
-protected:
-    CValue m_value;
-};
-
-
-class CNumberCell : public CCell {
-public:
-    CNumberCell();
-
-    explicit CNumberCell(double value);
-
-    void readCell(std::istream &is) override;
-
-    string toString() const override;
-
-    CCell *copy() const override;
-
-};
-
-class CStringCell : public CCell {
-public:
-    CStringCell();
-
-    explicit CStringCell(const string &value);
-
-    string toString() const override;
-
-    CCell *copy() const override;
-
-    void readCell(std::istream &is) override;
-};
-
-
-class CExprCell : public CCell {
-public:
-    CExprCell();
-
-    explicit CExprCell(const string &expression);
-
-    CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor) override;
-
-    CCell *copy() const override;
-
-    string toString() const override;
-
-    void readCell(std::istream &is) override;
-
-    void shift(const pair<int, int> &shift) override;
-
-    pair<int, int> getShift() const override;
+    pair<int, int> getShift() const;
 
 private:
-    unique_ptr<CASTNode> m_root;
+
+    CValue m_value;
+    CellType m_type;
+    CASTNode *m_root;
     pair<int, int> m_shift;
 
+    friend class CLoader;
 };
+
 
 
 #endif //BARDANIK_CCELL_H

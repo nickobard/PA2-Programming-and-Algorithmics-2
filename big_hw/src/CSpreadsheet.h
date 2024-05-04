@@ -22,11 +22,8 @@ public:
         return SPREADSHEET_CYCLIC_DEPS | SPREADSHEET_FILE_IO;
     }
 
+
     CSpreadsheet() = default;
-
-    CSpreadsheet(const CSpreadsheet &src);
-
-    CSpreadsheet &operator=(CSpreadsheet src);
 
     bool load(istream &is);
 
@@ -39,13 +36,12 @@ public:
 
     CValue getValue(CPos pos, CCycleDetectionVisitor &visitor);
 
-
     void copyRect(CPos dst,
                   CPos src,
                   int w = 1,
                   int h = 1);
 
-    static bool setCell(Cells &cells, const CPos &pos, shared_ptr<CCell> &cell);
+    static bool setCell(Cells &cells, const CPos &pos, const CCell &cell);
 
 private:
 
