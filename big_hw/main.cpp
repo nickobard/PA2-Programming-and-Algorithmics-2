@@ -218,6 +218,13 @@ int main() {
     assert (valueMatch(x0.getValue(CPos("H13")), CValue(-22.0)));
     auto v2 = x0.getValue(CPos("H14"));
     assert (valueMatch(x0.getValue(CPos("H14")), CValue(-22.0)));
+
+    CSpreadsheet x3;
+    assert(x3.setCell(CPos("A1"), "=5+A2"));
+    assert(x3.setCell(CPos("A2"), "=A1"));
+    assert(valueMatch(x3.getValue(CPos("A1")), CValue()));
+
+
     return EXIT_SUCCESS;
 }
 
