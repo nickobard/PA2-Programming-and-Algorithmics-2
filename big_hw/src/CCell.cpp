@@ -40,7 +40,7 @@ CCell::~CCell() {
     delete m_root;
 }
 
-CValue CCell::getValue(CSpreadsheet &spreadsheet) {
+CValue CCell::getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor) {
     if (m_type == CellType::EXPRESSION) {
         if (m_root == nullptr) {
             try {
@@ -51,7 +51,10 @@ CValue CCell::getValue(CSpreadsheet &spreadsheet) {
                 return m_value;
             }
         }
-        return m_root->evaluate();
+        visitor.visit(this);
+        auto evaluation = m_root->evaluate(visitor);
+        visitor.leave(this);
+        return evaluation;
     }
     return m_value;
 }

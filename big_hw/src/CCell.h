@@ -31,7 +31,7 @@ public:
 
     explicit CCell(const string &contents);
 
-    CValue getValue(CSpreadsheet &spreadsheet);
+    CValue getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &visitor);
 
     void setShift(const pair<int, int> &shift);
 

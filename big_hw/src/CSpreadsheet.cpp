@@ -53,8 +53,28 @@ CValue CSpreadsheet::getValue(CPos pos) {
     if (col_element == row_element->second.end()) {
         return {};
     }
-    return col_element->second.getValue(*this);
+    try {
+        CCycleDetectionVisitor visitor;
+        return col_element->second.getValue(*this, visitor);
+    } catch (CCycleDetectedException &e) {
+        return {};
+    }
 }
+
+
+CValue CSpreadsheet::getValue(CPos pos, CCycleDetectionVisitor &visitor) {
+    auto [row, col] = pos.getCoords();
+    auto row_element = m_cells.find(row);
+    if (row_element == m_cells.end()) {
+        return {};
+    }
+    auto col_element = row_element->second.find(col);
+    if (col_element == row_element->second.end()) {
+        return {};
+    }
+    return col_element->second.getValue(*this, visitor);
+}
+
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
     Cells cells_shifted_copy = copyCellsAndShift(src, dst, w, h);
