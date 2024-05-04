@@ -14,7 +14,7 @@ CCell *CCell::createCell(const string &contents) {
         double number = stod(contents);
         return new CNumberCell(number);
     } catch (invalid_argument &e) {
-        if (!contents.empty() && contents.starts_with('=')) {
+        if (!contents.empty() && contents[0] == '=') {
             return new CExprCell(contents);
         } else {
             return new CStringCell(contents);

@@ -39,6 +39,7 @@ public:
 
     CValue getValue(CPos pos, CCycleDetectionVisitor &visitor);
 
+
     void copyRect(CPos dst,
                   CPos src,
                   int w = 1,
