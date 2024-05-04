@@ -1,7 +1,7 @@
 //
 // Created by bardanik on 14/04/24.
 //
-#include "../CCell.h"
+#include "../SpreadsheetStructure/CCell.h"
 
 CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell) :
         m_spreadsheet(

@@ -8,8 +8,8 @@
 
 #include <variant>
 #include <string>
-#include "../../CPos.h"
-#include "../../CCycleDetectionVisitor.h"
+#include "../../SpreadsheetStructure/CPos.h"
+#include "../CycleDetectionVisitor/CCycleDetectionVisitor.h"
 
 class CSpreadsheet;
 

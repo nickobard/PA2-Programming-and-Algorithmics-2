@@ -2,7 +2,7 @@
 // Created by bardanik on 28/04/24.
 //
 
-#include "CSpreadsheet.h"
+#include "../CSpreadsheet.h"
 
 CLoader::CLoader(istream &is) : m_is(&is), m_os(nullptr) {
 

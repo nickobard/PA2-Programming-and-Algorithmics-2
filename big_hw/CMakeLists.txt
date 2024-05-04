@@ -10,7 +10,10 @@ set(CMAKE_CXX_FLAGS ${WARNINGS})
 file(GLOB SOURCES
         "src/*.cpp"
         "src/ExpressionBuilders/*.cpp"
-        "src/ExpressionBuilders/ASTNodes/*.cpp")
+        "src/ExpressionBuilders/ASTNodes/*.cpp"
+        "src/ExpressionBuilders/CycleDetectionVisitor/*.cpp"
+        "src/InputOutputUtilities/*.cpp"
+        "src/SpreadsheetStructure/*.cpp")
 
 add_executable(big_task main.cpp ${SOURCES})
 add_executable(memdebug main.cpp ${SOURCES})

@@ -39,8 +39,8 @@
 #include <span>
 #include <utility>
 
-#include "CCell.h"
-#include "CLoader.h"
+#include "SpreadsheetStructure/CCell.h"
+#include "InputOutputUtilities/CLoader.h"
 
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;
 constexpr unsigned SPREADSHEET_FUNCTIONS = 0x02;

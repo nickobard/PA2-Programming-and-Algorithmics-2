@@ -5,7 +5,7 @@
 #define PA2_BIG_TASK_CLOADER_H
 
 #include <iostream>
-#include "CCell.h"
+#include "../SpreadsheetStructure/CCell.h"
 
 using namespace std;
 using Cells = map<int, map<int, shared_ptr<CCell>>>;
