@@ -38,27 +38,21 @@ AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNod
 
 CValue AddNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left + right;
-        return result;
-    }
-    if (typesAre<double, string>(values)) {
+        result = left + right;
+    } else if (typesAre<double, string>(values)) {
         auto [left, right] = getValues<double, string>(values);
-        auto result = to_string(left) + right;
-        return result;
-    }
-    if (typesAre<string, double>(values)) {
+        result = to_string(left) + right;
+    } else if (typesAre<string, double>(values)) {
         auto [left, right] = getValues<string, double>(values);
-        auto result = left + to_string(right);
-        return result;
-    }
-    if (typesAre<string, string>(values)) {
+        result = left + to_string(right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left + right;
-        return result;
+        result = left + right;
     }
-    return {};
+    return result;
 }
 
 
@@ -68,12 +62,12 @@ SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 
 CValue SubtractNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left - right;
-        return result;
+        result = left - right;
     }
-    return {};
+    return result;
 }
 
 
@@ -85,12 +79,12 @@ MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg
 
 CValue MultiplicationNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left * right;
-        return result;
+        result = left * right;
     }
-    return {};
+    return result;
 }
 
 
@@ -101,15 +95,15 @@ DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 
 CValue DivisionNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
         if (right == 0) {
             return {};
         }
-        auto result = left / right;
-        return result;
+        result = left / right;
     }
-    return {};
+    return result;
 }
 
 
@@ -119,12 +113,12 @@ PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperatio
 
 CValue PowerNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = pow(left, right);
-        return result;
+        result = pow(left, right);
     }
-    return {};
+    return result;
 }
 
 
@@ -134,17 +128,15 @@ EqualNode::EqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperatio
 
 CValue EqualNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left == right;
-        return {static_cast<double>(result)};
-    }
-    if (typesAre<string, string>(values)) {
+        result = static_cast<double>(left == right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left == right;
-        return {static_cast<double>(result)};
+        result = static_cast<double>(left == right);
     }
-    return {};
+    return result;
 }
 
 LessThanNode::LessThanNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
@@ -153,17 +145,15 @@ LessThanNode::LessThanNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 
 CValue LessThanNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left < right;
-        return {static_cast<double>(result)};
-    }
-    if (typesAre<string, string>(values)) {
+        result = static_cast<double>(left < right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left < right;
-        return {static_cast<double>(result)};
+        result = static_cast<double>(left < right);
     }
-    return {};
+    return result;
 }
 
 NotEqualNode::NotEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
@@ -172,17 +162,15 @@ NotEqualNode::NotEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOp
 
 CValue NotEqualNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left != right;
-        return {static_cast<double>(result)};
-    }
-    if (typesAre<string, string>(values)) {
+        result = static_cast<double>(left != right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left != right;
-        return {static_cast<double>(result)};
+        result = static_cast<double>(left != right);
     }
-    return {};
+    return result;
 }
 
 GreaterThanNode::GreaterThanNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
@@ -191,17 +179,15 @@ GreaterThanNode::GreaterThanNode(CASTNode *first_arg, CASTNode *second_arg) : Bi
 
 CValue GreaterThanNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left > right;
-        return {static_cast<double>(result)};
-    }
-    if (typesAre<string, string>(values)) {
+        result = static_cast<double>(left > right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left > right;
-        return {static_cast<double>(result)};
+        result = static_cast<double>(left > right);
     }
-    return {};
+    return result;
 }
 
 LessThanOrEqualNode::LessThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
@@ -211,17 +197,15 @@ LessThanOrEqualNode::LessThanOrEqualNode(CASTNode *first_arg, CASTNode *second_a
 
 CValue LessThanOrEqualNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left <= right;
-        return {static_cast<double>(result)};
-    }
-    if (typesAre<string, string>(values)) {
+        result = static_cast<double>(left <= right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left <= right;
-        return {static_cast<double>(result)};
+        result = static_cast<double>(left <= right);
     }
-    return {};
+    return result;
 }
 
 GreaterThanOrEqualNode::GreaterThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(
@@ -231,15 +215,13 @@ GreaterThanOrEqualNode::GreaterThanOrEqualNode(CASTNode *first_arg, CASTNode *se
 
 CValue GreaterThanOrEqualNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto values = evaluateValues(visitor);
+    CValue result;
     if (typesAre<double, double>(values)) {
         auto [left, right] = getValues<double, double>(values);
-        auto result = left >= right;
-        return {static_cast<double>(result)};
-    }
-    if (typesAre<string, string>(values)) {
+        result = static_cast<double>(left >= right);
+    } else if (typesAre<string, string>(values)) {
         auto [left, right] = getValues<string, string>(values);
-        auto result = left >= right;
-        return {static_cast<double>(result)};
+        result = static_cast<double>(left >= right);
     }
     return {};
 }
