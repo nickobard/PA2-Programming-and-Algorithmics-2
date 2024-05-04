@@ -7,7 +7,7 @@ set(MEMDEBUGGER "-fsanitize=address")
 
 set(CMAKE_CXX_FLAGS ${WARNINGS})
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "src/ExpressionBuilder/*.cpp")
 
 add_executable(big_task main.cpp ${SOURCES})
 add_executable(memdebug main.cpp ${SOURCES})

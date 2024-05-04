@@ -5,16 +5,15 @@
 #ifndef PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 #define PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 
-#endif //PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
 
-#include "ExpressionBuilder/CExprBuilder.h"
-#include "CASTNode.h"
+#include "CExprBuilder.h"
+#include "../CASTNode.h"
 
 class CCell;
 
 class CASTExpressionBuilder : public CExprBuilder {
 public:
-    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell* current_cell );
+    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell);
 
     void opAdd() override;
 
@@ -61,3 +60,5 @@ private:
     CSpreadsheet &m_spreadsheet;
     const CCell *m_cell;
 };
+
+#endif //PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
