@@ -6,7 +6,6 @@
 #define BARDANIK_CCELL_H
 
 #include "CASTExpressionBuilder.h"
-#include "CStackExpressionBuilder.h"
 
 using namespace literals;
 using CValue = variant<monostate, double, string>;
