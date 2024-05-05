@@ -52,7 +52,7 @@ bool CLoader::load(Cells &to_load) {
     char sep;
     int row_pos, col_pos, cell_type;
 
-    while (iss) {
+    while (iss.peek() != EOF) {
         iss >> row_pos >> sep
             >> col_pos >> sep
             >> cell_type >> sep;
@@ -65,7 +65,7 @@ bool CLoader::load(Cells &to_load) {
         } else {
             cell = new CExprCell();
         }
-        cell->readCell(iss);
+        iss >> cell;
         auto shared_ptr_cell = shared_ptr<CCell>(cell);
         CSpreadsheet::setCell(to_load, CPos(row_pos, col_pos), shared_ptr_cell);
 

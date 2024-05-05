@@ -71,7 +71,7 @@ string CStringCell::toString() const {
     return type + ',' + size + ',' + value + ';';
 }
 
-void CStringCell::readCell(istream &is) {
+istream &CStringCell::readCell(istream &is) {
     char sep;
     streamsize cell_value_size = 0;
     string cell_value;
@@ -84,6 +84,8 @@ void CStringCell::readCell(istream &is) {
     is >> sep;
 
     m_value = cell_value;
+    return is;
+
 }
 
 
@@ -94,11 +96,13 @@ string CNumberCell::toString() const {
     return type + ',' + value + ';';
 }
 
-void CNumberCell::readCell(istream &is) {
+istream &CNumberCell::readCell(istream &is) {
     char sep;
     double value;
     is >> value >> sep;
     m_value = value;
+    return is;
+
 }
 
 
@@ -140,7 +144,7 @@ void CExprCell::shift(const pair<int, int> &shift) {
     m_shift.second += shift.second;
 }
 
-void CExprCell::readCell(istream &is) {
+istream &CExprCell::readCell(istream &is) {
 
     char sep;
     int shift_row = 0, shift_col = 0;
@@ -158,10 +162,16 @@ void CExprCell::readCell(istream &is) {
 
     m_value = cell_value;
     m_shift = {shift_row, shift_col};
+
+    return is;
 }
 
 pair<int, int> CCell::getShift() const {
     return {0, 0};
+}
+
+istream &operator>>(istream &is, CCell *cell) {
+    return cell->readCell(is);
 }
 
 pair<int, int> CExprCell::getShift() const {

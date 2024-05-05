@@ -37,6 +37,7 @@ struct Tester {
     static void runAll() {
         basicTest();
         cycleDetectionTest();
+        loaderTest();
     }
 
     static void basicTest() {
@@ -190,6 +191,98 @@ struct Tester {
         assert(x3.setCell(CPos("B2"), "42"));
 
         cout << __func__ << " ->    OK" << '\n' << endl;
+    }
+
+    static void loaderTest() {
+        cout << '\n' << __func__ << " -> START" << endl;
+
+
+        std::ostringstream oss;
+        std::istringstream iss;
+        std::string data;
+
+        CSpreadsheet x0;
+        assert(x0.setCell(CPos("A0"), ",s,;tr,,;ing\n\n A0,;"));
+        assert(x0.setCell(CPos("A1"), ",s,;tr,,;ing\n\n A1,;"));
+        assert(x0.setCell(CPos("A2"), ",s,;tr,,;ing\n\n A2,;"));
+        assert(x0.setCell(CPos("A3"), ",s,;tr,,;ing\n\n A3,;"));
+        assert(x0.setCell(CPos("A4"), ",s,;tr,,;ing\n\n A4,;"));
+        assert(x0.setCell(CPos("B0"), ",s,;tr,,;ing\n\n B0,;"));
+        assert(x0.setCell(CPos("B1"), ",s,;tr,,;ing\n\n B1,;"));
+        assert(x0.setCell(CPos("B2"), ",s,;tr,,;ing\n\n B2,;"));
+        assert(x0.setCell(CPos("B3"), ",s,;tr,,;ing\n\n B3,;"));
+        assert(x0.setCell(CPos("B4"), ",s,;tr,,;ing\n\n B4,;"));
+        assert(x0.setCell(CPos("C0"), ",s,;tr,,;ing\n\n C0,;"));
+        assert(x0.setCell(CPos("C1"), ",s,;tr,,;ing\n\n C1,;"));
+        assert(x0.setCell(CPos("C2"), ",s,;tr,,;ing\n\n C2,;"));
+        assert(x0.setCell(CPos("C3"), ",s,;tr,,;ing\n\n C3,;"));
+        assert(x0.setCell(CPos("C4"), ",s,;tr,,;ing\n\n C4,;"));
+
+        CSpreadsheet x1;
+        assert(x1.setCell(CPos("B0"), "=\",s,;tr,,;ing\n\n B0,;\""));
+        assert(x1.setCell(CPos("B1"), "=\",s,;tr,,;ing\n\n B1,;\""));
+        assert(x1.setCell(CPos("B2"), "=\",s,;tr,,;ing\n\n B2,;\""));
+        assert(x1.setCell(CPos("B3"), "=\",s,;tr,,;ing\n\n B3,;\""));
+        assert(x1.setCell(CPos("B4"), "=\",s,;tr,,;ing\n\n B4,;\""));
+        assert(x1.setCell(CPos("C0"), "=\",s,;tr,,;ing\n\n C0,;\""));
+        assert(x1.setCell(CPos("C1"), "=\",s,;tr,,;ing\n\n C1,;\""));
+        assert(x1.setCell(CPos("C2"), "=\",s,;tr,,;ing\n\n C2,;\""));
+        assert(x1.setCell(CPos("C3"), "=\",s,;tr,,;ing\n\n C3,;\""));
+        assert(x1.setCell(CPos("C4"), "=\",s,;tr,,;ing\n\n C4,;\""));
+        assert(x1.setCell(CPos("D0"), "=\",s,;tr,,;ing\n\n D0,;\""));
+        assert(x1.setCell(CPos("D1"), "=\",s,;tr,,;ing\n\n D1,;\""));
+        assert(x1.setCell(CPos("D2"), "=\",s,;tr,,;ing\n\n D2,;\""));
+        assert(x1.setCell(CPos("D3"), "=\",s,;tr,,;ing\n\n D3,;\""));
+        assert(x1.setCell(CPos("D4"), "=\",s,;tr,,;ing\n\n D4,;\""));
+
+        oss.clear();
+        oss.str("");
+        assert(x0.save(oss));
+        data = oss.str();
+        iss.clear();
+        iss.str(data);
+        assert(x1.load(iss));
+
+        assert(valueMatch(x0.getValue(CPos("A0")), CValue(",s,;tr,,;ing\n\n A0,;")));
+        assert(valueMatch(x0.getValue(CPos("A1")), CValue(",s,;tr,,;ing\n\n A1,;")));
+        assert(valueMatch(x0.getValue(CPos("A2")), CValue(",s,;tr,,;ing\n\n A2,;")));
+        assert(valueMatch(x0.getValue(CPos("A3")), CValue(",s,;tr,,;ing\n\n A3,;")));
+        assert(valueMatch(x0.getValue(CPos("A4")), CValue(",s,;tr,,;ing\n\n A4,;")));
+        assert(valueMatch(x0.getValue(CPos("B0")), CValue(",s,;tr,,;ing\n\n B0,;")));
+        assert(valueMatch(x0.getValue(CPos("B1")), CValue(",s,;tr,,;ing\n\n B1,;")));
+        assert(valueMatch(x0.getValue(CPos("B2")), CValue(",s,;tr,,;ing\n\n B2,;")));
+        assert(valueMatch(x0.getValue(CPos("B3")), CValue(",s,;tr,,;ing\n\n B3,;")));
+        assert(valueMatch(x0.getValue(CPos("B4")), CValue(",s,;tr,,;ing\n\n B4,;")));
+        assert(valueMatch(x0.getValue(CPos("C0")), CValue(",s,;tr,,;ing\n\n C0,;")));
+        assert(valueMatch(x0.getValue(CPos("C1")), CValue(",s,;tr,,;ing\n\n C1,;")));
+        assert(valueMatch(x0.getValue(CPos("C2")), CValue(",s,;tr,,;ing\n\n C2,;")));
+        assert(valueMatch(x0.getValue(CPos("C3")), CValue(",s,;tr,,;ing\n\n C3,;")));
+        assert(valueMatch(x0.getValue(CPos("C4")), CValue(",s,;tr,,;ing\n\n C4,;")));
+
+        assert(valueMatch(x1.getValue(CPos("A0")), CValue(",s,;tr,,;ing\n\n A0,;")));
+        assert(valueMatch(x1.getValue(CPos("A1")), CValue(",s,;tr,,;ing\n\n A1,;")));
+        assert(valueMatch(x1.getValue(CPos("A2")), CValue(",s,;tr,,;ing\n\n A2,;")));
+        assert(valueMatch(x1.getValue(CPos("A3")), CValue(",s,;tr,,;ing\n\n A3,;")));
+        assert(valueMatch(x1.getValue(CPos("A4")), CValue(",s,;tr,,;ing\n\n A4,;")));
+        assert(valueMatch(x1.getValue(CPos("B0")), CValue(",s,;tr,,;ing\n\n B0,;")));
+        assert(valueMatch(x1.getValue(CPos("B1")), CValue(",s,;tr,,;ing\n\n B1,;")));
+        assert(valueMatch(x1.getValue(CPos("B2")), CValue(",s,;tr,,;ing\n\n B2,;")));
+        assert(valueMatch(x1.getValue(CPos("B3")), CValue(",s,;tr,,;ing\n\n B3,;")));
+        assert(valueMatch(x1.getValue(CPos("B4")), CValue(",s,;tr,,;ing\n\n B4,;")));
+        assert(valueMatch(x1.getValue(CPos("C0")), CValue(",s,;tr,,;ing\n\n C0,;")));
+        assert(valueMatch(x1.getValue(CPos("C1")), CValue(",s,;tr,,;ing\n\n C1,;")));
+        assert(valueMatch(x1.getValue(CPos("C2")), CValue(",s,;tr,,;ing\n\n C2,;")));
+        assert(valueMatch(x1.getValue(CPos("C3")), CValue(",s,;tr,,;ing\n\n C3,;")));
+        assert(valueMatch(x1.getValue(CPos("C4")), CValue(",s,;tr,,;ing\n\n C4,;")));
+
+        assert(valueMatch(x1.getValue(CPos("D0")), CValue()));
+        assert(valueMatch(x1.getValue(CPos("D1")), CValue()));
+        assert(valueMatch(x1.getValue(CPos("D2")), CValue()));
+        assert(valueMatch(x1.getValue(CPos("D3")), CValue()));
+        assert(valueMatch(x1.getValue(CPos("D4")), CValue()));
+
+        cout << __func__ << " ->    OK" << '\n' << endl;
+
     }
 };
 

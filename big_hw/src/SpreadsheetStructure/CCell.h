@@ -32,7 +32,9 @@ public:
 
     virtual string toString() const = 0;
 
-    virtual void readCell(istream &is) = 0;
+    friend istream &operator>>(istream &is, CCell *cell);
+
+    virtual istream &readCell(istream &is) = 0;
 
     virtual pair<int, int> getShift() const;
 
@@ -48,7 +50,7 @@ public:
 
     explicit CNumberCell(double value);
 
-    void readCell(std::istream &is) override;
+    istream &readCell(istream &is) override;
 
     string toString() const override;
 
@@ -66,7 +68,7 @@ public:
 
     CCell *copy() const override;
 
-    void readCell(std::istream &is) override;
+    istream &readCell(istream &is) override;
 };
 
 
@@ -82,7 +84,7 @@ public:
 
     string toString() const override;
 
-    void readCell(std::istream &is) override;
+    istream &readCell(istream &is) override;
 
     void shift(const pair<int, int> &shift) override;
 
