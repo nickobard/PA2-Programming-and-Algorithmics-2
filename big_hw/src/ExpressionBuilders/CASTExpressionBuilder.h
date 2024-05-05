@@ -16,7 +16,7 @@ class CCell;
 
 class CASTExpressionBuilder : public CExprBuilder {
 public:
-    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell &current_cell);
+    explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell);
 
     void opAdd() override;
 
@@ -61,7 +61,7 @@ private:
 
     stack<CASTNode *> m_stack;
     CSpreadsheet &m_spreadsheet;
-    const CCell &m_cell;
+    const CCell *m_cell;
 };
 
 #endif //PA2_BIG_TASK_CASTEXPRESSIONBUILDER_H
