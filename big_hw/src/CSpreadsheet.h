@@ -6,7 +6,7 @@
 #define BARDANIK_CSPREADSHEET_H
 
 
-#include "SpreadsheetStructure/CCell.h"
+#include "SpreadsheetStructure/CRange.h"
 #include "InputOutputUtilities/CLoader.h"
 
 constexpr unsigned SPREADSHEET_CYCLIC_DEPS = 0x01;

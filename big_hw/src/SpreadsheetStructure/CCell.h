@@ -8,7 +8,11 @@
 #include <memory>
 #include <iostream>
 #include <sstream>
+#include <map>
 #include "../ExpressionBuilders/CASTExpressionBuilder.h"
+
+using Cells = map<int, map<int, shared_ptr<CCell>>>;
+
 
 enum CCellType {
     NUMBER,

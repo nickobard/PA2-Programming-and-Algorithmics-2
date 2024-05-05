@@ -4,13 +4,7 @@
 #ifndef PA2_BIG_TASK_CLOADER_H
 #define PA2_BIG_TASK_CLOADER_H
 
-#include <iostream>
-#include <sstream>
-#include <map>
 #include "../SpreadsheetStructure/CCell.h"
-
-using namespace std;
-using Cells = map<int, map<int, shared_ptr<CCell>>>;
 
 class CLoader {
 public:
