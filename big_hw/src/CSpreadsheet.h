@@ -47,8 +47,6 @@ public:
 
     static bool setCell(Cells &cells, const CPos &pos, shared_ptr<CCell> &cell);
 
-    bool cellExists(const CPos &pos) const;
-
 private:
 
 

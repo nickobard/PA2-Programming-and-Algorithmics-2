@@ -12,6 +12,8 @@ using namespace std;
 
 class CPos {
 public:
+    CPos();
+
     explicit CPos(string_view str);
 
     CPos(int row, int col);

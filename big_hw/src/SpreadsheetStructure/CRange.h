@@ -5,22 +5,20 @@
 #ifndef PA2_BIG_TASK_CRANGE_H
 #define PA2_BIG_TASK_CRANGE_H
 
-#include <unordered_map>
+#include <vector>
 #include "CCell.h"
 
-class CSpreadsheet;
-
-using Range = unordered_map<pair<int, int>, shared_ptr<CCell>>;
+using Range = vector<pair<pair<int, int>, shared_ptr<CCell>>>;
 
 class CRange {
 public:
-    CRange(CSpreadsheet &spreadsheet);
+    explicit CRange(Cells &spreadsheet);
 
-    void selectCells(const CPos &src, int w = 1, int h = 1);
+    void select(const CPos &src, int w = 1, int h = 1);
 
-    void selectCells(const CPos &from, const CPos &to);
+    void select(const CPos &from, const CPos &to);
 
-    void pasteCells(const CPos &dst);
+    void paste(const CPos &dst);
 
     CValue sum() const;
 
@@ -38,10 +36,12 @@ private:
 
     void shiftSelection(const pair<int, int> &offset);
 
-    CSpreadsheet &m_spreadsheet;
+    void pasteCells();
+
+    Cells &m_cells;
     Range m_selection;
     CPos m_selection_position;
-    int w, h;
+    int m_w, m_h;
 };
 
 

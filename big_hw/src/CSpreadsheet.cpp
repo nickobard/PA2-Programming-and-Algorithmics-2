@@ -96,9 +96,9 @@ CValue CSpreadsheet::getValue(CPos pos, CCycleDetectionVisitor &visitor) {
 
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
-    Cells cells_shifted_copy = copyCellsAndShift(src, dst, w, h);
-    deleteCells(dst, w, h);
-    pasteCells(cells_shifted_copy);
+    CRange range(m_cells);
+    range.select(src, w, h);
+    range.paste(dst);
 }
 
 Cells CSpreadsheet::copyCellsAndShift(const CPos &src, const CPos &dst, int w, int h) {

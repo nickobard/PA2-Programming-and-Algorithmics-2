@@ -3,6 +3,10 @@
 //
 #include "CPos.h"
 
+CPos::CPos() : m_row(0), m_absolute_row(false), m_col(0), m_absolute_col(false) {
+
+}
+
 
 CPos::CPos(string_view str) : m_row(0), m_absolute_row(false), m_col(0), m_absolute_col(false) {
     string upper_cased_pos = toUpperCase(str);
