@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ../src
+cd ../src || exit
 grep -vh '^#include' \
   SpreadsheetStructure/CPos.h \
   ExpressionBuilders/CycleDetectionVisitor/CCycleDetectionVisitor.h \
