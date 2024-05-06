@@ -140,6 +140,9 @@ void CCell::shift(const pair<int, int> &shift) {
 }
 
 void CExprCell::shift(const pair<int, int> &shift) {
+    if (m_root != nullptr) {
+        m_root = nullptr;
+    }
     m_shift.first += shift.first;
     m_shift.second += shift.second;
 }

@@ -9,6 +9,7 @@ CRange::CRange(Cells &cells) : m_cells(cells), m_selection({}), m_w(1), m_h(1) {
 }
 
 void CRange::select(const CPos &src, int w, int h) {
+    m_selection_position = src;
     m_w = w, m_h = h;
     auto [row, col] = src.getCoords();
 
@@ -63,6 +64,8 @@ void CRange::shiftSelection(const pair<int, int> &offset) {
             cell = shared_ptr<CCell>(cell->copy());
             cell->shift(offset);
         }
+        coords.first += offset.first;
+        coords.second += offset.second;
     }
 }
 
