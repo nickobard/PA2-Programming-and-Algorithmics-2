@@ -3,6 +3,8 @@
 //
 
 #include "../CSpreadsheet.h"
+#include "CRange.h"
+
 
 CRange::CRange(CSpreadsheet &spreadsheet) : m_spreadsheet(spreadsheet), m_selection({}), m_w(1), m_h(1) {
 
@@ -87,3 +89,21 @@ vector<CValue> CRange::evaluate(CCycleDetectionVisitor &visitor) {
     }
     return values;
 }
+
+pair<string, string> CRange::splitRange(const string &range) {
+    string first, second;
+    bool is_first_current = true;
+    for (char c: range) {
+        if (is_first_current) {
+            if (c == ':') {
+                is_first_current = false;
+                continue;
+            }
+            first.push_back(c);
+        } else {
+            second.push_back(c);
+        }
+    }
+    return {first, second};
+}
+

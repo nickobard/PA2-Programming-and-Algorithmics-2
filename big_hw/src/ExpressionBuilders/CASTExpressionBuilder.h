@@ -11,6 +11,7 @@
 #include "ASTNodes/BinaryOperationNode.h"
 #include "ASTNodes/UnaryOperationNode.h"
 #include "ASTNodes/RelationalOperationNode.h"
+#include "ASTNodes/FunctionNode.h"
 
 class CCell;
 

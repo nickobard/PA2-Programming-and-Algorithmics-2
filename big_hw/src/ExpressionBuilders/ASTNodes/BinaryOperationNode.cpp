@@ -19,16 +19,26 @@ pair<CValue, CValue> BinaryOperationNode::evaluateValues(CCycleDetectionVisitor 
 }
 
 template<typename L, typename R>
-bool BinaryOperationNode::typesAre(const pair<CValue, CValue> &values) const {
-    return holds_alternative<L>(values.first) && holds_alternative<R>(values.second);
+bool BinaryOperationNode::typesAre(const CValue &first, const CValue &second) {
+    return holds_alternative<L>(first) && holds_alternative<R>(second);
+}
+
+template<typename L, typename R>
+bool BinaryOperationNode::typesAre(const pair<CValue, CValue> &values) {
+    return typesAre<L, R>(values.first, values.second);
+}
+
+template<typename L, typename R>
+pair<L, R> BinaryOperationNode::getValues(const CValue &first, const CValue &second) {
+    L left = get<L>(first);
+    R right = get<R>(second);
+    return {left, right};
 }
 
 
 template<typename L, typename R>
-pair<L, R> BinaryOperationNode::getValues(const pair<CValue, CValue> &values) const {
-    L left = get<L>(values.first);
-    R right = get<R>(values.second);
-    return {left, right};
+pair<L, R> BinaryOperationNode::getValues(const pair<CValue, CValue> &values) {
+    return getValues<L, R>(values.first, values.second);
 }
 
 

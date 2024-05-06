@@ -23,6 +23,8 @@ public:
 
     vector<CValue> evaluate(CCycleDetectionVisitor &visitor);
 
+    static pair<string , string> splitRange(const string &range);
+
 private:
 
     void deleteCells(const CPos &dst);

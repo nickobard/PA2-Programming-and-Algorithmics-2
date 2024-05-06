@@ -13,13 +13,20 @@ public:
 
     ~BinaryOperationNode();
 
+    template<typename L, typename R>
+    static pair<L, R> getValues(const pair<CValue, CValue> &values);
+
+    template<typename L, typename R>
+    static pair<L, R> getValues(const CValue &first, const CValue &second);
+
+    template<typename L, typename R>
+    static bool typesAre(const pair<CValue, CValue> &values);
+
+    template<typename L, typename R>
+    static bool typesAre(const CValue &first, const CValue &second);
+
 protected:
 
-    template<typename L, typename R>
-    pair<L, R> getValues(const pair<CValue, CValue> &values) const;
-
-    template<typename L, typename R>
-    bool typesAre(const pair<CValue, CValue> &values) const;
 
     pair<CValue, CValue> evaluateValues(CCycleDetectionVisitor &visitor);
 

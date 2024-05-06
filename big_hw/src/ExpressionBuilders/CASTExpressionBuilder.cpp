@@ -1,7 +1,7 @@
 //
 // Created by bardanik on 14/04/24.
 //
-#include "../SpreadsheetStructure/CCell.h"
+#include "../SpreadsheetStructure/CRange.h"
 
 CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell) :
         m_spreadsheet(
@@ -103,9 +103,48 @@ void CASTExpressionBuilder::valReference(string val) {
 }
 
 void CASTExpressionBuilder::valRange(string val) {
+    auto [from, to] = CRange::splitRange(val);
+    CASTNode *node = new CRangeNode(from, to, m_spreadsheet, m_cell->getShift());
+    m_stack.push(node);
 }
 
 void CASTExpressionBuilder::funcCall(std::string fnName, int paramCount) {
+    CASTNode *function_node = nullptr;
+    if (fnName == "sum") {
+        CASTNode *range = m_stack.top();
+        m_stack.pop();
+        function_node = new SumNode(range);
+    } else if (fnName == "count") {
+        CASTNode *range = m_stack.top();
+        m_stack.pop();
+        function_node = new CountNode(range);
+    } else if (fnName == "min") {
+        CASTNode *range = m_stack.top();
+        m_stack.pop();
+        function_node = new MinNode(range);
+    } else if (fnName == "max") {
+        CASTNode *range = m_stack.top();
+        m_stack.pop();
+        function_node = new MaxNode(range);
+    } else if (fnName == "countval") {
+        CASTNode *range = m_stack.top();
+        m_stack.pop();
+        CASTNode *value = m_stack.top();
+        m_stack.pop();
+        function_node = new CountValNode(value, range);
+    } else if (fnName == "if") {
+        CASTNode *if_false = m_stack.top();
+        m_stack.pop();
+        CASTNode *if_true = m_stack.top();
+        m_stack.pop();
+        CASTNode *cond = m_stack.top();
+        m_stack.pop();
+        function_node = new ConditionalNode(cond, if_true, if_false);
+    } else {
+        throw invalid_argument("No matching function: " + fnName);
+    }
+    m_stack.push(function_node);
+
 }
 
 pair<CASTNode *, CASTNode *> CASTExpressionBuilder::getNodesPairAndPop() {
