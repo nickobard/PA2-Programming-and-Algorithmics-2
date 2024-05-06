@@ -96,7 +96,7 @@ CValue CSpreadsheet::getValue(CPos pos, CCycleDetectionVisitor &visitor) {
 
 
 void CSpreadsheet::copyRect(CPos dst, CPos src, int w, int h) {
-    CRange range(m_cells);
+    CRange range(*this);
     range.select(src, w, h);
     range.paste(dst);
 }
@@ -154,6 +154,10 @@ void CSpreadsheet::pasteCells(const Cells &cells) {
             setCell(m_cells, {row_pos, col_pos}, cell);
         }
     }
+}
+
+Cells &CSpreadsheet::getCells() {
+    return m_cells;
 }
 
 

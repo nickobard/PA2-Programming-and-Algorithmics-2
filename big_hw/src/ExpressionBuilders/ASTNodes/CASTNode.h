@@ -7,10 +7,13 @@
 
 
 #include <variant>
+#include <vector>
 #include "../../SpreadsheetStructure/CPos.h"
 #include "../CycleDetectionVisitor/CCycleDetectionVisitor.h"
 
 class CSpreadsheet;
+
+class CRange;
 
 using namespace literals;
 using CValue = variant<monostate, double, string>;
@@ -18,6 +21,8 @@ using CValue = variant<monostate, double, string>;
 class CASTNode {
 public:
     virtual CValue evaluate(CCycleDetectionVisitor &visitor) = 0;
+
+    virtual vector<CValue> evaluateRange(CCycleDetectionVisitor &visitor);
 
     virtual ~CASTNode() = default;
 };
@@ -35,12 +40,26 @@ private:
 
 class CReferenceNode : public CASTNode {
 public:
-    CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, const pair<int, int> &shift);
+    CReferenceNode(const string &pos, CSpreadsheet &spreadsheet, const pair<int, int> &offset);
 
     CValue evaluate(CCycleDetectionVisitor &visitor) override;
 
 private:
     CPos m_reference_position;
+    CSpreadsheet &m_spreadsheet;
+};
+
+class CRangeNode : public CASTNode {
+public:
+    CRangeNode(const string &from, const string &to, CSpreadsheet &spreadsheet, const pair<int, int> &offset);
+
+    CValue evaluate(CCycleDetectionVisitor &visitor) override;
+
+    vector<CValue> evaluateRange(CCycleDetectionVisitor &visitor) override;
+
+private:
+    CPos m_from_position;
+    CPos m_to_position;
     CSpreadsheet &m_spreadsheet;
 };
 

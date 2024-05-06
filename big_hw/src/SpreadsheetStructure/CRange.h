@@ -12,7 +12,8 @@ using Range = vector<pair<pair<int, int>, shared_ptr<CCell>>>;
 
 class CRange {
 public:
-    explicit CRange(Cells &spreadsheet);
+
+    explicit CRange(CSpreadsheet &spreadsheet);
 
     void select(const CPos &src, int w = 1, int h = 1);
 
@@ -20,15 +21,7 @@ public:
 
     void paste(const CPos &dst);
 
-    CValue sum() const;
-
-    CValue count() const;
-
-    CValue min() const;
-
-    CValue max() const;
-
-    CValue countval(const CValue &reference_value) const;
+    vector<CValue> evaluate(CCycleDetectionVisitor &visitor);
 
 private:
 
@@ -38,7 +31,7 @@ private:
 
     void pasteCells();
 
-    Cells &m_cells;
+    CSpreadsheet &m_spreadsheet;
     Range m_selection;
     CPos m_selection_position;
     int m_w, m_h;

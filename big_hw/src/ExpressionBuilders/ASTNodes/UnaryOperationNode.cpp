@@ -22,7 +22,6 @@ NegationNode::NegationNode(CASTNode *arg) : UnaryOperationNode(arg) {
 }
 
 
-
 CValue NegationNode::evaluate(CCycleDetectionVisitor &visitor) {
     auto value = evaluateValue(visitor);
     if (holds_alternative<double>(value)) {
