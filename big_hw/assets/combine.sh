@@ -8,6 +8,7 @@ grep -vh '^#include' \
   ExpressionBuilders/ASTNodes/BinaryOperationNode.h \
   ExpressionBuilders/ASTNodes/RelationalOperationNode.h \
   ExpressionBuilders/ASTNodes/UnaryOperationNode.h \
+  ExpressionBuilders/ASTNodes/FunctionNode.h \
   ExpressionBuilders/CASTExpressionBuilder.h \
   SpreadsheetStructure/CCell.h \
   SpreadsheetStructure/CRange.h \
@@ -21,6 +22,7 @@ grep -vh '^#include' \
   ExpressionBuilders/ASTNodes/BinaryOperationNode.cpp \
   ExpressionBuilders/ASTNodes/RelationalOperationNode.cpp \
   ExpressionBuilders/ASTNodes/UnaryOperationNode.cpp \
+  ExpressionBuilders/ASTNodes/FunctionNode.cpp \
   ExpressionBuilders/CASTExpressionBuilder.cpp \
   SpreadsheetStructure/CCell.cpp \
   SpreadsheetStructure/CRange.cpp \
