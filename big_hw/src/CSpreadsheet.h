@@ -19,7 +19,7 @@ constexpr unsigned SPREADSHEET_PARSER = 0x10;
 class CSpreadsheet {
 public:
     static unsigned capabilities() {
-        return SPREADSHEET_CYCLIC_DEPS | SPREADSHEET_FILE_IO;
+        return SPREADSHEET_CYCLIC_DEPS | SPREADSHEET_FILE_IO | SPREADSHEET_FUNCTIONS;
     }
 
     CSpreadsheet() = default;

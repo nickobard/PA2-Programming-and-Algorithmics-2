@@ -2,6 +2,8 @@
 // Created by bardanik on 14/04/24.
 //
 #include "../SpreadsheetStructure/CRange.h"
+#include "CASTExpressionBuilder.h"
+
 
 CASTExpressionBuilder::CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell) :
         m_spreadsheet(
@@ -111,35 +113,23 @@ void CASTExpressionBuilder::valRange(string val) {
 void CASTExpressionBuilder::funcCall(std::string fnName, int paramCount) {
     CASTNode *function_node = nullptr;
     if (fnName == "sum") {
-        CASTNode *range = m_stack.top();
-        m_stack.pop();
-        function_node = new SumNode(range);
+        auto args = getNodesAndPop<1>();
+        function_node = new SumNode(args[0]);
     } else if (fnName == "count") {
-        CASTNode *range = m_stack.top();
-        m_stack.pop();
-        function_node = new CountNode(range);
+        auto args = getNodesAndPop<1>();
+        function_node = new CountNode(args[0]);
     } else if (fnName == "min") {
-        CASTNode *range = m_stack.top();
-        m_stack.pop();
-        function_node = new MinNode(range);
+        auto args = getNodesAndPop<1>();
+        function_node = new MinNode(args[0]);
     } else if (fnName == "max") {
-        CASTNode *range = m_stack.top();
-        m_stack.pop();
-        function_node = new MaxNode(range);
+        auto args = getNodesAndPop<1>();
+        function_node = new MaxNode(args[0]);
     } else if (fnName == "countval") {
-        CASTNode *range = m_stack.top();
-        m_stack.pop();
-        CASTNode *value = m_stack.top();
-        m_stack.pop();
-        function_node = new CountValNode(value, range);
+        auto args = getNodesAndPop<2>();
+        function_node = new CountValNode(args[1], args[0]);
     } else if (fnName == "if") {
-        CASTNode *if_false = m_stack.top();
-        m_stack.pop();
-        CASTNode *if_true = m_stack.top();
-        m_stack.pop();
-        CASTNode *cond = m_stack.top();
-        m_stack.pop();
-        function_node = new ConditionalNode(cond, if_true, if_false);
+        auto args = getNodesAndPop<3>();
+        function_node = new ConditionalNode(args[2], args[1], args[0]);
     } else {
         throw invalid_argument("No matching function: " + fnName);
     }
@@ -153,5 +143,16 @@ pair<CASTNode *, CASTNode *> CASTExpressionBuilder::getNodesPairAndPop() {
     auto *first_arg = m_stack.top();
     m_stack.pop();
     return {first_arg, second_arg};
+}
+
+template<size_t NArgs>
+vector<CASTNode *> CASTExpressionBuilder::getNodesAndPop() {
+    vector<CASTNode *> nodes;
+    for (size_t i = 0; i < NArgs; i++) {
+        CASTNode *node = m_stack.top();
+        m_stack.pop();
+        nodes.push_back(node);
+    }
+    return nodes;
 }
 

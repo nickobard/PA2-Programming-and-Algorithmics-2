@@ -60,6 +60,9 @@ private:
 
     pair<CASTNode *, CASTNode *> getNodesPairAndPop();
 
+    template<size_t NArgs>
+    vector<CASTNode *> getNodesAndPop();
+
     stack<CASTNode *> m_stack;
     CSpreadsheet &m_spreadsheet;
     const CCell *m_cell;
