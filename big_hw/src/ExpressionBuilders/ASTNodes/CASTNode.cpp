@@ -55,6 +55,16 @@ vector<CValue> CRangeNode::evaluateRange(CCycleDetectionVisitor &visitor) {
     return range.evaluate(visitor);
 }
 
+size_t CRangeNode::rangeCapacity() const {
+    auto [row, col] = CPos::getOffset(m_from_position, m_to_position);
+    int h = row + 1, w = col + 1;
+    return h * w;
+}
+
 vector<CValue> CASTNode::evaluateRange(CCycleDetectionVisitor &visitor) {
     return {evaluate(visitor)};
+}
+
+size_t CASTNode::rangeCapacity() const {
+    return 1;
 }

@@ -56,6 +56,10 @@ public:
 
     CValue evaluate(CCycleDetectionVisitor &visitor) override;
 
+private:
+    template<typename T>
+    double countValRange(const vector<CValue> &range, const T &value) const;
+
 };
 
 

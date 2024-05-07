@@ -23,7 +23,7 @@ public:
 
     vector<CValue> evaluate(CCycleDetectionVisitor &visitor);
 
-    static pair<string , string> splitRange(const string &range);
+    static pair<string, string> splitRange(const string &range);
 
 private:
 

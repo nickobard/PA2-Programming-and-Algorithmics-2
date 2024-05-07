@@ -24,6 +24,8 @@ public:
 
     virtual vector<CValue> evaluateRange(CCycleDetectionVisitor &visitor);
 
+    virtual size_t rangeCapacity() const;
+
     virtual ~CASTNode() = default;
 };
 
@@ -56,6 +58,8 @@ public:
     CValue evaluate(CCycleDetectionVisitor &visitor) override;
 
     vector<CValue> evaluateRange(CCycleDetectionVisitor &visitor) override;
+
+    size_t rangeCapacity() const override;
 
 private:
     CPos m_from_position;

@@ -105,4 +105,3 @@ pair<string, string> CRange::splitRange(const string &range) {
     }
     return {first, second};
 }
-

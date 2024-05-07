@@ -297,13 +297,105 @@ struct Tester {
         assert(x0.setCell(CPos("A4"), "=\"just an expression string\""));
         assert(x0.setCell(CPos("A5"), "=1"));
         assert(x0.setCell(CPos("A6"), "=A0 + A1"));
+        assert(x0.setCell(CPos("A7"), "=S69"));
 
         assert(valueMatch(x0.getValue(CPos("A4")), CValue("just an expression string")));
 
-        assert(x0.setCell(CPos("A10"), "=sum(A0:A6)"));
-        CValue result = x0.getValue(CPos("A10"));
+        assert(x0.setCell(CPos("A20"), "=sum(A0:A7)"));
+        CValue result = x0.getValue(CPos("A20"));
         assert(valueMatch(result, CValue(169.0)));
 
+        assert(x0.setCell(CPos("B0"), "42"));
+        assert(x0.setCell(CPos("B1"), "42"));
+        assert(x0.setCell(CPos("B3"), "just a string"));
+        assert(x0.setCell(CPos("B4"), "=\"just an expression string\""));
+        assert(x0.setCell(CPos("B5"), "=1"));
+        assert(x0.setCell(CPos("B6"), "=A0 + A1"));
+        assert(x0.setCell(CPos("B7"), "=S69"));
+
+        result = x0.getValue(CPos("A20"));
+        assert(valueMatch(result, CValue(169.0)));
+
+        assert(x0.setCell(CPos("A8"), "42"));
+        assert(x0.setCell(CPos("A9"), "42"));
+        assert(x0.setCell(CPos("A11"), "just a string"));
+        assert(x0.setCell(CPos("A12"), "=\"just an expression string\""));
+        assert(x0.setCell(CPos("A13"), "=1"));
+        assert(x0.setCell(CPos("A14"), "=A0 + A1"));
+        assert(x0.setCell(CPos("A15"), "=S69"));
+        assert(x0.setCell(CPos("B8"), "42"));
+        assert(x0.setCell(CPos("B9"), "42"));
+        assert(x0.setCell(CPos("B11"), "just a string"));
+        assert(x0.setCell(CPos("B12"), "=\"just an expression string\""));
+        assert(x0.setCell(CPos("B13"), "=1"));
+        assert(x0.setCell(CPos("B14"), "=A0 + A1"));
+        assert(x0.setCell(CPos("B15"), "=S69"));
+
+
+        result = x0.getValue(CPos("A20"));
+        assert(valueMatch(result, CValue(169.0)));
+
+        assert(x0.setCell(CPos("A21"), "=sum(A0:B7)"));
+        result = x0.getValue(CPos("A21"));
+        assert(valueMatch(result, CValue(338.0)));
+
+        assert(x0.setCell(CPos("A22"), "=count(A0:A7)"));
+        result = x0.getValue(CPos("A22"));
+        assert(valueMatch(result, CValue(6.0)));
+
+        assert(x0.setCell(CPos("A22"), "=count(A0:B7)"));
+        result = x0.getValue(CPos("A22"));
+        assert(valueMatch(result, CValue(12.0)));
+
+        assert(x0.setCell(CPos("A23"), "=count(A0:B15)"));
+        result = x0.getValue(CPos("A23"));
+        assert(valueMatch(result, CValue(24.0)));
+
+        assert(x0.setCell(CPos("A24"), "=max(A0:B15)"));
+        result = x0.getValue(CPos("A24"));
+        assert(valueMatch(result, CValue(84.0)));
+
+        assert(x0.setCell(CPos("A25"), "=min(A0:B15)"));
+        result = x0.getValue(CPos("A25"));
+        assert(valueMatch(result, CValue(1.0)));
+
+        assert(x0.setCell(CPos("A26"), "=min(A2:B4)"));
+        result = x0.getValue(CPos("A26"));
+        assert(valueMatch(result, CValue()));
+
+        assert(x0.setCell(CPos("A27"), "=max(A2:B4)"));
+        result = x0.getValue(CPos("A27"));
+        assert(valueMatch(result, CValue()));
+
+        CPos pos = CPos("A28");
+        assert(x0.setCell(pos, "=countval(A0, A2:B4)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue(0.0)));
+
+        pos = CPos("A29");
+        assert(x0.setCell(pos, "=countval(A0, A0:B15)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue(8.0)));
+
+        assert(x0.setCell(pos, "=countval(2, A0:B15)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue(0.0)));
+
+        assert(x0.setCell(pos, "=countval(\"just a string\", A0:B15)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue(4.0)));
+
+        assert(x0.setCell(pos, "=countval(A15, A0:B15)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue(8.0)));
+
+        assert(x0.setCell(pos, "=if(\"string\", 42, 69)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue()));
+
+        assert(x0.setCell(pos, "=if(1, 42, 69)"));
+        result = x0.getValue(pos);
+        assert(valueMatch(result, CValue(42.0)));
 
         cout << __func__ << " ->    OK" << '\n' << endl;
     }
