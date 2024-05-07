@@ -113,6 +113,7 @@ public:
 
 private:
 
+    // Container for storing cells.
     Cells m_cells;
 
 };
