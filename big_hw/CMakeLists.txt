@@ -15,8 +15,10 @@ file(GLOB SOURCES
         "src/InputOutputUtilities/*.cpp"
         "src/SpreadsheetStructure/*.cpp")
 
-add_executable(big_task main.cpp ${SOURCES})
-add_executable(memdebug main.cpp ${SOURCES})
+add_executable(big_task main.cpp ${SOURCES}
+        tests/Tester.h)
+add_executable(memdebug main.cpp ${SOURCES}
+        tests/Tester.h)
 
 target_link_libraries(big_task ${CMAKE_SOURCE_DIR}/x86_64-linux-gnu/libexpression_parser.a)
 target_link_libraries(memdebug ${CMAKE_SOURCE_DIR}/x86_64-linux-gnu/libexpression_parser.a)

@@ -83,9 +83,8 @@ void CRange::pasteCells() {
 vector<CValue> CRange::evaluate(CCycleDetectionVisitor &visitor) {
     vector<CValue> values;
     for (auto &[coords, cell]: m_selection) {
-        visitor.visit(cell.get());
-        values.emplace_back(cell->getValue(m_spreadsheet, visitor));
-        visitor.leave(cell.get());
+        auto value = cell->getValue(m_spreadsheet, visitor);
+        values.emplace_back(value);
     }
     return values;
 }

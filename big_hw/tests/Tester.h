@@ -38,6 +38,7 @@ struct Tester {
         basicTest();
         cycleDetectionTest();
         loaderTest();
+        functionsTest();
     }
 
     static void basicTest() {
@@ -285,6 +286,28 @@ struct Tester {
         cout << __func__ << " ->    OK" << '\n' << endl;
 
     }
+
+    static void functionsTest() {
+        cout << '\n' << __func__ << " -> START" << endl;
+
+        CSpreadsheet x0;
+        assert(x0.setCell(CPos("A0"), "42"));
+        assert(x0.setCell(CPos("A1"), "42"));
+        assert(x0.setCell(CPos("A3"), "just a string"));
+        assert(x0.setCell(CPos("A4"), "=\"just an expression string\""));
+        assert(x0.setCell(CPos("A5"), "=1"));
+        assert(x0.setCell(CPos("A6"), "=A0 + A1"));
+
+        assert(valueMatch(x0.getValue(CPos("A4")), CValue("just an expression string")));
+
+        assert(x0.setCell(CPos("A10"), "=sum(A0:A6)"));
+        CValue result = x0.getValue(CPos("A10"));
+        assert(valueMatch(result, CValue(169.0)));
+
+
+        cout << __func__ << " ->    OK" << '\n' << endl;
+    }
+
 };
 
 #endif //PA2_BIG_TASK_CTESTER_H
