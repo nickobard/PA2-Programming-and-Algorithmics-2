@@ -43,7 +43,7 @@ void CLoader::loadBuffer(const Cells &cells) {
     }
 }
 
-bool CLoader::load(Cells &to_load) {
+bool CLoader::load(Cells &cells) {
     if (!verify()) {
         return false;
     }
@@ -67,7 +67,7 @@ bool CLoader::load(Cells &to_load) {
         }
         iss >> cell;
         auto shared_ptr_cell = shared_ptr<CCell>(cell);
-        CSpreadsheet::setCell(to_load, CPos(row_pos, col_pos), shared_ptr_cell);
+        CSpreadsheet::setCell(cells, CPos(row_pos, col_pos), shared_ptr_cell);
 
     }
     return true;
