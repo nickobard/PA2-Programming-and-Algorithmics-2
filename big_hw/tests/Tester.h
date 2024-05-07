@@ -9,6 +9,12 @@
 #include <cfloat>
 #include "../src/CSpreadsheet.h"
 
+/**
+ * Function for testing - tests two cell values if they are the same.
+ * @param r - value from the spreadsheet.
+ * @param s - expected value from the spreadsheet.
+ * @return true if values are equal.
+ */
 bool valueMatch(const CValue &r,
                 const CValue &s) {
     if (r.index() != s.index())
@@ -25,15 +31,23 @@ bool valueMatch(const CValue &r,
     return fabs(std::get<double>(r) - std::get<double>(s)) <= 1e8 * DBL_EPSILON * fabs(std::get<double>(r));
 }
 
-
+/**
+ * Tester, which is used to structure tests and run them in more organized manner.
+ */
 struct Tester {
 
+    /**
+     * Layout for every test function - shows how each test function should be structured.
+     */
     static void layout() {
         cout << '\n' << __func__ << " -> START" << endl;
-
+        // tests...
         cout << __func__ << " ->    OK" << '\n' << endl;
     }
 
+    /**
+     * Run all selected function tests.
+     */
     static void runAll() {
         basicTest();
         cycleDetectionTest();
@@ -41,6 +55,10 @@ struct Tester {
         functionsTest();
     }
 
+    /**
+     * Basic tests - spreadsheet creating, copying, selection, saving and loading,
+     * pasting and evaluation of numbers, literals and non function expressions.
+     */
     static void basicTest() {
         cout << '\n' << __func__ << " -> START" << endl;
 
@@ -182,6 +200,9 @@ struct Tester {
         cout << __func__ << " ->    OK" << '\n' << endl;
     }
 
+    /**
+     * Tests cycle detection of spreadsheet capabilities.
+     */
     static void cycleDetectionTest() {
         cout << '\n' << __func__ << " -> START" << endl;
 
@@ -195,6 +216,9 @@ struct Tester {
         cout << __func__ << " ->    OK" << '\n' << endl;
     }
 
+    /**
+     * Advanced tests of saving and loading.
+     */
     static void loaderTest() {
         cout << '\n' << __func__ << " -> START" << endl;
 
@@ -287,6 +311,9 @@ struct Tester {
 
     }
 
+    /**
+     * Tests function expressions.
+     */
     static void functionsTest() {
         cout << '\n' << __func__ << " -> START" << endl;
 
