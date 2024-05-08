@@ -15,8 +15,16 @@
 
 class CCell;
 
+/**
+ * Expression builder which constructs Abstract Syntactic Tree in expression parsing process.
+ */
 class CASTExpressionBuilder : public CExprBuilder {
 public:
+    /**
+     * Constructs AST expression builder.
+     * @param spreadsheet - reference to a spreadsheet.
+     * @param current_cell - cell with expression that is being parsed.
+     */
     explicit CASTExpressionBuilder(CSpreadsheet &spreadsheet, const CCell *current_cell);
 
     void opAdd() override;
@@ -54,17 +62,33 @@ public:
     void funcCall(std::string fnName,
                   int paramCount) override;
 
+    /**
+     * Returns the root of the AST tree as a result of the parsing process.
+     * @return root of the AST tree.
+     */
     CASTNode *getResult();
 
 private:
 
+    /**
+     * Gets and removes top two AST nodes from the stack.
+     * @return a pair of AST nodes stored on top of the stack.
+     */
     pair<CASTNode *, CASTNode *> getNodesPairAndPop();
 
+    /**
+     * Get N number of AST nodes and removes them from top of the stack.
+     * @tparam NArgs - number of nodes to extract.
+     * @return vector with NArgs nodes.
+     */
     template<size_t NArgs>
     vector<CASTNode *> getNodesAndPop();
 
+    // Stack for storing intermediate nodes.
     stack<CASTNode *> m_stack;
+    // Spreadsheet where the parsed cell is located.
     CSpreadsheet &m_spreadsheet;
+    // Cell that is being under the parse process.
     const CCell *m_cell;
 };
 

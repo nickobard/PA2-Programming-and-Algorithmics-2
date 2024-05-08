@@ -27,7 +27,7 @@ public:
     virtual void opAdd() = 0;
 
     /**
-     * Is called when      * Is called when  operation is parsed by the parser.
+     * Is called when subtraction operation is parsed by the parser.
  operation is parsed by the parser.
      */
     virtual void opSub() = 0;
