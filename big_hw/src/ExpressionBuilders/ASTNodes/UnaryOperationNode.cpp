@@ -17,7 +17,7 @@ CValue UnaryOperationNode::evaluateValue(CCycleDetectionVisitor &visitor) {
 }
 
 
-NegationNode::NegationNode(CASTNode *arg) : UnaryOperationNode(arg) {
+NegationNode::NegationNode(CASTNode *operand) : UnaryOperationNode(operand) {
 
 }
 

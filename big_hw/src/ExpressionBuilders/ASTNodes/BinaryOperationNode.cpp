@@ -42,7 +42,7 @@ pair<L, R> BinaryOperationNode::getValues(const pair<CValue, CValue> &values) {
 }
 
 
-AddNode::AddNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+AddNode::AddNode(CASTNode *left_operand, CASTNode *right_operand) : BinaryOperationNode(left_operand, right_operand) {
 
 }
 
@@ -66,7 +66,7 @@ CValue AddNode::evaluate(CCycleDetectionVisitor &visitor) {
 }
 
 
-SubtractNode::SubtractNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+SubtractNode::SubtractNode(CASTNode *left_operand, CASTNode *right_operand) : BinaryOperationNode(left_operand, right_operand) {
 
 }
 
@@ -81,8 +81,8 @@ CValue SubtractNode::evaluate(CCycleDetectionVisitor &visitor) {
 }
 
 
-MultiplicationNode::MultiplicationNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg,
-                                                                                                        second_arg) {
+MultiplicationNode::MultiplicationNode(CASTNode *left_operand, CASTNode *right_operand) : BinaryOperationNode(left_operand,
+                                                                                                              right_operand) {
 
 }
 
@@ -98,7 +98,7 @@ CValue MultiplicationNode::evaluate(CCycleDetectionVisitor &visitor) {
 }
 
 
-DivisionNode::DivisionNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+DivisionNode::DivisionNode(CASTNode *left_operand, CASTNode *right_operand) : BinaryOperationNode(left_operand, right_operand) {
 
 }
 
@@ -117,7 +117,7 @@ CValue DivisionNode::evaluate(CCycleDetectionVisitor &visitor) {
 }
 
 
-PowerNode::PowerNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(first_arg, second_arg) {
+PowerNode::PowerNode(CASTNode *left_operand, CASTNode *right_operand) : BinaryOperationNode(left_operand, right_operand) {
 
 }
 
