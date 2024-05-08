@@ -5,8 +5,8 @@
 #include "RelationalOperationNode.h"
 
 
-RelationalOperationNode::RelationalOperationNode(CASTNode *first_arg, CASTNode *second_arg) : BinaryOperationNode(
-        first_arg, second_arg) {
+RelationalOperationNode::RelationalOperationNode(CASTNode *left_operand, CASTNode *right_operand) : BinaryOperationNode(
+        left_operand, right_operand) {
 
 }
 
@@ -24,7 +24,7 @@ CValue RelationalOperationNode::evaluate(CCycleDetectionVisitor &visitor) {
 }
 
 
-EqualNode::EqualNode(CASTNode *first_arg, CASTNode *second_arg) : RelationalOperationNode(first_arg, second_arg) {
+EqualNode::EqualNode(CASTNode *left_operand, CASTNode *right_operand) : RelationalOperationNode(left_operand, right_operand) {
 
 }
 
@@ -37,7 +37,7 @@ bool EqualNode::compare(const string &lhs, const string &rhs) {
 }
 
 
-LessThanNode::LessThanNode(CASTNode *first_arg, CASTNode *second_arg) : RelationalOperationNode(first_arg, second_arg) {
+LessThanNode::LessThanNode(CASTNode *left_operand, CASTNode *right_operand) : RelationalOperationNode(left_operand, right_operand) {
 
 }
 
@@ -50,7 +50,7 @@ bool LessThanNode::compare(const string &lhs, const string &rhs) {
 }
 
 
-NotEqualNode::NotEqualNode(CASTNode *first_arg, CASTNode *second_arg) : RelationalOperationNode(first_arg, second_arg) {
+NotEqualNode::NotEqualNode(CASTNode *left_operand, CASTNode *right_operand) : RelationalOperationNode(left_operand, right_operand) {
 
 }
 
@@ -63,8 +63,8 @@ bool NotEqualNode::compare(const string &lhs, const string &rhs) {
 }
 
 
-GreaterThanNode::GreaterThanNode(CASTNode *first_arg, CASTNode *second_arg) : RelationalOperationNode(first_arg,
-                                                                                                      second_arg) {
+GreaterThanNode::GreaterThanNode(CASTNode *left_operand, CASTNode *right_operand) : RelationalOperationNode(left_operand,
+                                                                                                            right_operand) {
 }
 
 bool GreaterThanNode::compare(double lhs, double rhs) {
@@ -76,8 +76,8 @@ bool GreaterThanNode::compare(const string &lhs, const string &rhs) {
 }
 
 
-LessThanOrEqualNode::LessThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg) : RelationalOperationNode(first_arg,
-                                                                                                              second_arg) {
+LessThanOrEqualNode::LessThanOrEqualNode(CASTNode *left_operand, CASTNode *right_operand) : RelationalOperationNode(left_operand,
+                                                                                                                    right_operand) {
 
 }
 
@@ -90,8 +90,8 @@ bool LessThanOrEqualNode::compare(const string &lhs, const string &rhs) {
 }
 
 
-GreaterThanOrEqualNode::GreaterThanOrEqualNode(CASTNode *first_arg, CASTNode *second_arg) : RelationalOperationNode(
-        first_arg, second_arg) {
+GreaterThanOrEqualNode::GreaterThanOrEqualNode(CASTNode *left_operand, CASTNode *right_operand) : RelationalOperationNode(
+        left_operand, right_operand) {
 
 }
 
