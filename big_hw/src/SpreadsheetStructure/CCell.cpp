@@ -44,7 +44,7 @@ CExprCell::CExprCell(const string &expression) : CCell(expression), m_shift({0, 
 }
 
 
-CExprCell::CExprCell() : CCell(""), m_shift({0, 0}) {
+CExprCell::CExprCell() : CCell("="), m_shift({0, 0}) {
 
 }
 
@@ -136,15 +136,15 @@ CValue CExprCell::getValue(CSpreadsheet &spreadsheet, CCycleDetectionVisitor &vi
     return evaluation;
 }
 
-void CCell::shift(const pair<int, int> &shift) {
+void CCell::shift(const pair<int, int> &offset) {
 }
 
-void CExprCell::shift(const pair<int, int> &shift) {
+void CExprCell::shift(const pair<int, int> &offset) {
     if (m_root != nullptr) {
         m_root = nullptr;
     }
-    m_shift.first += shift.first;
-    m_shift.second += shift.second;
+    m_shift.first += offset.first;
+    m_shift.second += offset.second;
 }
 
 istream &CExprCell::readCell(istream &is) {
